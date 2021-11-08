@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Diagnostics;
+using TMPro;
 
 public class FileImporter : MonoBehaviour
 {
+
+    [SerializeField]
+    private TextMeshProUGUI displayText = null;
+
     // Start is called before the first frame update
     void Start()
     {
