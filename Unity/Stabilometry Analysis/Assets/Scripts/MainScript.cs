@@ -5,4 +5,9 @@ using UnityEngine;
 public class MainScript : MonoBehaviour
 {
     public int PatientId { get; set; } = -1;
+
+    public void ExitApplication()
+    {
+        Application.Quit();
+    }
 }
