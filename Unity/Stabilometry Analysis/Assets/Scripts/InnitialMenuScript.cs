@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class InnitialMenuScript : MonoBehaviour
 {
+    #region Variables
+    [SerializeField]
+    private GameObject EditPatientButton = null,
+        AddStabilometryButton = null,
+        AnalysisButton = null,
+        ReportButton = null,
+        DeletePatientButon = null;
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
