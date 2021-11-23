@@ -171,6 +171,16 @@ public class DatabaseScript : MonoBehaviour
         //Debug.Log(line);
         return line;
     }
+
+    /// <summary>
+    /// Returns the next patient ID. 
+    /// </summary>
+    /// <returns></returns>
+    public int GetNextPatientID()
+    {
+
+        return -1;
+    }
     #endregion
 
     #region Update

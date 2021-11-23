@@ -7,7 +7,7 @@ public class NotesComponent : MonoBehaviour
 {
     #region Variables
     [SerializeField]
-    private TextMeshProUGUI NoteText = null;
+    private TMP_InputField NoteText = null;
     #endregion
 
     public void SetText(string text)

@@ -8,12 +8,23 @@ public class MainScript : MonoBehaviour
     public int PatientId { get; set; } = -1;
 
     // Cached references
+    public DatabaseScript Database { 
+        get { return database; } 
+    }
     private DatabaseScript database = null;
+    
+    public MenuSwitching MenuSwitching
+    {
+        get { return menuSwitching;}
+    }
+
+    private MenuSwitching menuSwitching = null;
     #endregion
 
-    private void Start()
+    private void Awake()
     {
         database = GetComponent<DatabaseScript>();
+        menuSwitching = GetComponent<MenuSwitching>();
     }
 
     public void DeleteCurrentPatient()
