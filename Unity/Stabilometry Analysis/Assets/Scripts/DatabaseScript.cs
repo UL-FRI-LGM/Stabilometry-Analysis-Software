@@ -112,15 +112,15 @@ public class DatabaseScript : MonoBehaviour
         if (reader != null)
             reader.Close();
     }
-
     /// <summary>
     /// Inserts a new patient into the database.
     /// </summary>
-    public void CreatePatient(string name, string surname, string notes)
+    /// <param name="patient"></param>
+    public void CreatePatient(Patient patient)
     {
         string[] columns = GetSmallerStringArray(PatientTableColumnNames, 1, -1);
 
-        string[] values = { name, surname, notes };
+        string[] values = { patient.Name, patient.Surname, patient.Notes };
         IDataReader reader = InsertIntoTable(PatientTableName, columns, values);
 
         if (reader != null)
@@ -176,9 +176,8 @@ public class DatabaseScript : MonoBehaviour
     /// Returns the next patient ID. 
     /// </summary>
     /// <returns></returns>
-    public int GetNextPatientID()
+    public int GetLastPatientID()
     {
-
         return -1;
     }
     #endregion
@@ -187,12 +186,17 @@ public class DatabaseScript : MonoBehaviour
     /// <summary>
     /// Updates the patients data.
     /// </summary>
-    /// <param name="patientID"></param>
-    /// <param name="name"></param>
-    /// <param name="surname"></param>
-    /// <param name="notes"></param>
-    public void UpdatePatient(int patientID, string name, string surname, string notes)
+    /// <param name="patient"></param>
+    public void UpdatePatient(Patient patient)
     {
+        string condition = $"{PatientTableColumnNames[0]} = { patient.ID}";
+        string newValues = $"{PatientTableColumnNames[1]} = {patient.Name}, {PatientTableColumnNames[2]} = {patient.Surname}, {PatientTableColumnNames[3]} = {patient.Notes}";
+
+        string query = $"UPDATE {PatientTableName} SET {newValues} WHERE {condition}";
+
+        if (ExecuteQuery(query) != null)
+            GetComponent<MainScript>().SelectPatient(patient);
+
     }
     #endregion
 

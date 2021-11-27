@@ -16,4 +16,12 @@ public class Patient
         this.Surname = Surname;
         this.Notes = Notes;
     }
+
+    public Patient(string Name, string Surname, string Notes)
+    {
+        this.ID = -1;
+        this.Name = Name;
+        this.Surname = Surname;
+        this.Notes = Notes;
+    }
 }
