@@ -72,6 +72,9 @@ public class AddEditPatientMenu : MonoBehaviour
 
         if (patient != null)
         {
+            if (addingPatient)
+                mainScript.Database.
+                    else
 
         }
         else

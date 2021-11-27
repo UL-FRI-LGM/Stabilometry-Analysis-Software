@@ -118,13 +118,13 @@ public class DatabaseScript : MonoBehaviour
     /// <param name="patient"></param>
     public void CreatePatient(Patient patient)
     {
-        string[] columns = GetSmallerStringArray(PatientTableColumnNames, 1, -1);
-
-        string[] values = { patient.Name, patient.Surname, patient.Notes };
-        IDataReader reader = InsertIntoTable(PatientTableName, columns, values);
+        string[] values = {patient.ID.ToString(), patient.Name, patient.Surname, patient.Notes };
+        IDataReader reader = InsertIntoTable(PatientTableName, PatientTableColumnNames, values);
 
         if (reader != null)
             reader.Close();
+
+        GetComponent<MainScript>().SelectPatient(patient);
     }
 
     /// <summary>
@@ -178,7 +178,23 @@ public class DatabaseScript : MonoBehaviour
     /// <returns></returns>
     public int GetLastPatientID()
     {
-        return -1;
+        string patientID = PatientTableColumnNames[0];
+
+        string query = $"SELECT MAX{patientID} FROM {PatientTableName}";
+
+        int result = 0;
+
+        IDataReader reader = ExecuteQuery(query);
+
+        if (reader == null)
+            Debug.LogError("Reader was null");
+
+        if (reader.Read())
+        {
+            reader.GetInt32(0);
+        }
+        
+        return result;
     }
     #endregion
 
@@ -189,13 +205,17 @@ public class DatabaseScript : MonoBehaviour
     /// <param name="patient"></param>
     public void UpdatePatient(Patient patient)
     {
-        string condition = $"{PatientTableColumnNames[0]} = { patient.ID}";
+        string condition = $"{PatientTableColumnNames[0]} = {patient.ID}";
         string newValues = $"{PatientTableColumnNames[1]} = {patient.Name}, {PatientTableColumnNames[2]} = {patient.Surname}, {PatientTableColumnNames[3]} = {patient.Notes}";
 
         string query = $"UPDATE {PatientTableName} SET {newValues} WHERE {condition}";
 
-        if (ExecuteQuery(query) != null)
+        IDataReader reader = ExecuteQuery(query);
+        if (reader != null)
+        {
+            reader.Close();
             GetComponent<MainScript>().SelectPatient(patient);
+        }
 
     }
     #endregion
@@ -209,8 +229,14 @@ public class DatabaseScript : MonoBehaviour
     public void DeletePatient(Patient patient)
     {
         string query = $"DELETE FROM {PatientTableName} WHERE {PatientTableColumnNames[0]} = {patient.ID}";
-        if (ExecuteQuery(query) != null)
+        
+        IDataReader reader = ExecuteQuery(query);
+
+        if (reader != null)
+        {
+            reader.Close();
             GetComponent<MainScript>().SelectPatient(null);
+        }
     }
 
     /// <summary>
