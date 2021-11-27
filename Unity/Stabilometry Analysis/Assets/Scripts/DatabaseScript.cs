@@ -203,12 +203,14 @@ public class DatabaseScript : MonoBehaviour
     #region Delete
 
     /// <summary>
-    /// Deletes the given patient.
+    /// Deletes the given patient, based on the ID.
     /// </summary>
     /// <param name="patientID"></param>
-    public void DeletePatient(int patientID)
+    public void DeletePatient(Patient patient)
     {
-
+        string query = $"DELETE FROM {PatientTableName} WHERE {PatientTableColumnNames[0]} = {patient.ID}";
+        if (ExecuteQuery(query) != null)
+            GetComponent<MainScript>().SelectPatient(null);
     }
 
     /// <summary>

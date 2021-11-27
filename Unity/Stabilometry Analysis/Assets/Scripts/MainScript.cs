@@ -31,7 +31,7 @@ public class MainScript : MonoBehaviour
     {
 
         if (selectedPatient != null)
-            database.DeletePatient(selectedPatient.ID);
+            database.DeletePatient(selectedPatient);
         else
             Debug.LogError($"Patient does not exist.");
     }
