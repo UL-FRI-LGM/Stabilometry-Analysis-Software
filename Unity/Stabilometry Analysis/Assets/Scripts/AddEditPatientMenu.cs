@@ -26,12 +26,6 @@ public class AddEditPatientMenu : MonoBehaviour
     private bool canSave = false;
     #endregion
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -68,36 +62,32 @@ public class AddEditPatientMenu : MonoBehaviour
     /// </summary>
     public void SaveButton()
     {
-        Patient patient = PreparePatient(nameInput.text, surnameInput.text, notesComponent.text);
+        Patient patient = new Patient(nameInput.text, surnameInput.text, notesComponent.text);
 
         if (patient != null)
         {
             if (addingPatient)
-                mainScript.Database.
-                    else
-
+                mainScript.AddPatient(patient);
+            else
+            {
+                patient.ID = mainScript.CurrentPatient.ID;
+                mainScript.UpdatePatient(patient);
+            }
         }
         else
             Debug.LogError("Patient was null.");
 
         mainScript.MenuSwitching.OpenInitialMenu();
     }
-
-    private Patient PreparePatient(string name, string surname, string notes)
+    
+    public void NameInputChanged()
     {
-        Patient result = null;
-
-        return result;
-    }
-
-    public void NameInputChanged(string text)
-    {
-        canSave = (text != "");
+        canSave = (nameInput.text != "");
     }
 
     private void ReadData()
     {
-       // mainScript.Database.
+        // mainScript.Database.
     }
 
     public void CancelButton()

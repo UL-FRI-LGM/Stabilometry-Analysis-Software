@@ -112,19 +112,18 @@ public class DatabaseScript : MonoBehaviour
         if (reader != null)
             reader.Close();
     }
+
     /// <summary>
     /// Inserts a new patient into the database.
     /// </summary>
     /// <param name="patient"></param>
-    public void CreatePatient(Patient patient)
+    public void AddPatient(Patient patient)
     {
         string[] values = {patient.ID.ToString(), patient.Name, patient.Surname, patient.Notes };
         IDataReader reader = InsertIntoTable(PatientTableName, PatientTableColumnNames, values);
 
         if (reader != null)
             reader.Close();
-
-        GetComponent<MainScript>().SelectPatient(patient);
     }
 
     /// <summary>
@@ -178,22 +177,36 @@ public class DatabaseScript : MonoBehaviour
     /// <returns></returns>
     public int GetLastPatientID()
     {
-        string patientID = PatientTableColumnNames[0];
+        string patientID = PatientTableColumnNames[0]; 
 
-        string query = $"SELECT MAX{patientID} FROM {PatientTableName}";
+        string query = $"SELECT COUNT(*) FROM {PatientTableName}"; 
 
         int result = 0;
 
         IDataReader reader = ExecuteQuery(query);
-
+        
+        // Reader should never be null.
         if (reader == null)
             Debug.LogError("Reader was null");
 
-        if (reader.Read())
+        // If there are any patients in the database
+        if (reader.Read() && reader.GetInt32(0) > 0)
         {
-            reader.GetInt32(0);
+            reader.Close();
+            
+            query = $"SELECT MAX({patientID}) FROM {PatientTableName}";
+            reader = ExecuteQuery(query);
+
+            if (reader != null && reader.Read())
+            {
+                result = (int)reader.GetInt64(0);
+                Debug.Log(result);
+            }
         }
-        
+
+        if (reader != null)
+            reader.Close();
+
         return result;
     }
     #endregion

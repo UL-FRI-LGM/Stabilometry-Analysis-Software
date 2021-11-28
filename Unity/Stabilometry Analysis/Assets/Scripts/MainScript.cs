@@ -5,17 +5,16 @@ using UnityEngine;
 public class MainScript : MonoBehaviour
 {
     #region Variables
-    private Patient selectedPatient = null;
+    public Patient CurrentPatient { get { return currentPatient; } }
+    private Patient currentPatient = null;
 
     // Cached references
-    public DatabaseScript Database { 
-        get { return database; } 
-    }
+    public DatabaseScript Database { get { return database; } }
     private DatabaseScript database = null;
-    
+
     public MenuSwitching MenuSwitching
     {
-        get { return menuSwitching;}
+        get { return menuSwitching; }
     }
 
     private MenuSwitching menuSwitching = null;
@@ -30,10 +29,30 @@ public class MainScript : MonoBehaviour
     public void DeleteCurrentPatient()
     {
 
-        if (selectedPatient != null)
-            database.DeletePatient(selectedPatient);
+        if (currentPatient != null)
+            database.DeletePatient(currentPatient);
         else
             Debug.LogError($"Patient does not exist.");
+    }
+
+    /// <summary>
+    /// Adds a new patient and selects the patient.
+    /// </summary>
+    /// <param name="patient"></param>
+    public void AddPatient(Patient patient)
+    {
+        patient.ID = database.GetLastPatientID() + 1;
+        database.AddPatient(patient);
+        SelectPatient(patient);
+    }
+
+    /// <summary>
+    /// Updates the currently selected patient
+    /// </summary>
+    /// <param name="patient"></param>
+    public void UpdatePatient(Patient patient)
+    {
+        database.UpdatePatient(patient);   
     }
 
     /// <summary>
@@ -42,7 +61,7 @@ public class MainScript : MonoBehaviour
     /// <param name="patient"></param>
     public void SelectPatient(Patient patient)
     {
-        selectedPatient = patient;
+        currentPatient = patient;
     }
 
     public void ExitApplication()

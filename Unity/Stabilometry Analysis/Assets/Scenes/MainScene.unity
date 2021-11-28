@@ -807,7 +807,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &157548476
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1524,7 +1524,18 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 395074352}
+        m_MethodName: NameInputChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1750,7 +1761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &395074351
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1790,8 +1801,8 @@ MonoBehaviour:
   nameInput: {fileID: 359972841}
   surnameInput: {fileID: 602407750}
   notesComponent: {fileID: 1443969478}
-  mainScript: {fileID: 0}
-  saveButton: {fileID: 0}
+  mainScript: {fileID: 780767368}
+  saveButton: {fileID: 511031588}
 --- !u!1 &396791718
 GameObject:
   m_ObjectHideFlags: 0
@@ -2198,7 +2209,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 511031589}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 395074352}
+        m_MethodName: SaveButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &511031589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5784,7 +5806,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1236468941}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 395074352}
+        m_MethodName: CancelButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1236468941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6165,12 +6198,12 @@ PrefabInstance:
     - target: {fileID: 1625754932839362113, guid: 9b9cbce6557e7154098fc8ccf9fe288c,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1625754932839362113, guid: 9b9cbce6557e7154098fc8ccf9fe288c,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1625754933070737793, guid: 9b9cbce6557e7154098fc8ccf9fe288c,
         type: 3}
@@ -9549,12 +9582,12 @@ PrefabInstance:
     - target: {fileID: 1625754932839362113, guid: 9b9cbce6557e7154098fc8ccf9fe288c,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1625754932839362113, guid: 9b9cbce6557e7154098fc8ccf9fe288c,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b9cbce6557e7154098fc8ccf9fe288c, type: 3}
