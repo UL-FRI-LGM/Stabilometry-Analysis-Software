@@ -209,6 +209,19 @@ public class DatabaseScript : MonoBehaviour
 
         return result;
     }
+
+    public List<Patient> GetAllPatients()
+    {
+        List<Patient> result = new List<Patient>();
+
+        string querry = $"SELECT * FROM  {PatientTableName}";
+
+        IDataReader reader = ExecuteQuery(querry);
+
+        //if (reader == null)
+
+        return result;
+    }
     #endregion
 
     #region Update

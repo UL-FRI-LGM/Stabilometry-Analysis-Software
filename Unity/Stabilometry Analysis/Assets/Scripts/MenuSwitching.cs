@@ -18,6 +18,11 @@ public class MenuSwitching : MonoBehaviour
         currentMenu = initialMenu;
     }
 
+    private void Start()
+    {
+        
+    }
+
     public void OpenAddPatientMenu(GameObject addPatientMenu)
     {
         OpenMenu(addPatientMenu);

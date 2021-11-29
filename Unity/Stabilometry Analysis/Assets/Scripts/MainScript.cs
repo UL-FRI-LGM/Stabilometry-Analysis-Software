@@ -26,6 +26,16 @@ public class MainScript : MonoBehaviour
         menuSwitching = GetComponent<MenuSwitching>();
     }
 
+    private void Start()
+    {
+        
+    }
+
+    private void SetPatientDropdown()
+    {
+        List<Patient> allPatients = database.
+    }
+
     public void DeleteCurrentPatient()
     {
 
