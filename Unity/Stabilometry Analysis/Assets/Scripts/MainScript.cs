@@ -33,7 +33,7 @@ public class MainScript : MonoBehaviour
 
     private void SetPatientDropdown()
     {
-        List<Patient> allPatients = database.
+        List<Patient> allPatients = database.GetAllPatients
     }
 
     public void DeleteCurrentPatient()
