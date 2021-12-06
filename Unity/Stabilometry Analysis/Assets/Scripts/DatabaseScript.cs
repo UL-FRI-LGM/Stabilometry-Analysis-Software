@@ -210,15 +210,41 @@ public class DatabaseScript : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Returns all patient data from the database.
+    /// </summary>
+    /// <returns></returns>
     public List<Patient> GetAllPatients()
     {
         List<Patient> result = new List<Patient>();
 
-        string querry = $"SELECT * FROM  {PatientTableName}";
+        string patientID = PatientTableColumnNames[0];
+
+        string querry = $"SELECT * FROM  {PatientTableName} ORDER BY {patientID} DESC";
 
         IDataReader reader = ExecuteQuery(querry);
 
-        //if (reader == null)
+        if (reader == null)
+        {
+            Debug.LogError("Reader was null.");
+            return null;
+        }
+
+        // else
+        while (reader.Read())
+        {
+
+            int id = (int)reader.GetInt64(0);
+            string name = (string)reader.GetValue(1);
+            string surname = (string)reader.GetValue(2);
+            string notes = (string)reader.GetValue(3);
+
+            Patient patient = new Patient(id, name, surname, notes);
+
+            result.Add(patient);
+        }
+
+        reader.Close();
 
         return result;
     }

@@ -5,42 +5,26 @@ using UnityEngine;
 public class MainScript : MonoBehaviour
 {
     #region Variables
-    public Patient CurrentPatient { get { return currentPatient; } }
-    private Patient currentPatient = null;
+    public Patient CurrentPatient { get; private set; } = null;
 
     // Cached references
-    public DatabaseScript Database { get { return database; } }
-    private DatabaseScript database = null;
+    public DatabaseScript Database { get; private set; } = null;
 
-    public MenuSwitching MenuSwitching
-    {
-        get { return menuSwitching; }
-    }
+    public MenuSwitching MenuSwitching { get; private set; } = null;
 
-    private MenuSwitching menuSwitching = null;
     #endregion
 
     private void Awake()
     {
-        database = GetComponent<DatabaseScript>();
-        menuSwitching = GetComponent<MenuSwitching>();
-    }
-
-    private void Start()
-    {
-        
-    }
-
-    private void SetPatientDropdown()
-    {
-        List<Patient> allPatients = database.GetAllPatients
+        Database = GetComponent<DatabaseScript>();
+        MenuSwitching = GetComponent<MenuSwitching>();
     }
 
     public void DeleteCurrentPatient()
     {
 
-        if (currentPatient != null)
-            database.DeletePatient(currentPatient);
+        if (CurrentPatient != null)
+            Database.DeletePatient(CurrentPatient);
         else
             Debug.LogError($"Patient does not exist.");
     }
@@ -51,8 +35,8 @@ public class MainScript : MonoBehaviour
     /// <param name="patient"></param>
     public void AddPatient(Patient patient)
     {
-        patient.ID = database.GetLastPatientID() + 1;
-        database.AddPatient(patient);
+        patient.ID = Database.GetLastPatientID() + 1;
+        Database.AddPatient(patient);
         SelectPatient(patient);
     }
 
@@ -62,7 +46,7 @@ public class MainScript : MonoBehaviour
     /// <param name="patient"></param>
     public void UpdatePatient(Patient patient)
     {
-        database.UpdatePatient(patient);   
+        Database.UpdatePatient(patient);   
     }
 
     /// <summary>
@@ -71,7 +55,7 @@ public class MainScript : MonoBehaviour
     /// <param name="patient"></param>
     public void SelectPatient(Patient patient)
     {
-        currentPatient = patient;
+        CurrentPatient = patient;
     }
 
     public void ExitApplication()
