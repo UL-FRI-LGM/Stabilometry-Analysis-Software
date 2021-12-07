@@ -12,12 +12,26 @@ public class MainScript : MonoBehaviour
 
     public MenuSwitching MenuSwitching { get; private set; } = null;
 
+    [SerializeField]
+    private InitialMenuScript initialMenu = null;
+
+    [SerializeField]
+    private MenuHeaderScript menuHeaderScript = null;
+
     #endregion
 
     private void Awake()
     {
         Database = GetComponent<DatabaseScript>();
         MenuSwitching = GetComponent<MenuSwitching>();
+        SetAllReferences();
+
+    }
+
+    private void SetAllReferences()
+    {
+        initialMenu.mainScrpit = this;
+        menuHeaderScript.mainScript = this;
     }
 
     public void DeleteCurrentPatient()
@@ -56,6 +70,9 @@ public class MainScript : MonoBehaviour
     public void SelectPatient(Patient patient)
     {
         CurrentPatient = patient;
+        initialMenu.SelectPatient(patient);
+
+        MenuSwitching.OpenInitialMenu();
     }
 
     public void ExitApplication()

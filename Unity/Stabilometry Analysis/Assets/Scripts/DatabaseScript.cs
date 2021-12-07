@@ -248,6 +248,16 @@ public class DatabaseScript : MonoBehaviour
 
         return result;
     }
+
+    /// <summary>
+    /// Returns the number of stabilometry entries for the given patient.
+    /// </summary>
+    /// <param name="patient"></param>
+    /// <returns></returns>
+    public int GetNumberOfDataEntries(Patient patient)
+    {
+        return 0;
+    }
     #endregion
 
     #region Update

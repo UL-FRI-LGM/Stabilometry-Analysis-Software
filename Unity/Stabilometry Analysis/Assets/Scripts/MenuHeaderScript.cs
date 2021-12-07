@@ -6,8 +6,8 @@ using UnityEngine;
 public class MenuHeaderScript : MonoBehaviour
 {
     #region Variables
-    [SerializeField]
-    private MainScript mainScript = null;
+    [System.NonSerialized]
+    public MainScript mainScript = null;
 
     [SerializeField]
     private TMP_Dropdown patientDropdown = null;
@@ -57,8 +57,19 @@ public class MenuHeaderScript : MonoBehaviour
             return $"{patient.Name} {patient.Surname}, id: {patient.ID}";
     }
 
+    /// <summary>
+    /// Fill gives main script the correct patient.
+    /// </summary>
+    /// <param name="index"></param>
     private void SelectPatient(int index)
     {
-        Debug.Log(index);
+        Patient selectedPatient = null;
+
+        if (index < 0 || index >= allPatients.Count)
+            Debug.LogError($"index {index} was outside the bounds of 0 and {allPatients.Count}.");
+        else if (index > 0)
+            selectedPatient = allPatients[index - 1];
+
+        mainScript.SelectPatient(selectedPatient);
     } 
 }
