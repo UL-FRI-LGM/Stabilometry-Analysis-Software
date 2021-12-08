@@ -5,40 +5,38 @@ using UnityEngine;
 public class MainScript : MonoBehaviour
 {
     #region Variables
-    public Patient CurrentPatient { get; private set; } = null;
+    public InitialMenuScript initialMenu = null;
+    public AddEditPatientMenuScript addEditPatientMenu = null;
+    public MenuHeaderScript menuHeaderScript = null;
 
     // Cached references
-    public DatabaseScript Database { get; private set; } = null;
-
-    public MenuSwitching MenuSwitching { get; private set; } = null;
-
-    [SerializeField]
-    private InitialMenuScript initialMenu = null;
-
-    [SerializeField]
-    private MenuHeaderScript menuHeaderScript = null;
+    public Patient currentPatient { get; private set; } = null;
+    public DatabaseScript database { get; private set; } = null;
+    public MenuSwitching menuSwitching { get; private set; } = null;
 
     #endregion
 
     private void Awake()
     {
-        Database = GetComponent<DatabaseScript>();
-        MenuSwitching = GetComponent<MenuSwitching>();
+        database = GetComponent<DatabaseScript>();
+        menuSwitching = GetComponent<MenuSwitching>();
         SetAllReferences();
 
     }
 
     private void SetAllReferences()
     {
-        initialMenu.mainScrpit = this;
+
+        initialMenu.mainScript = this;
+        addEditPatientMenu.mainScript = this;
         menuHeaderScript.mainScript = this;
     }
 
     public void DeleteCurrentPatient()
     {
 
-        if (CurrentPatient != null)
-            Database.DeletePatient(CurrentPatient);
+        if (currentPatient != null)
+            database.DeletePatient(currentPatient);
         else
             Debug.LogError($"Patient does not exist.");
     }
@@ -49,8 +47,8 @@ public class MainScript : MonoBehaviour
     /// <param name="patient"></param>
     public void AddPatient(Patient patient)
     {
-        patient.ID = Database.GetLastPatientID() + 1;
-        Database.AddPatient(patient);
+        patient.ID = database.GetLastPatientID() + 1;
+        database.AddPatient(patient);
         SelectPatient(patient);
     }
 
@@ -60,7 +58,7 @@ public class MainScript : MonoBehaviour
     /// <param name="patient"></param>
     public void UpdatePatient(Patient patient)
     {
-        Database.UpdatePatient(patient);   
+        database.UpdatePatient(patient);   
     }
 
     /// <summary>
@@ -69,10 +67,10 @@ public class MainScript : MonoBehaviour
     /// <param name="patient"></param>
     public void SelectPatient(Patient patient)
     {
-        CurrentPatient = patient;
+        currentPatient = patient;
         initialMenu.SelectPatient(patient);
 
-        MenuSwitching.OpenInitialMenu();
+        menuSwitching.OpenInitialMenu();
     }
 
     public void ExitApplication()

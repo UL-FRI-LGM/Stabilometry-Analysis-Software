@@ -31,7 +31,7 @@ public class MenuHeaderScript : MonoBehaviour
     /// </summary>
     private void SetPatientDropdown()
     {
-        allPatients = mainScript.Database.GetAllPatients();
+        allPatients = mainScript.database.GetAllPatients();
 
         patientDropdown.ClearOptions();
 
@@ -65,11 +65,21 @@ public class MenuHeaderScript : MonoBehaviour
     {
         Patient selectedPatient = null;
 
-        if (index < 0 || index >= allPatients.Count)
+        if (index < 0 || index > allPatients.Count)
             Debug.LogError($"index {index} was outside the bounds of 0 and {allPatients.Count}.");
         else if (index > 0)
             selectedPatient = allPatients[index - 1];
 
         mainScript.SelectPatient(selectedPatient);
-    } 
+    }
+
+    public void DisableDropdown()
+    {
+
+    }
+
+    public void ExitSoftwareButton()
+    {
+        Application.Quit();
+    }
 }

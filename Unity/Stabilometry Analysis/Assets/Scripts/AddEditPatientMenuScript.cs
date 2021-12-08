@@ -4,18 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class AddEditPatientMenu : MonoBehaviour
+public class AddEditPatientMenuScript : MonoBehaviour
 {
     #region Variables
+    public MainScript mainScript { get; set; } = null;
+
     [SerializeField]
     private TMP_InputField nameInput = null,
         surnameInput = null;
 
     [SerializeField]
     private NotesComponent notesComponent = null;
-
-    [SerializeField]
-    private MainScript mainScript = null;
 
     [SerializeField]
     private Button saveButton = null;
@@ -48,6 +47,7 @@ public class AddEditPatientMenu : MonoBehaviour
     /// </summary>
     public void StartAddingPatient()
     {
+        mainScript.menuHeaderScript.
         addingPatient = true;
     }
 
@@ -70,14 +70,14 @@ public class AddEditPatientMenu : MonoBehaviour
                 mainScript.AddPatient(patient);
             else
             {
-                patient.ID = mainScript.CurrentPatient.ID;
+                patient.ID = mainScript.currentPatient.ID;
                 mainScript.UpdatePatient(patient);
             }
         }
         else
             Debug.LogError("Patient was null.");
 
-        mainScript.MenuSwitching.OpenInitialMenu();
+        mainScript.menuSwitching.OpenInitialMenu();
     }
     
     public void NameInputChanged()
@@ -92,6 +92,6 @@ public class AddEditPatientMenu : MonoBehaviour
 
     public void CancelButton()
     {
-        mainScript.MenuSwitching.OpenInitialMenu();
+        mainScript.menuSwitching.OpenInitialMenu();
     }
 }

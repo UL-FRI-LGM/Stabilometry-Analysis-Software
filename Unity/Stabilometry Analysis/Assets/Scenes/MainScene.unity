@@ -739,13 +739,13 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 139661110}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 780767369}
-        m_MethodName: OpenMenu
+      - m_Target: {fileID: 157548477}
+        m_MethodName: AnalysisButton
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 948468275}
@@ -841,11 +841,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d9c70dade2d4b4eb61d49695a0c418, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EditPatientButton: {fileID: 1697639312}
-  AddStabilometryButton: {fileID: 326564099}
-  AnalysisButton: {fileID: 139661107}
-  ReportButton: {fileID: 1239577741}
-  DeletePatientButon: {fileID: 2132454166}
+  editPatientButton: {fileID: 1697639312}
+  addStabilometryButton: {fileID: 326564099}
+  analysisButton: {fileID: 139661107}
+  reportButton: {fileID: 1239577741}
+  deletePatientButon: {fileID: 2132454166}
+  notesComponent: {fileID: 1270772375}
 --- !u!1 &193663122
 GameObject:
   m_ObjectHideFlags: 0
@@ -1283,13 +1284,13 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 326564102}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 780767369}
-        m_MethodName: OpenMenu
+      - m_Target: {fileID: 157548477}
+        m_MethodName: AddAnalysisDataButton
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 9759532}
@@ -1801,7 +1802,6 @@ MonoBehaviour:
   nameInput: {fileID: 359972841}
   surnameInput: {fileID: 602407750}
   notesComponent: {fileID: 1443969478}
-  mainScript: {fileID: 780767368}
   saveButton: {fileID: 511031588}
 --- !u!1 &396791718
 GameObject:
@@ -4211,6 +4211,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1998594a84898e44083e529d9121bb96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialMenu: {fileID: 157548477}
+  addEditPatientMenu: {fileID: 395074352}
+  menuHeaderScript: {fileID: 1406654676}
 --- !u!114 &780767369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5931,13 +5934,13 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1239577744}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 780767369}
-        m_MethodName: OpenMenu
+      - m_Target: {fileID: 157548477}
+        m_MethodName: ReportButton
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 766842671}
@@ -6128,7 +6131,7 @@ PrefabInstance:
     - target: {fileID: 1625754932321435543, guid: 9b9cbce6557e7154098fc8ccf9fe288c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1625754932321435543, guid: 9b9cbce6557e7154098fc8ccf9fe288c,
         type: 3}
@@ -6233,6 +6236,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1270772373}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1270772375 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1625754932321435540, guid: 9b9cbce6557e7154098fc8ccf9fe288c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1270772373}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76419b7bad0d1f34293f711794b5281f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1389396140
 GameObject:
   m_ObjectHideFlags: 0
@@ -6475,7 +6490,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cffa25f4d98b684fbc3b5853d76a5f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainScript: {fileID: 780767368}
   patientDropdown: {fileID: 1826894395}
 --- !u!224 &1443969477 stripped
 RectTransform:
@@ -7456,8 +7470,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 780767368}
-        m_MethodName: ExitApplication
+      - m_Target: {fileID: 1406654676}
+        m_MethodName: ExitSoftwareButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7653,13 +7667,13 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1697639315}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 780767369}
-        m_MethodName: OpenEditPatientMenu
+      - m_Target: {fileID: 157548477}
+        m_MethodName: EditPatientButton
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 395074350}
@@ -7787,8 +7801,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 780767369}
-        m_MethodName: OpenAddPatientMenu
+      - m_Target: {fileID: 157548477}
+        m_MethodName: AddPatientButton
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 395074350}
@@ -9425,13 +9439,13 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 2132454169}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 780767368}
-        m_MethodName: DeleteCurrentPatient
+      - m_Target: {fileID: 157548477}
+        m_MethodName: DeletePatientButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

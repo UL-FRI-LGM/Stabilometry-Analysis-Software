@@ -23,16 +23,6 @@ public class MenuSwitching : MonoBehaviour
         
     }
 
-    public void OpenAddPatientMenu(GameObject addPatientMenu)
-    {
-        OpenMenu(addPatientMenu);
-    }
-
-    public void OpenEditPatientMenu(GameObject editPatientMenu)
-    {
-        OpenMenu(editPatientMenu);
-    }
-
     public void OpenMenu(GameObject newMenu)
     {
         currentMenu.SetActive(false);

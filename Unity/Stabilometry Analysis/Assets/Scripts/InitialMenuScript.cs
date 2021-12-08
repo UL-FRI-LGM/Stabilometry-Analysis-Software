@@ -1,22 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InitialMenuScript : MonoBehaviour
 {
     #region Variables
     [SerializeField]
-    private GameObject EditPatientButton = null,
-        AddStabilometryButton = null,
-        AnalysisButton = null,
-        ReportButton = null,
-        DeletePatientButon = null;
+    private GameObject editPatientButton = null,
+        addStabilometryButton = null,
+        analysisButton = null,
+        reportButton = null,
+        deletePatientButon = null;
 
     [SerializeField]
     private NotesComponent notesComponent = null;
 
-    [System.NonSerialized]
-    public MainScript mainScrpit = null;
+    public MainScript mainScript { get; set; } = null;
     #endregion
 
     /// <summary>
@@ -25,7 +25,7 @@ public class InitialMenuScript : MonoBehaviour
     /// <param name="patient"></param>
     public void SelectPatient(Patient patient)
     {
-        SetButtonsActive(patient);
+        SetButtonsInteractable(patient);
 
         if (patient == null)
             notesComponent.SetText("");
@@ -38,52 +38,61 @@ public class InitialMenuScript : MonoBehaviour
     /// Handles enabling and disabling buttons.
     /// </summary>
     /// <param name="patient"></param>
-    private void SetButtonsActive(Patient patient)
+    private void SetButtonsInteractable(Patient patient)
     {
         bool patientSelected = (patient != null);
 
-        EditPatientButton.SetActive(patientSelected);
-        AddStabilometryButton.SetActive(patientSelected);
-        DeletePatientButon.SetActive(patientSelected);
+        editPatientButton.GetComponent<Button>().interactable = patientSelected;
+        addStabilometryButton.GetComponent<Button>().interactable = patientSelected;
+        deletePatientButon.GetComponent<Button>().interactable = patientSelected;
 
         bool patientHasData = false;
         if (patientSelected)
-            patientHasData = (mainScrpit.Database.GetNumberOfDataEntries(patient) > 0);
+            patientHasData = (mainScript.database.GetNumberOfDataEntries(patient) > 0);
 
-        AnalysisButton.SetActive(patientHasData);
-        ReportButton.SetActive(patientHasData)
+        analysisButton.GetComponent<Button>().interactable = patientHasData;
+        reportButton.GetComponent<Button>().interactable = patientHasData;
+    }
+
+    public void OnInputFieldChange()
+    {
+
     }
 
     #region Button functions
 
-    public void AddPatientButton()
+    public void AddPatientButton(GameObject addPatientMenu)
     {
+        //mainScrpit.Menu
+        mainScript.addEditPatientMenu.StartAddingPatient();
+        mainScript.menuSwitching.OpenMenu(addPatientMenu);
+    }
 
+    public void EditPatientButton(GameObject editPatientMenu)
+    {
+        mainScript.addEditPatientMenu.StartEditingPatient();
+        mainScript.menuSwitching.OpenMenu(editPatientMenu);
+    }
+
+    public void AddAnalysisDataButton(GameObject upploadDataMenu)
+    {
+        mainScript.menuSwitching.OpenMenu(upploadDataMenu);
+    }
+
+    public void AnalysisButton(GameObject analysisMenu)
+    {
+        mainScript.menuSwitching.OpenMenu(analysisMenu);
+
+    }
+
+    public void ReportButton(GameObject reportMenu)
+    {
+        mainScript.menuSwitching.OpenMenu(reportMenu);
     }
 
     public void DeletePatientButton()
     {
-
-    }
-
-    public void UpploadDataButton()
-    {
-
-    }
-
-    public void EditDataButton()
-    {
-
-    }
-
-    public void OnInputFieldChanged()
-    {
-
-    }
-
-    public void ExitSoftwareButton()
-    {
-        Application.Quit();
+        mainScript.DeleteCurrentPatient();
     }
     #endregion
 }
