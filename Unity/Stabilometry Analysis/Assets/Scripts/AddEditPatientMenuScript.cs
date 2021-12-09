@@ -47,14 +47,29 @@ public class AddEditPatientMenuScript : MonoBehaviour
     /// </summary>
     public void StartAddingPatient()
     {
-        mainScript.menuHeaderScript.
+        mainScript.menuHeaderScript.SelectPatient(null);
+        mainScript.menuHeaderScript.EnableDropdown(false);
         addingPatient = true;
     }
 
     public void StartEditingPatient()
     {
-        //Patient currentPatient
+        mainScript.menuHeaderScript.EnableDropdown(false);
         addingPatient = false;
+        FillPatientData(mainScript.currentPatient);
+
+    }
+
+    private void FillPatientData(Patient patient)
+    {
+        if (patient == null)
+            Debug.LogError("Patient was null");
+
+        // else
+
+        nameInput.text = patient.Name;
+        surnameInput.text = patient.Surname;
+        notesComponent.SetText(patient.Notes);
     }
 
     /// <summary>
@@ -77,6 +92,9 @@ public class AddEditPatientMenuScript : MonoBehaviour
         else
             Debug.LogError("Patient was null.");
 
+        ClearAllFields();
+        mainScript.menuHeaderScript.SelectPatient(patient);
+        mainScript.menuHeaderScript.EnableDropdown(true);
         mainScript.menuSwitching.OpenInitialMenu();
     }
     
@@ -85,13 +103,18 @@ public class AddEditPatientMenuScript : MonoBehaviour
         canSave = (nameInput.text != "");
     }
 
-    private void ReadData()
-    {
-        // mainScript.Database.
-    }
-
     public void CancelButton()
     {
+        ClearAllFields();
+        mainScript.menuHeaderScript.EnableDropdown(true);
         mainScript.menuSwitching.OpenInitialMenu();
+
+    }
+
+    private void ClearAllFields()
+    {
+        nameInput.text = "";
+        surnameInput.text = "";
+        notesComponent.SetText("");
     }
 }

@@ -35,5 +35,6 @@ public class MenuSwitching : MonoBehaviour
         currentMenu.SetActive(false);
         currentMenu = initialMenu;
         initialMenu.SetActive(true);
+        GetComponent<MainScript>().menuHeaderScript.EnableDropdown(true);
     }
 }

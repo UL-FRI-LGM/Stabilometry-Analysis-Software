@@ -36,7 +36,11 @@ public class MainScript : MonoBehaviour
     {
 
         if (currentPatient != null)
+        {
             database.DeletePatient(currentPatient);
+            menuHeaderScript.SetPatientDropdown();
+            menuHeaderScript.SelectPatient(null);
+        }
         else
             Debug.LogError($"Patient does not exist.");
     }
@@ -49,7 +53,7 @@ public class MainScript : MonoBehaviour
     {
         patient.ID = database.GetLastPatientID() + 1;
         database.AddPatient(patient);
-        SelectPatient(patient);
+        menuHeaderScript.SetPatientDropdown();
     }
 
     /// <summary>
@@ -58,7 +62,8 @@ public class MainScript : MonoBehaviour
     /// <param name="patient"></param>
     public void UpdatePatient(Patient patient)
     {
-        database.UpdatePatient(patient);   
+        database.UpdatePatient(patient);
+        menuHeaderScript.SetPatientDropdown();
     }
 
     /// <summary>

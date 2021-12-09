@@ -268,7 +268,7 @@ public class DatabaseScript : MonoBehaviour
     public void UpdatePatient(Patient patient)
     {
         string condition = $"{PatientTableColumnNames[0]} = {patient.ID}";
-        string newValues = $"{PatientTableColumnNames[1]} = {patient.Name}, {PatientTableColumnNames[2]} = {patient.Surname}, {PatientTableColumnNames[3]} = {patient.Notes}";
+        string newValues = $"{PatientTableColumnNames[1]} = '{patient.Name}', {PatientTableColumnNames[2]} = '{patient.Surname}', {PatientTableColumnNames[3]} = '{patient.Notes}'";
 
         string query = $"UPDATE {PatientTableName} SET {newValues} WHERE {condition}";
 

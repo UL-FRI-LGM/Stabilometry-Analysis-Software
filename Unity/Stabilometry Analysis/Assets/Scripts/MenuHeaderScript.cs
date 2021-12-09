@@ -20,7 +20,7 @@ public class MenuHeaderScript : MonoBehaviour
     {
         patientDropdown.onValueChanged.AddListener(delegate
         {
-            SelectPatient(patientDropdown.value);
+            SetPatient(patientDropdown.value);
         });
         
         SetPatientDropdown();
@@ -29,7 +29,7 @@ public class MenuHeaderScript : MonoBehaviour
     /// <summary>
     /// Gets all patients from the database 
     /// </summary>
-    private void SetPatientDropdown()
+    public void SetPatientDropdown()
     {
         allPatients = mainScript.database.GetAllPatients();
 
@@ -58,10 +58,10 @@ public class MenuHeaderScript : MonoBehaviour
     }
 
     /// <summary>
-    /// Fill gives main script the correct patient.
+    /// Gives main script the correct patient.
     /// </summary>
     /// <param name="index"></param>
-    private void SelectPatient(int index)
+    private void SetPatient(int index)
     {
         Patient selectedPatient = null;
 
@@ -73,9 +73,36 @@ public class MenuHeaderScript : MonoBehaviour
         mainScript.SelectPatient(selectedPatient);
     }
 
-    public void DisableDropdown()
+    public void EnableDropdown(bool enable)
+    {
+        patientDropdown.interactable = enable;
+    }
+
+    /// <summary>
+    /// Selects the patient in the drpodown.
+    /// </summary>
+    /// <param name="patient"></param>
+    public void SelectPatient(Patient patient)
     {
 
+        if (patient == null)
+        {
+            patientDropdown.value = 0;
+            patientDropdown.RefreshShownValue();
+            return;
+        }
+
+        //else
+
+        for (int i = 0; i < allPatients.Count; i++)
+        {
+            if (patient.ID == allPatients[i].ID)
+            {
+                patientDropdown.value = i + 1;
+                patientDropdown.RefreshShownValue();
+                return;
+            }
+        }
     }
 
     public void ExitSoftwareButton()
