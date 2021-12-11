@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using SimpleFileBrowser;
 using System.IO;
+using System.Collections.Generic;
 
 public class FileImporter : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class FileImporter : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI displayText = null;
 
-    private bool pathFound = false;
+    public bool pathFound { get; private set; } = false;
 
     private string path = "None";
 
@@ -48,5 +49,33 @@ public class FileImporter : MonoBehaviour
             pathFound = false;
 
         }
+    }
+
+    /// <summary>
+    /// Reads the data from the CSV file
+    /// </summary>
+    /// <returns></returns>
+    public List<DataPoint> ReadData()
+    {
+        if (!pathFound)
+            return null;
+
+        //else
+
+        List<DataPoint> result = new List<DataPoint>();
+
+
+
+        return result;
+    }
+
+    /// <summary>
+    /// Clears all values.
+    /// </summary>
+    public void Clear()
+    {
+        path = "None";
+        pathFound = false;
+        displayText.text = path;
     }
 }
