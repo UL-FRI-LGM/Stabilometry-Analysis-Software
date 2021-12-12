@@ -8,6 +8,7 @@ public class MainScript : MonoBehaviour
     public InitialMenuScript initialMenu = null;
     public AddEditPatientMenuScript addEditPatientMenu = null;
     public MenuHeaderScript menuHeaderScript = null;
+    public DataUploadMenuScript dataUploadMenuScript = null;
 
     // Cached references
     public Patient currentPatient { get; private set; } = null;
@@ -30,6 +31,7 @@ public class MainScript : MonoBehaviour
         initialMenu.mainScript = this;
         addEditPatientMenu.mainScript = this;
         menuHeaderScript.mainScript = this;
+        dataUploadMenuScript.mainScript = this;
     }
 
     public void DeleteCurrentPatient()

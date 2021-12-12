@@ -27,14 +27,15 @@ public class DatabaseScript : MonoBehaviour
     {
         "INTEGER PRIMARY KEY UNIQUE NOT NULL"};
 
-
     private static readonly string[] MeasurementTableColumnNames =
     {
-        "EntryID", "PatientID", "Parameter1ID", "Parameter2ID","Parameter3ID","Parameter4ID"
+        "EntryID", "PatientID", "DateTime", 
+        "Parameter1ID", "Parameter2ID","Parameter3ID","Parameter4ID"
     };
     private static readonly string[] MeasurementTableColumnValues =
     {
-        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "INTEGER", "INTEGER", "INTEGER", "INTEGER"};
+        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "TEXT",
+        "INTEGER", "INTEGER", "INTEGER", "INTEGER"};
 
     private SqliteConnection connection = null;
     #endregion
@@ -75,9 +76,10 @@ public class DatabaseScript : MonoBehaviour
         if (!TableExists(MeasurementTableName))
         {
             string foreignKeys = $", FOREIGN KEY({MeasurementTableColumnNames[1]}) REFERENCES {PatientTableName} ({PatientTableColumnNames[0]})"
-                + $", FOREIGN KEY({MeasurementTableColumnNames[2]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})"
-                + $", FOREIGN KEY({MeasurementTableColumnNames[3]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})"
-                + $", FOREIGN KEY({MeasurementTableColumnNames[4]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})";
+                + $", FOREIGN KEY({MeasurementTableColumnNames[4]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})"
+                + $", FOREIGN KEY({MeasurementTableColumnNames[5]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})"
+                + $", FOREIGN KEY({MeasurementTableColumnNames[6]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})"
+                + $", FOREIGN KEY({MeasurementTableColumnNames[7]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})";
 
             Debug.Log(foreignKeys);
             CreateTable(MeasurementTableName, MeasurementTableColumnNames, MeasurementTableColumnValues, foreignKeys);
@@ -126,6 +128,21 @@ public class DatabaseScript : MonoBehaviour
             reader.Close();
     }
 
+
+    public void AddParameters()
+    {
+
+    }
+
+    /// <summary>
+    /// TODO: implement this
+    /// </summary>
+    /// <param name="measurements"></param>
+    public void AddMeasurements(Measurement measurement)
+    {
+
+    }
+
     /// <summary>
     /// Inserts values into the table.
     /// </summary>
@@ -171,30 +188,64 @@ public class DatabaseScript : MonoBehaviour
         return line;
     }
 
+    #region Get last ID
     /// <summary>
     /// Returns the next patient ID. 
     /// </summary>
     /// <returns></returns>
     public int GetLastPatientID()
     {
-        string patientID = PatientTableColumnNames[0]; 
+        string patientID = PatientTableColumnNames[0];
 
-        string query = $"SELECT COUNT(*) FROM {PatientTableName}"; 
+        return GetLastID(patientID, PatientTableName);
+    }
+
+    /// <summary>
+    /// Returns the last parameters ID.
+    /// </summary>
+    /// <returns></returns>
+    public int GetLastParametersID()
+    {
+        string parameterID = ParametersTableColumnNames[0];
+
+        return GetLastID(parameterID, ParameterTableName);
+    }
+
+    /// <summary>
+    /// Returns the last measurement ID.
+    /// </summary>
+    /// <returns></returns>
+    public int GetLastMeasurementID()
+    {
+        string measurementID = MeasurementTableColumnNames[0];
+
+        return GetLastID(measurementID, MeasurementTableName);
+    }
+
+    /// <summary>
+    /// Get the last ID in a column.
+    /// </summary>
+    /// <param name="columnName"></param>
+    /// <param name="tableName"></param>
+    /// <returns></returns>
+    private int GetLastID(string columnName, string tableName)
+    {
+        string query = $"SELECT COUNT(*) FROM {tableName}";
 
         int result = 0;
 
         IDataReader reader = ExecuteQuery(query);
-        
+
         // Reader should never be null.
         if (reader == null)
             Debug.LogError("Reader was null");
 
-        // If there are any patients in the database
+        // If there are any parameters in the database
         if (reader.Read() && reader.GetInt32(0) > 0)
         {
             reader.Close();
-            
-            query = $"SELECT MAX({patientID}) FROM {PatientTableName}";
+
+            query = $"SELECT MAX({columnName}) FROM {tableName}";
             reader = ExecuteQuery(query);
 
             if (reader != null && reader.Read())
@@ -209,6 +260,8 @@ public class DatabaseScript : MonoBehaviour
 
         return result;
     }
+
+    #endregion
 
     /// <summary>
     /// Returns all patient data from the database.
