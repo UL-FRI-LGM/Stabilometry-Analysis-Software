@@ -331,8 +331,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5e1927057387034a82e3aaaa8719dd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileImporters: []
-  positionDropdown: {fileID: 0}
+  fileImporters:
+  - {fileID: 1278674814}
+  - {fileID: 354594352}
+  - {fileID: 2057336292}
+  - {fileID: 568780637}
+  positionDropdown: {fileID: 1518881788}
 --- !u!1 &11562195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1764,6 +1768,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 349831753}
   m_CullTransparentMesh: 0
+--- !u!114 &354594352 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7824932846895007384, guid: a8f0864fedac31c409af24369d9da16d,
+    type: 3}
+  m_PrefabInstance: {fileID: 287415117}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49973535e144bda4a9c7b30bb3a7f3d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &359972839
 GameObject:
   m_ObjectHideFlags: 0
@@ -3387,6 +3403,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549419420}
   m_CullTransparentMesh: 0
+--- !u!114 &568780637 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7824932846895007384, guid: a8f0864fedac31c409af24369d9da16d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1962139205}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49973535e144bda4a9c7b30bb3a7f3d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &578381880
 GameObject:
   m_ObjectHideFlags: 0
@@ -3468,7 +3496,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 578381883}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9759534}
+        m_MethodName: SaveButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &578381883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5239,6 +5278,7 @@ MonoBehaviour:
   initialMenu: {fileID: 157548477}
   addEditPatientMenu: {fileID: 395074352}
   menuHeaderScript: {fileID: 1406654676}
+  dataUploadMenuScript: {fileID: 9759534}
 --- !u!114 &780767369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7738,6 +7778,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 76419b7bad0d1f34293f711794b5281f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1278674814 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7824932846895007384, guid: a8f0864fedac31c409af24369d9da16d,
+    type: 3}
+  m_PrefabInstance: {fileID: 495481699}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49973535e144bda4a9c7b30bb3a7f3d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1304927730
@@ -12409,6 +12461,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2043774769}
   m_CullTransparentMesh: 0
+--- !u!114 &2057336292 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7824932846895007384, guid: a8f0864fedac31c409af24369d9da16d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1532969326}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49973535e144bda4a9c7b30bb3a7f3d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2065605536
 GameObject:
   m_ObjectHideFlags: 0
@@ -12725,7 +12789,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2088982010}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9759534}
+        m_MethodName: CancelButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2088982010
 MonoBehaviour:
   m_ObjectHideFlags: 0

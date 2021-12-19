@@ -19,6 +19,7 @@ public class FileImporter : MonoBehaviour
     {
         // Set filters for file explorer.
         FileBrowser.SetFilters(true, ".csv");
+        FileBrowser.SetDefaultFilter(".csv");
 
         StartCoroutine(ShowLoadDialogCoroutine());
     }
@@ -52,7 +53,7 @@ public class FileImporter : MonoBehaviour
     }
 
     /// <summary>
-    /// Reads the data from the CSV file
+    /// Reads the data from the CSV file if the path is found.
     /// </summary>
     /// <returns></returns>
     public List<DataPoint> ReadData()
@@ -64,10 +65,25 @@ public class FileImporter : MonoBehaviour
 
         List<DataPoint> result = new List<DataPoint>();
 
-        //string filePath = Application.streamingAssetsPath 
+        StreamReader reader = new StreamReader(path);
+        
+        string line;
+        bool firstLine = true;
 
+        while ((line = reader.ReadLine()) != null)
+        {
+            if (firstLine)
+            {
+                firstLine = false;
+                continue;
+            }
 
+            // else
+            string[] row = line.Split(',');
+            result.Add(new DataPoint(row[0], row[1], row[2]));
+        }
 
+        reader.Close();
         return result;
     }
 

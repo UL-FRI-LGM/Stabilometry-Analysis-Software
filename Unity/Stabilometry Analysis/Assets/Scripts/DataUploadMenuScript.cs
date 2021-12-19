@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.IO;
 
 public class DataUploadMenuScript : MonoBehaviour
 {
@@ -16,27 +17,15 @@ public class DataUploadMenuScript : MonoBehaviour
 
     #endregion
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void CancelButton()
     {
-        ClearAllInputFields();        
+        mainScript.menuSwitching.OpenInitialMenu();
     }
 
     public void SaveButton()
     { 
         SaveValues(GetData());
-        ClearAllInputFields();
+        mainScript.menuSwitching.OpenInitialMenu();
     }
 
     /// <summary>
@@ -61,13 +50,42 @@ public class DataUploadMenuScript : MonoBehaviour
     {
         Measurement measurement = new Measurement();
 
-        int lastMeasurementID =  mainScript.database.GetLastMeasurementID();
+        measurement.ID =  mainScript.database.GetLastMeasurementID() + 1;
+
+        string fileName = $"{measurement.ID}.json";
+        SaveJson(data, fileName);
+        
         //int lastFileName = 
         //int lastParametersID = mainScript.database.GetLastParametersID();
 
         //SaveJson(data);
 
+        
+
         //mainScript.database.
+    }
+
+    /// <summary>
+    /// Saves data as a JSON document
+    /// </summary>
+    /// <param name="data"></param>
+    private void SaveJson(List<DataPoint>[] data, string fileName)
+    {
+        string json = JsonHelper.ToJson(data);
+
+        string jsonDirectory = $@"{Application.dataPath}\JSON";
+
+        if (!Directory.Exists(jsonDirectory))
+            Directory.CreateDirectory(jsonDirectory);
+
+        string newFilePath = $@"{jsonDirectory}\{fileName}";
+
+        File.WriteAllText(newFilePath, json);
+    }
+
+    private void OnDisable()
+    {
+        ClearAllInputFields();
     }
 
     /// <summary>
@@ -80,13 +98,5 @@ public class DataUploadMenuScript : MonoBehaviour
 
         positionDropdown.value = 0;
         positionDropdown.RefreshShownValue();
-    }
-
-    /// <summary>
-    /// Saves data as a JSON document
-    /// </summary>
-    /// <param name="data"></param>
-    private void SaveJson(List<DataPoint>[] data, string fileName)
-    {
     }
 }
