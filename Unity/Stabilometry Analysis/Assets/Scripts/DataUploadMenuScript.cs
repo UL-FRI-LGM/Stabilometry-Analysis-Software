@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.IO;
+using UnityEngine.UI;
 
 public class DataUploadMenuScript : MonoBehaviour
 {
@@ -13,9 +14,18 @@ public class DataUploadMenuScript : MonoBehaviour
     [SerializeField]
     private TMP_Dropdown positionDropdown = null;
 
+    [SerializeField]
+    private Button saveButton = null;
+
     public MainScript mainScript { get; set; } = null;
 
     #endregion
+
+    private void Update()
+    {
+        if (!saveButton.interactable)
+            saveButton.interactable = fileImporters[0].pathFound || fileImporters[1].pathFound || fileImporters[2].pathFound || fileImporters[3].pathFound;
+    }
 
     public void CancelButton()
     {
@@ -48,21 +58,12 @@ public class DataUploadMenuScript : MonoBehaviour
     /// <param name="data"></param>
     private void SaveValues(List<DataPoint>[] data)
     {
-        Measurement measurement = new Measurement();
+        int measurementID =  mainScript.database.GetLastMeasurementID() + 1;
 
-        measurement.ID =  mainScript.database.GetLastMeasurementID() + 1;
+        string fileName = $"{measurementID}.json";
 
-        string fileName = $"{measurement.ID}.json";
+        SaveMeasurement(data, measurementID);
         SaveJson(data, fileName);
-        
-        //int lastFileName = 
-        //int lastParametersID = mainScript.database.GetLastParametersID();
-
-        //SaveJson(data);
-
-        
-
-        //mainScript.database.
     }
 
     /// <summary>
@@ -83,6 +84,22 @@ public class DataUploadMenuScript : MonoBehaviour
         File.WriteAllText(newFilePath, json);
     }
 
+    
+
+    /// <summary>
+    /// Calculates all measurement values and returns the object.
+    /// </summary>
+    /// <param name="measurementID"></param>
+    /// <returns></returns>
+    private void SaveMeasurement(List<DataPoint>[] Data, int measurementID)
+    {
+        Measurement measurement = new Measurement();
+
+        measurement.ID = measurementID;
+        mainScript.database.AddMeasurement(measurement);
+
+    }
+
     private void OnDisable()
     {
         ClearAllInputFields();
@@ -95,6 +112,8 @@ public class DataUploadMenuScript : MonoBehaviour
     {
         foreach (FileImporter importer in fileImporters)
             importer.Clear();
+
+        saveButton.interactable = false;
 
         positionDropdown.value = 0;
         positionDropdown.RefreshShownValue();

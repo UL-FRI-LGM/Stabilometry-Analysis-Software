@@ -17,6 +17,8 @@ public class FileImporter : MonoBehaviour
 
     public void ImportDataButton()
     {
+        Clear();
+
         // Set filters for file explorer.
         FileBrowser.SetFilters(true, ".csv");
         FileBrowser.SetDefaultFilter(".csv");

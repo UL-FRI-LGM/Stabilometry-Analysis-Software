@@ -27,11 +27,13 @@ public class DatabaseScript : MonoBehaviour
     {
         "INTEGER PRIMARY KEY UNIQUE NOT NULL"};
 
+    // Parameters are foreign IDs of Calculated parameters in Parameter table
     private static readonly string[] MeasurementTableColumnNames =
     {
         "EntryID", "PatientID", "DateTime", 
         "Parameter1ID", "Parameter2ID","Parameter3ID","Parameter4ID"
     };
+    
     private static readonly string[] MeasurementTableColumnValues =
     {
         "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "TEXT",
@@ -138,9 +140,20 @@ public class DatabaseScript : MonoBehaviour
     /// TODO: implement this
     /// </summary>
     /// <param name="measurements"></param>
-    public void AddMeasurements(Measurement measurement)
+    public void AddMeasurement(Measurement measurement)
     {
+        string[] values =
+        {
+            measurement.ID.ToString(),
+            measurement.patientID.ToString(),
+            measurement.dateTime.ToString(),
+            measurement.parameters1ID.ToString(),
+            measurement.parameters2ID.ToString(),
+            measurement.parameters3ID.ToString(),
+            measurement.parameters4ID.ToString(),
+        };
 
+        InsertIntoTable(MeasurementTableName, MeasurementTableColumnNames, values);
     }
 
     /// <summary>
