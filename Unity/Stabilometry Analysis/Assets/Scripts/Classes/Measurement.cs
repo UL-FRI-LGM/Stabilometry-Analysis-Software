@@ -13,6 +13,8 @@ public class Measurement
         parameters3ID,
         parameters4ID;
 
+    public Pose pose;
+
     public DateTime dateTime;
 
 
@@ -21,6 +23,7 @@ public class Measurement
         this.ID = -1;
         this.patientID = -1;
         this.fileName = -1;
+        this.pose = Pose.BothLegsJoinedParallel;
         this.dateTime = DateTime.MinValue;
         this.parameters1ID = -1;
         this.parameters2ID = -1;
@@ -28,11 +31,12 @@ public class Measurement
         this.parameters4ID = -1;
     }
 
-    public Measurement(int ID, int patientID, int fileName, DateTime dateTime, int parameters1ID, int parameters2ID, int parameters3ID, int parameters4ID)
+    public Measurement(int ID, int patientID, int fileName, Pose pose, DateTime dateTime, int parameters1ID, int parameters2ID, int parameters3ID, int parameters4ID)
     {
         this.ID = ID;
         this.patientID = patientID;
         this.fileName = fileName;
+        this.pose = pose;
         this.dateTime = dateTime;
         this.parameters1ID = parameters1ID;
         this.parameters2ID = parameters2ID;
