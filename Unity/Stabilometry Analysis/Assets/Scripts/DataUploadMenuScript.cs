@@ -24,7 +24,10 @@ public class DataUploadMenuScript : MonoBehaviour
     private void Update()
     {
         if (!saveButton.interactable)
-            saveButton.interactable = fileImporters[0].pathFound || fileImporters[1].pathFound || fileImporters[2].pathFound || fileImporters[3].pathFound;
+            saveButton.interactable = fileImporters[0].pathFound 
+                || fileImporters[1].pathFound 
+                || fileImporters[2].pathFound 
+                || fileImporters[3].pathFound;
     }
 
     public void CancelButton()
