@@ -96,7 +96,7 @@ public class DataUploadMenuScript : MonoBehaviour
     /// <returns></returns>
     private void SaveMeasurement(List<DataPoint>[] Data, int measurementID)
     {
-        Measurement measurement = new Measurement();
+        StabilometryMeasurement measurement = new StabilometryMeasurement();
 
         measurement.ID = measurementID;
         mainScript.database.AddMeasurement(measurement);

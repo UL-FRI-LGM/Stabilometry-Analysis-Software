@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Measurement
+public class StabilometryMeasurement
 {
     public int ID,
         patientID,
@@ -18,7 +18,7 @@ public class Measurement
     public DateTime dateTime;
 
 
-    public Measurement()
+    public StabilometryMeasurement()
     {
         this.ID = -1;
         this.patientID = -1;
@@ -31,7 +31,7 @@ public class Measurement
         this.parameters4ID = -1;
     }
 
-    public Measurement(int ID, int patientID, int fileName, Pose pose, DateTime dateTime, int parameters1ID, int parameters2ID, int parameters3ID, int parameters4ID)
+    public StabilometryMeasurement(int ID, int patientID, int fileName, Pose pose, DateTime dateTime, int parameters1ID, int parameters2ID, int parameters3ID, int parameters4ID)
     {
         this.ID = ID;
         this.patientID = patientID;

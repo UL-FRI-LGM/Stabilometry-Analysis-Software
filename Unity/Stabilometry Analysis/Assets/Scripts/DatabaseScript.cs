@@ -140,7 +140,7 @@ public class DatabaseScript : MonoBehaviour
     /// TODO: implement this
     /// </summary>
     /// <param name="measurements"></param>
-    public void AddMeasurement(Measurement measurement)
+    public void AddMeasurement(StabilometryMeasurement measurement)
     {
         string[] values =
         {
