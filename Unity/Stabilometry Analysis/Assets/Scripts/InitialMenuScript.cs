@@ -10,7 +10,6 @@ public class InitialMenuScript : MonoBehaviour
     private GameObject editPatientButton = null,
         addStabilometryButton = null,
         analysisButton = null,
-        reportButton = null,
         deletePatientButon = null;
 
     [SerializeField]
@@ -51,7 +50,6 @@ public class InitialMenuScript : MonoBehaviour
             patientHasData = (mainScript.database.GetNumberOfDataEntries(patient) > 0);
 
         analysisButton.GetComponent<Button>().interactable = patientHasData;
-        reportButton.GetComponent<Button>().interactable = patientHasData;
     }
 
     public void OnInputFieldChange()
