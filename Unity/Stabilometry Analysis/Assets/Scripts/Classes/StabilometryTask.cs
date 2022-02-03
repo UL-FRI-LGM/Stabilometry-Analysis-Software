@@ -74,23 +74,62 @@ public class StabilometryTask
         return result;
     }
 
+    /// <summary>
+    /// Mean distance of from the starting point.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <returns></returns>
     private float CalculateMeanDistance(List<DataPoint> stabilometryData)
     {
         float result = 0f;
 
-        return result;
+        if (stabilometryData.Count <= 1)
+            return result;
+        //else
+
+        Vector2 firstValue = stabilometryData[0].GetVecotor2(Both);
+
+        for (int i = 1; i < stabilometryData.Count; i++)
+            result += Vector2.Distance(stabilometryData[i].GetVecotor2(Both), firstValue);
+
+        return result/ stabilometryData.Count;
     }
 
+    /// <summary>
+    /// Mean velocity.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <param name="axes"></param>
+    /// <returns></returns>
     private float CalculateMeanSwayVelocity(List<DataPoint> stabilometryData, Axes axes)
     {
         float result = 0f;
 
-        return result;
+        if (stabilometryData.Count <= 1)
+            return result;
+        //else
+
+        Vector2 previousValue = stabilometryData[0].GetVecotor2(axes);
+        float previousTime = stabilometryData[0].time;
+
+        for (int i = 1; i < stabilometryData.Count; i++)
+        {
+            result += Vector2.Distance(stabilometryData[i].GetVecotor2(axes), previousValue) / (stabilometryData[i].time - previousTime);
+            previousValue = stabilometryData[i].GetVecotor2(axes);
+            previousTime = stabilometryData[i].time;
+        }
+
+        return result/ (stabilometryData.Count - 1);
     }
+
 
     private float CalculateAverageAmplitude(List<DataPoint> stabilometryData, Axes axes)
     {
         float result = 0f;
+
+        if (stabilometryData.Count <= 1)
+            return result;
+        //else
 
         return result;
     }
@@ -98,6 +137,10 @@ public class StabilometryTask
     private float CalculateMaximalAmplitude(List<DataPoint> stabilometryData, Axes axes)
     {
         float result = 0f;
+
+        if (stabilometryData.Count <= 1)
+            return result;
+        //else
 
         return result;
     }
