@@ -39,8 +39,8 @@ public class StabilometryTask
         meanSwayVelocityAP = CalculateMeanSwayVelocity(stabilometryData, AP);
         meanSwayVelocityML = CalculateMeanSwayVelocity(stabilometryData, ML);
 
-        swayAverageAmplitudeAP = CalculateAverageAmplitude(stabilometryData, AP);
-        swayAverageAmplitudeML = CalculateAverageAmplitude(stabilometryData, ML);
+        swayAverageAmplitudeAP = CalculateAverageAmplitude(stabilometryData, AP, swayPathAP);
+        swayAverageAmplitudeML = CalculateAverageAmplitude(stabilometryData, ML, swayPathML);
 
         swayMaximalAmplitudeAP = CalculateMaximalAmplitude(stabilometryData, AP);
         swayMaximalAmplitudeML = CalculateMaximalAmplitude(stabilometryData, ML);
@@ -70,7 +70,7 @@ public class StabilometryTask
 
             previousValue = stabilometryData[i].GetVecotor2(axes);
         }
-        
+
         return result;
     }
 
@@ -92,7 +92,7 @@ public class StabilometryTask
         for (int i = 1; i < stabilometryData.Count; i++)
             result += Vector2.Distance(stabilometryData[i].GetVecotor2(Both), firstValue);
 
-        return result/ stabilometryData.Count;
+        return result / stabilometryData.Count;
     }
 
     /// <summary>
@@ -119,30 +119,80 @@ public class StabilometryTask
             previousTime = stabilometryData[i].time;
         }
 
-        return result/ (stabilometryData.Count - 1);
+        return result / (stabilometryData.Count - 1);
     }
 
 
-    private float CalculateAverageAmplitude(List<DataPoint> stabilometryData, Axes axes)
+    /// <summary>
+    /// Calculates the average amplitude in given direction.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <param name="axes"></param>
+    /// <param name="swayPath"></param>
+    /// <returns></returns>
+    private float CalculateAverageAmplitude(List<DataPoint> stabilometryData, Axes axes, float swayPath)
     {
-        float result = 0f;
 
         if (stabilometryData.Count <= 1)
-            return result;
+            return 0f;
         //else
 
-        return result;
+        int directionChanges = 1;
+
+        float previousValue = (axes == ML) ? stabilometryData[0].x : stabilometryData[0].y;
+        float currentValue = (axes == ML) ? stabilometryData[1].x : stabilometryData[1].y;
+
+        bool valueIncreasing = (currentValue > previousValue);
+
+        for (int i = 1; i < stabilometryData.Count; i++)
+        {
+            currentValue = (axes == ML) ? stabilometryData[i].x : stabilometryData[i].y;
+
+            if (valueIncreasing && (currentValue < previousValue))
+            {
+                valueIncreasing = false;
+                directionChanges++;
+            }
+            else if (!valueIncreasing && (currentValue > previousValue))
+            {
+                valueIncreasing = true;
+                directionChanges++;
+            }
+
+            previousValue = currentValue;
+        }
+
+        return swayPath / directionChanges;
     }
 
+    /// <summary>
+    /// Returns the maximum amplitude in given axis.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <param name="axes"></param>
+    /// <returns></returns>
     private float CalculateMaximalAmplitude(List<DataPoint> stabilometryData, Axes axes)
     {
-        float result = 0f;
 
         if (stabilometryData.Count <= 1)
-            return result;
+            return 0f;
         //else
 
-        return result;
+        float maxValue = (axes == ML) ? stabilometryData[0].x : stabilometryData[0].y;
+        float minValue = maxValue;
+
+        foreach (DataPoint point in stabilometryData)
+        {
+            float compareValue = (axes == ML) ? point.x : point.y;
+
+            if (compareValue > maxValue)
+                maxValue = compareValue;
+
+            if (compareValue < minValue)
+                minValue = compareValue;
+        }
+
+        return maxValue - minValue;
     }
 
     private float CalculateStandardEllipseArea(List<DataPoint> stabilometryData)
