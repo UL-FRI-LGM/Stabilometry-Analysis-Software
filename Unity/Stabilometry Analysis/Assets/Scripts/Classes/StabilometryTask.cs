@@ -26,7 +26,12 @@ public class StabilometryTask
         swayMaximalAmplitudeML;
 
     //95% of data
-    public float standardEllipseArea;
+    public float confidenceEllipseArea;
+
+    public StabilometryTask()
+    {
+
+    }
 
     public StabilometryTask(List<DataPoint> stabilometryData)
     {
@@ -45,7 +50,7 @@ public class StabilometryTask
         swayMaximalAmplitudeAP = CalculateMaximalAmplitude(stabilometryData, AP);
         swayMaximalAmplitudeML = CalculateMaximalAmplitude(stabilometryData, ML);
 
-        standardEllipseArea = CalculateStandardEllipseArea(stabilometryData);
+        confidenceEllipseArea = Calculate95ConfidenceEllipseArea(stabilometryData);
     }
 
     /// <summary>
@@ -56,11 +61,12 @@ public class StabilometryTask
     /// <returns></returns>
     private float CalculateSwayPath(List<DataPoint> stabilometryData, Axes axes)
     {
+        if (stabilometryData.Count <= 1)
+            return 0f;
+        //else
+
         float result = 0f;
 
-        if (stabilometryData.Count <= 1)
-            return result;
-        //else
 
         Vector2 previousValue = stabilometryData[0].GetVecotor2(axes);
 
@@ -81,11 +87,12 @@ public class StabilometryTask
     /// <returns></returns>
     private float CalculateMeanDistance(List<DataPoint> stabilometryData)
     {
+        if (stabilometryData.Count <= 1)
+            return 0f;
+        //else
+
         float result = 0f;
 
-        if (stabilometryData.Count <= 1)
-            return result;
-        //else
 
         Vector2 firstValue = stabilometryData[0].GetVecotor2(Both);
 
@@ -103,11 +110,12 @@ public class StabilometryTask
     /// <returns></returns>
     private float CalculateMeanSwayVelocity(List<DataPoint> stabilometryData, Axes axes)
     {
-        float result = 0f;
 
         if (stabilometryData.Count <= 1)
-            return result;
+            return 0f;
         //else
+
+        float result = 0f;
 
         Vector2 previousValue = stabilometryData[0].GetVecotor2(axes);
         float previousTime = stabilometryData[0].time;
@@ -195,9 +203,60 @@ public class StabilometryTask
         return maxValue - minValue;
     }
 
-    private float CalculateStandardEllipseArea(List<DataPoint> stabilometryData)
+    public void Test()
     {
+        List<DataPoint> test = new List<DataPoint>();
+
+        test.Add(new DataPoint(1, 2, 1));
+        test.Add(new DataPoint(1, -2, -10));
+        test.Add(new DataPoint(1, 15, 1));
+        test.Add(new DataPoint(1, 15, 1));
+
+
+    }
+
+    /// <summary>
+    /// Calculates the smallest area of ellipse where at least 95% of the data points are located.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <returns></returns>
+    private float Calculate95ConfidenceEllipseArea(List<DataPoint> stabilometryData)
+    {
+        if (stabilometryData.Count <= 1)
+            return 0f;
+        //else
+
+        List<Vector2> apValues = GetNormalizedVectors(stabilometryData, AP, CalculateMean(stabilometryData, AP));
+        List<Vector2> mlValues = GetNormalizedVectors(stabilometryData, ML, CalculateMean(stabilometryData, ML));
+
         float result = 0f;
+
+        return result;
+    }
+
+    private Vector2 CalculateMean(List<DataPoint> stabilometryData, Axes axes)
+    {
+        Vector2 result = new Vector2();
+
+        foreach (DataPoint point in stabilometryData)
+            result += point.GetVecotor2(axes);
+
+        return result / stabilometryData.Count;
+    }
+
+    /// <summary>
+    /// Returns list of points  
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <returns></returns>
+    private List<Vector2> GetNormalizedVectors(List<DataPoint> stabilometryData, Axes axes, Vector2 mean)
+    {
+        List<Vector2> result = new List<Vector2>();
+
+        Vector2 firstValue = stabilometryData[0].GetVecotor2(Both);
+
+        foreach (DataPoint point in stabilometryData)
+            result.Add(point.GetVecotor2(Both) - firstValue);
 
         return result;
     }

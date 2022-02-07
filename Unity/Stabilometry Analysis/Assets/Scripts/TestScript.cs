@@ -7,8 +7,8 @@ public class TestScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Vector2 test = new Vector2(0,0.25f);
-        Debug.Log(test.magnitude);
+        StabilometryTask test = new StabilometryTask();
+        test.Test();
     }
 
     // Update is called once per frame
