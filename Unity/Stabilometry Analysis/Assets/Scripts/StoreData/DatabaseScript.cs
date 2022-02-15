@@ -11,7 +11,7 @@ public class DatabaseScript : MonoBehaviour
     #region Variables
     private const string PatientTableName = "PatientTable",
         MeasurementTableName = "MeasurementTable",
-        ParameterTableName = "ParametersTable",
+        TaskTableName = "StabilometryTaskTable",
         DatabaseName = "database.db";
 
     private static readonly string[] PatientTableColumnNames = {
@@ -19,24 +19,28 @@ public class DatabaseScript : MonoBehaviour
     private static readonly string[] PatientTableColumnValues = {
         "INTEGER PRIMARY KEY UNIQUE NOT NULL", "TEXT NOT NULL", "TEXT", "TEXT" };
 
-    //TODO: define all parameters
-    private static readonly string[] ParametersTableColumnNames =
+    private static readonly string[] TaskTableColumnNames =
     {
-        "EntryID"};
-    private static readonly string[] ParametersTableColumnValues =
+        "EntryID", "SwayPath", "SwayPathAP", "SwayPathML", "MeanDistance",
+        "MeanSwayVelocity", "MeanSwayVelocityAP", "MeanSwayVelocityML", "SwayAverageAmplitudeAP", "swayAverageAmplitudeML",
+        "SwayMaximalAmplitudeAP", "SwayMaximalAmplitudeML", "ConfidenceEllipseArea"
+    };
+    private static readonly string[] TaskTableColumnValues =
     {
-        "INTEGER PRIMARY KEY UNIQUE NOT NULL"};
+        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "REAL", "REAL", "REAL", "REAL",
+        "REAL", "REAL", "REAL", "REAL", "REAL",
+        "REAL", "REAL", "REAL"
+    };
 
     // Parameters are foreign IDs of Calculated parameters in Parameter table
     private static readonly string[] MeasurementTableColumnNames =
     {
-        "EntryID", "PatientID", "DateTime", 
-        "Parameter1ID", "Parameter2ID","Parameter3ID","Parameter4ID"
+        "EntryID", "PatientID", "FileID", "DateTime",
+        "EyesOpenSolidSurfaceID", "EyesClosedSolidSurfaceID","EyesOpenSoftSurfaceID","EyesClosedSoftSurfaceID"
     };
-    
     private static readonly string[] MeasurementTableColumnValues =
     {
-        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "TEXT",
+        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "INTEGER", "TEXT",
         "INTEGER", "INTEGER", "INTEGER", "INTEGER"};
 
     private SqliteConnection connection = null;
@@ -50,6 +54,7 @@ public class DatabaseScript : MonoBehaviour
 
     private void OpenDatabase()
     {
+        // TODO replace with Application.persistentDataPath.
         string connectionPath = "URI=file:" + Application.dataPath + @"/" + DatabaseName;
 
         try
@@ -72,18 +77,19 @@ public class DatabaseScript : MonoBehaviour
         if (!TableExists(PatientTableName))
             CreateTable(PatientTableName, PatientTableColumnNames, PatientTableColumnValues, "");
 
-        if (!TableExists(ParameterTableName))
-            CreateTable(ParameterTableName, ParametersTableColumnNames, ParametersTableColumnValues, "");
+        if (!TableExists(TaskTableName))
+            CreateTable(TaskTableName, TaskTableColumnNames, TaskTableColumnValues, "");
 
         if (!TableExists(MeasurementTableName))
         {
             string foreignKeys = $", FOREIGN KEY({MeasurementTableColumnNames[1]}) REFERENCES {PatientTableName} ({PatientTableColumnNames[0]})"
-                + $", FOREIGN KEY({MeasurementTableColumnNames[4]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})"
-                + $", FOREIGN KEY({MeasurementTableColumnNames[5]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})"
-                + $", FOREIGN KEY({MeasurementTableColumnNames[6]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})"
-                + $", FOREIGN KEY({MeasurementTableColumnNames[7]}) REFERENCES {ParameterTableName} ({ParametersTableColumnNames[0]})";
+                + $", FOREIGN KEY({MeasurementTableColumnNames[4]}) REFERENCES {TaskTableName} ({TaskTableColumnNames[0]})"
+                + $", FOREIGN KEY({MeasurementTableColumnNames[5]}) REFERENCES {TaskTableName} ({TaskTableColumnNames[0]})"
+                + $", FOREIGN KEY({MeasurementTableColumnNames[6]}) REFERENCES {TaskTableName} ({TaskTableColumnNames[0]})"
+                + $", FOREIGN KEY({MeasurementTableColumnNames[7]}) REFERENCES {TaskTableName} ({TaskTableColumnNames[0]})";
 
             Debug.Log(foreignKeys);
+
             CreateTable(MeasurementTableName, MeasurementTableColumnNames, MeasurementTableColumnValues, foreignKeys);
         }
     }
@@ -123,37 +129,75 @@ public class DatabaseScript : MonoBehaviour
     /// <param name="patient"></param>
     public void AddPatient(Patient patient)
     {
-        string[] values = {patient.ID.ToString(), patient.Name, patient.Surname, patient.Notes };
+        string[] values = { patient.ID.ToString(), patient.Name, patient.Surname, patient.Notes };
         IDataReader reader = InsertIntoTable(PatientTableName, PatientTableColumnNames, values);
 
         if (reader != null)
             reader.Close();
     }
 
-
-    public void AddParameters()
+    /// <summary>
+    /// Adds stabilometry task and if the process was successful return the task ID, otherwise return -1.
+    /// </summary>
+    /// <param name="stabilometryTask"></param>
+    /// <returns></returns>
+    public int AddStabilometryTask(StabilometryTask stabilometryTask)
     {
+        if (stabilometryTask == null)
+            return -1;
+        //else
 
+        string[] values =
+        {
+            stabilometryTask.ID.ToString(),
+            stabilometryTask.swayPath.ToString(),
+            stabilometryTask.swayPathAP.ToString(),
+            stabilometryTask.swayPathML.ToString(),
+            stabilometryTask.meanDistance.ToString(),
+            stabilometryTask.meanSwayVelocity.ToString(),
+            stabilometryTask.meanSwayVelocityAP.ToString(),
+            stabilometryTask.meanSwayVelocityML.ToString(),
+            stabilometryTask.swayAverageAmplitudeAP.ToString(),
+            stabilometryTask.swayAverageAmplitudeML.ToString(),
+            stabilometryTask.swayMaximalAmplitudeAP.ToString(),
+            stabilometryTask.swayMaximalAmplitudeML.ToString()
+        };
+
+        IDataReader reader = InsertIntoTable(TaskTableName,TaskTableColumnNames, values);
+        if (reader == null)
+            return -1;
+        //else
+
+        reader.Close();
+        return stabilometryTask.ID;
     }
 
     /// <summary>
-    /// TODO: implement this
+    /// Inserts the measurement data into the database
     /// </summary>
     /// <param name="measurements"></param>
     public void AddMeasurement(StabilometryMeasurement measurement)
     {
+        int eyesOpenSolidSurfaceID = AddStabilometryTask(measurement.eyesOpenSolidSurface);
+        int eyesClosedSolidSurfaceID = AddStabilometryTask(measurement.eyesClosedSolidSurface);
+        int eyesOpenSoftSurfaceID = AddStabilometryTask(measurement.eyesOpenSoftSurface);
+        int eyesClosedSoftSurfaceID = AddStabilometryTask(measurement.eyesClosedSoftSurface);
+
         string[] values =
         {
             measurement.ID.ToString(),
             measurement.patientID.ToString(),
+            measurement.fileID.ToString(),
             measurement.dateTime.ToString(),
-            measurement.parameters1ID.ToString(),
-            measurement.parameters2ID.ToString(),
-            measurement.parameters3ID.ToString(),
-            measurement.parameters4ID.ToString(),
+            eyesOpenSolidSurfaceID.ToString(),
+            eyesClosedSolidSurfaceID.ToString(),
+            eyesOpenSoftSurfaceID.ToString(),
+            eyesClosedSoftSurfaceID.ToString(),
         };
 
-        InsertIntoTable(MeasurementTableName, MeasurementTableColumnNames, values);
+        IDataReader reader = InsertIntoTable(MeasurementTableName, MeasurementTableColumnNames, values);
+        if (reader != null)
+            reader.Close();
     }
 
     /// <summary>
@@ -219,9 +263,9 @@ public class DatabaseScript : MonoBehaviour
     /// <returns></returns>
     public int GetLastParametersID()
     {
-        string parameterID = ParametersTableColumnNames[0];
+        string parameterID = TaskTableColumnNames[0];
 
-        return GetLastID(parameterID, ParameterTableName);
+        return GetLastID(parameterID, TaskTableName);
     }
 
     /// <summary>
@@ -357,7 +401,7 @@ public class DatabaseScript : MonoBehaviour
     public void DeletePatient(Patient patient)
     {
         string query = $"DELETE FROM {PatientTableName} WHERE {PatientTableColumnNames[0]} = {patient.ID}";
-        
+
         IDataReader reader = ExecuteQuery(query);
 
         if (reader != null)
@@ -371,18 +415,37 @@ public class DatabaseScript : MonoBehaviour
     /// Deletes the measurement.
     /// </summary>
     /// <param name="measurementID"></param>
-    public void DeleteMeasurement(int measurementID)
+    public void DeleteMeasurement(StabilometryMeasurement measurement)
     {
+
+        DeleteTask(measurement.eyesOpenSolidSurface);
+        DeleteTask(measurement.eyesClosedSolidSurface);
+        DeleteTask(measurement.eyesOpenSoftSurface);
+        DeleteTask(measurement.eyesClosedSoftSurface);
+
+        string query = $"DELETE FROM {MeasurementTableName} WHERE {MeasurementTableColumnNames[0]} = {measurement.ID}";
+        IDataReader reader = ExecuteQuery(query);
+
+        if (reader != null)
+            reader.Close();
 
     }
 
     /// <summary>
-    /// Deletes the given parameter.
+    /// Deletes the given task.
     /// </summary>
     /// <param name="parameter"></param>
-    private void DeleteParameter(int parameter)
+    private void DeleteTask(StabilometryTask task)
     {
+        if (task == null)
+            return;
+        //else
 
+        string query = $"DELETE FROM {TaskTableName} WHERE {TaskTableColumnNames[0]} = {task.ID}";
+        IDataReader reader = ExecuteQuery(query);
+
+        if (reader != null)
+            reader.Close();
     }
     #endregion
 

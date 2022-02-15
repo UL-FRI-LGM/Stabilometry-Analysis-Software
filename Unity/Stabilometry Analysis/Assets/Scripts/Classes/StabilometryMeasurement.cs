@@ -7,40 +7,42 @@ public class StabilometryMeasurement
 {
     public int ID,
         patientID,
-        fileName,
-        parameters1ID,
-        parameters2ID,
-        parameters3ID,
-        parameters4ID;
+        fileID;
+
+    public StabilometryTask eyesOpenSolidSurface,
+        eyesClosedSolidSurface,
+        eyesOpenSoftSurface,
+        eyesClosedSoftSurface;
 
     public Pose pose;
 
-    public DateTime dateTime;
-
+    public MyDateTime dateTime;
 
     public StabilometryMeasurement()
     {
         this.ID = -1;
         this.patientID = -1;
-        this.fileName = -1;
+        this.fileID = -1;
         this.pose = Pose.BothLegsJoinedParallel;
-        this.dateTime = DateTime.MinValue;
-        this.parameters1ID = -1;
-        this.parameters2ID = -1;
-        this.parameters3ID = -1;
-        this.parameters4ID = -1;
+        this.dateTime = null;
+        this.eyesOpenSolidSurface = null;
+        this.eyesClosedSolidSurface = null;
+        this.eyesOpenSoftSurface = null;
+        this.eyesClosedSoftSurface = null;
     }
 
-    public StabilometryMeasurement(int ID, int patientID, int fileName, Pose pose, DateTime dateTime, int parameters1ID, int parameters2ID, int parameters3ID, int parameters4ID)
+    public StabilometryMeasurement(int ID, int patientID, int fileID, Pose pose, MyDateTime dateTime, 
+        StabilometryTask eyesOpenSolidSurface, StabilometryTask eyesClosedSolidSurface,
+        StabilometryTask eyesOpenSoftSurface, StabilometryTask eyesClosedSoftSurface)
     {
         this.ID = ID;
         this.patientID = patientID;
-        this.fileName = fileName;
+        this.fileID = fileID;
         this.pose = pose;
         this.dateTime = dateTime;
-        this.parameters1ID = parameters1ID;
-        this.parameters2ID = parameters2ID;
-        this.parameters3ID = parameters3ID;
-        this.parameters4ID = parameters4ID;
+        this.eyesOpenSolidSurface = eyesOpenSolidSurface;
+        this.eyesClosedSolidSurface = eyesClosedSolidSurface;
+        this.eyesOpenSoftSurface = eyesOpenSoftSurface;
+        this.eyesClosedSoftSurface = eyesClosedSoftSurface;
     }
 }
