@@ -5,6 +5,7 @@ using static Axes;
 
 public class StabilometryTask
 {
+    #region Variables
     public int ID;
     public float
         swayPath,
@@ -26,11 +27,12 @@ public class StabilometryTask
         swayMaximalAmplitudeML;
 
     //95% of data
-    public float confidenceEllipseArea;
+    public EllipseValues confidence95EllipseArea;
+
+    #endregion
 
     public StabilometryTask()
     {
-
     }
 
     public StabilometryTask(List<DataPoint> stabilometryData)
@@ -50,7 +52,7 @@ public class StabilometryTask
         swayMaximalAmplitudeAP = CalculateMaximalAmplitude(stabilometryData, AP);
         swayMaximalAmplitudeML = CalculateMaximalAmplitude(stabilometryData, ML);
 
-        confidenceEllipseArea = Calculate95ConfidenceEllipseArea(stabilometryData);
+        confidence95EllipseArea = new EllipseValues(stabilometryData);
     }
 
     /// <summary>
@@ -203,89 +205,4 @@ public class StabilometryTask
         return maxValue - minValue;
     }
 
-    /// <summary>
-    /// Calculates the smallest area of ellipse where at least 95% of the data points are located.
-    /// </summary>
-    /// <param name="stabilometryData"></param>
-    /// <returns></returns>
-    private float Calculate95ConfidenceEllipseArea(List<DataPoint> stabilometryData)
-    {
-        if (stabilometryData.Count <= 1)
-            return 0f;
-        //else
-
-        List<Vector2> normalizedVector = NormalizeVector(stabilometryData);
-
-        CMatrix cMatrix = CalculateCMatrix(normalizedVector, CalculateMean(normalizedVector));
-
-        float ellipse95Multiplicator = 5.991f;
-
-        float[] eigenvectors = CalculateEigenVectors(cMatrix);
-
-        float semiMajorAxis1 = Mathf.Sqrt(eigenvectors[0] / (normalizedVector.Count - 1));
-        float semiMajorAxis2 = Mathf.Sqrt(eigenvectors[1] / (normalizedVector.Count - 1));
-
-        return ellipse95Multiplicator * Mathf.PI * semiMajorAxis1 * semiMajorAxis2;
-    }
-
-    private Vector2 CalculateMean(List<Vector2> stabilometryData)
-    {
-        Vector2 result = new Vector2();
-
-        foreach (Vector2 point in stabilometryData)
-            result += point;
-
-        return result / stabilometryData.Count;
-    }
-
-    private CMatrix CalculateCMatrix(List<Vector2> stabilometryData, Vector2 mean)
-    {
-        CMatrix result = new CMatrix();
-
-        foreach (Vector2 point in stabilometryData)
-        {
-            Vector2 modifiedPoint = point - mean;
-            result.Cxx += Mathf.Pow(modifiedPoint.x, 2);
-            result.Cxy += modifiedPoint.x * modifiedPoint.y;
-            result.Cyy += Mathf.Pow(modifiedPoint.y, 2);
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Calculates eigenVectors from cMatrix. The first eigen value is larger than the second.
-    /// </summary>
-    /// <param name="cMatrix"></param>
-    /// <returns></returns>
-    private float[] CalculateEigenVectors(CMatrix cMatrix)
-    {
-        float[] result = new float[2];
-        
-        float firstPart = (cMatrix.Cxx + cMatrix.Cyy) / 2f;
-
-        float secondPart = Mathf.Sqrt(Mathf.Pow(cMatrix.Cxy, 2) + Mathf.Pow((cMatrix.Cxx - cMatrix.Cyy)/2, 2));
-
-        result[0] = firstPart + secondPart;
-        result[1] = firstPart - secondPart;
-
-        return result;
-    }
-
-    /// <summary>
-    /// Returns list of points
-    /// </summary>
-    /// <param name="stabilometryData"></param>
-    /// <returns></returns>
-    private List<Vector2> NormalizeVector(List<DataPoint> stabilometryData)
-    {
-        List<Vector2> result = new List<Vector2>();
-
-        Vector2 firstValue = stabilometryData[0].GetVecotor2(Both);
-
-        foreach (DataPoint point in stabilometryData)
-            result.Add(point.GetVecotor2(Both) - firstValue);
-
-        return result;
-    }
 }
