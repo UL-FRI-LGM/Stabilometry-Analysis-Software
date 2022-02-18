@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Axes;
 
+// Formulas for ellipse was taken from https://www1.udel.edu/biology/rosewc/kaap686/reserve/cop/center%20of%20position%20conf95.pdf
 public class EllipseValues
 {
     #region Variables
@@ -14,6 +15,7 @@ public class EllipseValues
 
     #endregion
 
+    
     public EllipseValues(List<DataPoint> stabilometryData)
     {
         if (stabilometryData.Count < 1)
@@ -96,10 +98,71 @@ public class EllipseValues
         return result;
     }
 
-    private List<Vector2> CalculateEllipsePoints(float semiMajorAxis1, float semiMajorAxis2, float[] eigenvalues, CMatrix cMatrix)
+    /// <summary>
+    /// Calculates points that will be used for drawing ellipse.
+    /// </summary>
+    /// <param name="semiMajorAxis"></param>
+    /// <param name="semiMinorAxis"></param>
+    /// <param name="eigenvalues"></param>
+    /// <param name="cMatrix"></param>
+    /// <returns></returns>
+    private List<Vector2> CalculateEllipsePoints(float semiMajorAxis, float semiMinorAxis, float[] eigenvalues, CMatrix cMatrix)
     {
         List<Vector2> result = new List<Vector2>();
 
+        Vector2 eigenvector0 = CalculateEigenVector(eigenvalues[0], cMatrix);
+        Vector2 eigenvector1 = CalculateEigenVector(eigenvalues[0], cMatrix);
+
+        List<float> radianValues = GetRadianValues(10);
+
+        float sqrtMultip = Mathf.Sqrt(ellipse95Multiplicator);
+
+        foreach (float value in radianValues)
+        {
+            
+            Vector2 finalValue = sqrtMultip  *(Mathf.Cos(value) * semiMajorAxis * eigenvector0 
+                + Mathf.Sin(value) * semiMinorAxis * eigenvector1);
+
+            result.Add(finalValue);
+        }
+
+        return result;
+    }
+
+    private Vector2 CalculateEigenVector(float eigenvalue, CMatrix cMatrix)
+    {
+        Vector2 result = new Vector2();
+
+        float tempValue = (cMatrix.Cxx - eigenvalue)/cMatrix.Cxy;
+
+        result.x = 1f / Mathf.Sqrt(1 + Mathf.Pow(tempValue, 2));
+        result.y = -tempValue * result.x;
+
+        return result;
+    }
+
+    /// <summary>
+    /// Returns the number of radian values starting from 0 to 2pi. 
+    /// Values have the same distance between them.
+    /// </summary>
+    /// <param name="startValue"></param>
+    /// <param name="valueNumber"></param>
+    /// <returns></returns>
+    private List<float> GetRadianValues(int valueNumber)
+    {
+        List<float> result = new List<float>();
+
+        if (valueNumber <= 0)
+        {
+            Debug.LogError($"{valueNumber} is lower than 0");
+            return result;
+        }
+
+        float increment = 2 * Mathf.PI / valueNumber;
+
+        for (int i = 0; i < valueNumber; i++)
+            result.Add(increment * i);
+        
         return result;
     }
 }

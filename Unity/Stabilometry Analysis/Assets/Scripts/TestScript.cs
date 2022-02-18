@@ -16,7 +16,7 @@ public class TestScript : MonoBehaviour
 
         StabilometryTask test = new StabilometryTask(testData);
 
-        Debug.Log(test.confidenceEllipseArea);
+        Debug.Log(test.confidence95EllipseArea.ellipsePoints.Count);
         //MyDateTime newDate = new MyDateTime(202212231854);
         //Debug.Log($"Year {newDate.year} Month {newDate.month} Day {newDate.day} Hour {newDate.hour} Minutes {newDate.minutes}");
         //Debug.Log($"{newDate.ToString()}");
