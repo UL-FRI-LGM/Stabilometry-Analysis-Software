@@ -29,6 +29,8 @@ public class StabilometryTask
     //95% of data
     public EllipseValues confidence95EllipseArea;
 
+    public List<DataPoint> stabilometryData = null;
+
     #endregion
 
     public StabilometryTask()
@@ -37,22 +39,37 @@ public class StabilometryTask
 
     public StabilometryTask(List<DataPoint> stabilometryData)
     {
-        swayPath = CalculateSwayPath(stabilometryData, Both);
-        swayPathAP = CalculateSwayPath(stabilometryData, AP);
-        swayPathML = CalculateSwayPath(stabilometryData, ML);
-        meanDistance = CalculateMeanDistance(stabilometryData);
+        this.stabilometryData = stabilometryData;
 
-        meanSwayVelocity = CalculateMeanSwayVelocity(stabilometryData, Both);
-        meanSwayVelocityAP = CalculateMeanSwayVelocity(stabilometryData, AP);
-        meanSwayVelocityML = CalculateMeanSwayVelocity(stabilometryData, ML);
+        List<DataPoint> filteredData = FilterData(stabilometryData);
 
-        swayAverageAmplitudeAP = CalculateAverageAmplitude(stabilometryData, AP, swayPathAP);
-        swayAverageAmplitudeML = CalculateAverageAmplitude(stabilometryData, ML, swayPathML);
+        swayPath = CalculateSwayPath(filteredData, Both);
+        swayPathAP = CalculateSwayPath(filteredData, AP);
+        swayPathML = CalculateSwayPath(filteredData, ML);
+        meanDistance = CalculateMeanDistance(filteredData);
 
-        swayMaximalAmplitudeAP = CalculateMaximalAmplitude(stabilometryData, AP);
-        swayMaximalAmplitudeML = CalculateMaximalAmplitude(stabilometryData, ML);
+        meanSwayVelocity = CalculateMeanSwayVelocity(filteredData, Both);
+        meanSwayVelocityAP = CalculateMeanSwayVelocity(filteredData, AP);
+        meanSwayVelocityML = CalculateMeanSwayVelocity(filteredData, ML);
 
-        confidence95EllipseArea = new EllipseValues(stabilometryData);
+        swayAverageAmplitudeAP = CalculateAverageAmplitude(filteredData, AP, swayPathAP);
+        swayAverageAmplitudeML = CalculateAverageAmplitude(filteredData, ML, swayPathML);
+
+        swayMaximalAmplitudeAP = CalculateMaximalAmplitude(filteredData, AP);
+        swayMaximalAmplitudeML = CalculateMaximalAmplitude(filteredData, ML);
+
+        confidence95EllipseArea = new EllipseValues(filteredData);
+    }
+
+    /// <summary>
+    /// Filters the data to remove noise.
+    /// </summary>
+    /// <param name="unfilteredData"></param>
+    /// <returns></returns>
+    private List<DataPoint> FilterData(List<DataPoint> unfilteredData)
+    {
+        // TODO: add filters
+        return unfilteredData;
     }
 
     /// <summary>
