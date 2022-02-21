@@ -35,10 +35,23 @@ public class StabilometryImageScript : MonoBehaviour
 
         Vector2 imageCenter = transform.position;
 
-        for (int i = 1; i < stabilometryData.Count; i++)
+        for (int i = 0; i < stabilometryData.Count; i++)
         {
             Vector2 adjustedPosition = imageCenter + stabilometryData[i] - firstPosition;
             Instantiate(TestDot, adjustedPosition, Quaternion.identity, DataHolder.transform);
+        }
+
+        for (int i = 1; i < 4; i++)
+        {
+            
+
+            Vector2 difference = stabilometryData[i] - stabilometryData[i - 1];
+            Debug.Log((difference).magnitude);
+            Vector2 adjustedLinePosition = imageCenter + difference / 2;
+            GameObject instance = Instantiate(StabilometryLine, adjustedLinePosition, Quaternion.FromToRotation(new Vector3(1,0), difference), DataHolder.transform);
+
+            instance.GetComponent<RectTransform>().sizeDelta = new Vector2( difference.magnitude, instance.GetComponent<RectTransform>().sizeDelta.y);
+            
             
         }
     }
