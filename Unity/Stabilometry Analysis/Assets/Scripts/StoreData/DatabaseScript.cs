@@ -7,7 +7,6 @@ using System.Data;
 
 public class DatabaseScript : MonoBehaviour
 {
-
     #region Variables
     private const string PatientTableName = "PatientTable",
         MeasurementTableName = "MeasurementTable",
