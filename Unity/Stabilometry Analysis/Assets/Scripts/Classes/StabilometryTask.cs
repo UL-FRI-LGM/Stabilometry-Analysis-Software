@@ -30,6 +30,8 @@ public class StabilometryTask
     public EllipseValues confidence95EllipseArea;
 
     public List<DataPoint> stabilometryData = null;
+    
+    public List<Vector2> stabilometryDrawData = null;
 
     #endregion
 
@@ -42,6 +44,7 @@ public class StabilometryTask
         this.stabilometryData = stabilometryData;
 
         List<DataPoint> filteredData = FilterData(stabilometryData);
+        stabilometryDrawData = 
 
         swayPath = CalculateSwayPath(filteredData, Both);
         swayPathAP = CalculateSwayPath(filteredData, AP);
@@ -70,6 +73,14 @@ public class StabilometryTask
     {
         // TODO: add filters
         return unfilteredData;
+    }
+
+    private List<Vector2> PrepareDataForDrawing(List<DataPoint> unfilteredData)
+    {
+        // TODO: implement this
+        List<Vector2> result = new List<Vector2>();
+
+        return result;
     }
 
     /// <summary>
