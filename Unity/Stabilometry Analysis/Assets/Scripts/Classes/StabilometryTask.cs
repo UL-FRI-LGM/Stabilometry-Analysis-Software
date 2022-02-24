@@ -7,6 +7,9 @@ public class StabilometryTask
 {
     #region Variables
     public int ID;
+    public float duration,
+        frequency;
+
     public float
         swayPath,
         swayPathAP,
@@ -44,7 +47,8 @@ public class StabilometryTask
         this.stabilometryData = stabilometryData;
 
         List<DataPoint> filteredData = FilterData(stabilometryData);
-        stabilometryDrawData = 
+
+        stabilometryDrawData = PrepareDataForDrawing(filteredData);
 
         swayPath = CalculateSwayPath(filteredData, Both);
         swayPathAP = CalculateSwayPath(filteredData, AP);
@@ -79,6 +83,20 @@ public class StabilometryTask
     {
         // TODO: implement this
         List<Vector2> result = new List<Vector2>();
+
+        return result;
+    }
+
+    private float CalculateFrequency(List<DataPoint> unfilteredData)
+    {
+        float result = 0;
+
+        return result;
+    }
+
+    private float CalculateDuration(List<DataPoint> unfilteredData)
+    {
+        float result = 0;
 
         return result;
     }
