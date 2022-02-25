@@ -33,7 +33,7 @@ public class StabilometryTask
     public EllipseValues confidence95EllipseArea;
 
     public List<DataPoint> stabilometryData = null;
-    
+
     public List<Vector2> stabilometryDrawData = null;
 
     #endregion
@@ -46,9 +46,13 @@ public class StabilometryTask
     {
         this.stabilometryData = stabilometryData;
 
+        duration = CalculateDuration(stabilometryData);
+        frequency = CalculateFrequency(stabilometryData);
+
         List<DataPoint> filteredData = FilterData(stabilometryData);
 
         stabilometryDrawData = PrepareDataForDrawing(filteredData);
+
 
         swayPath = CalculateSwayPath(filteredData, Both);
         swayPathAP = CalculateSwayPath(filteredData, AP);
@@ -91,12 +95,16 @@ public class StabilometryTask
     {
         float result = 0;
 
-        return result;
+        for (int i = 1; i < unfilteredData.Count; i++)
+            result += unfilteredData[i].time - unfilteredData[i - 1].time;
+
+        return result / (unfilteredData.Count - 1);
     }
 
     private float CalculateDuration(List<DataPoint> unfilteredData)
     {
-        float result = 0;
+        float result = unfilteredData[unfilteredData.Count - 1].time
+            - unfilteredData[0].time;
 
         return result;
     }
