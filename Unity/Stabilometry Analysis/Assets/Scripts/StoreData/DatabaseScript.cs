@@ -20,21 +20,21 @@ public class DatabaseScript : MonoBehaviour
 
     private static readonly string[] TaskTableColumnNames =
     {
-        "EntryID", "SwayPath", "SwayPathAP", "SwayPathML", "MeanDistance",
-        "MeanSwayVelocity", "MeanSwayVelocityAP", "MeanSwayVelocityML", "SwayAverageAmplitudeAP", "swayAverageAmplitudeML",
-        "SwayMaximalAmplitudeAP", "SwayMaximalAmplitudeML", "ConfidenceEllipseArea"
+        "EntryID", "Duration", "Frequency", "SwayPath", "SwayPathAP", 
+        "SwayPathML", "MeanDistance", "MeanSwayVelocity", "MeanSwayVelocityAP", "MeanSwayVelocityML", 
+        "SwayAverageAmplitudeAP", "swayAverageAmplitudeML", "SwayMaximalAmplitudeAP", "SwayMaximalAmplitudeML", "ConfidenceEllipseArea"
     };
     private static readonly string[] TaskTableColumnValues =
     {
         "INTEGER PRIMARY KEY UNIQUE NOT NULL", "REAL", "REAL", "REAL", "REAL",
         "REAL", "REAL", "REAL", "REAL", "REAL",
-        "REAL", "REAL", "REAL"
+        "REAL", "REAL", "REAL", "REAL", "REAL"
     };
 
     // Parameters are foreign IDs of Calculated parameters in Parameter table
     private static readonly string[] MeasurementTableColumnNames =
     {
-        "EntryID", "PatientID", "FileID", "DateTime",
+        "EntryID", "PatientID", "DateTime",
         "EyesOpenSolidSurfaceID", "EyesClosedSolidSurfaceID","EyesOpenSoftSurfaceID","EyesClosedSoftSurfaceID"
     };
     private static readonly string[] MeasurementTableColumnValues =
@@ -149,6 +149,8 @@ public class DatabaseScript : MonoBehaviour
         string[] values =
         {
             stabilometryTask.ID.ToString(),
+            stabilometryTask.duration.ToString(),
+            stabilometryTask.frequency.ToString(),
             stabilometryTask.swayPath.ToString(),
             stabilometryTask.swayPathAP.ToString(),
             stabilometryTask.swayPathML.ToString(),
@@ -186,7 +188,6 @@ public class DatabaseScript : MonoBehaviour
         {
             measurement.ID.ToString(),
             measurement.patientID.ToString(),
-            measurement.fileID.ToString(),
             measurement.dateTime.ToString(),
             eyesOpenSolidSurfaceID.ToString(),
             eyesClosedSolidSurfaceID.ToString(),

@@ -24,9 +24,9 @@ public class DataUploadMenuScript : MonoBehaviour
     private void Update()
     {
         if (!saveButton.interactable)
-            saveButton.interactable = fileImporters[0].pathFound 
-                || fileImporters[1].pathFound 
-                || fileImporters[2].pathFound 
+            saveButton.interactable = fileImporters[0].pathFound
+                || fileImporters[1].pathFound
+                || fileImporters[2].pathFound
                 || fileImporters[3].pathFound;
     }
 
@@ -36,9 +36,21 @@ public class DataUploadMenuScript : MonoBehaviour
     }
 
     public void SaveButton()
-    { 
-        SaveValues(GetData());
-        mainScript.menuSwitching.OpenInitialMenu();
+    {
+        List<DataPoint>[] data = GetData();
+
+        bool dataPresent = false;
+        foreach (List<DataPoint> list in data)
+        {
+            if (list != null)
+                dataPresent = true;
+        }
+
+        if (dataPresent)
+        {
+            SaveValues(data);
+            mainScript.menuSwitching.OpenInitialMenu();
+        }
     }
 
     /// <summary>
@@ -61,12 +73,22 @@ public class DataUploadMenuScript : MonoBehaviour
     /// <param name="data"></param>
     private void SaveValues(List<DataPoint>[] data)
     {
-        int measurementID =  mainScript.database.GetLastMeasurementID() + 1;
 
-        string fileName = $"{measurementID}.json";
+        StabilometryMeasurement measurement = new StabilometryMeasurement();
+        measurement.ID = mainScript.database.GetLastMeasurementID() + 1;
+        measurement.patientID = mainScript.currentPatient.ID;
+        measurement.pose = GetSelectedPose();
+        measurement.dateTime = GetSelectedDateTime();
+        measurement.eyesOpenSolidSurface = (data[0] != null) ? new StabilometryTask(data[0]) : null;
+        measurement.eyesClosedSolidSurface = (data[1] != null) ? new StabilometryTask(data[1]) : null;
+        measurement.eyesOpenSoftSurface = (data[2] != null) ? new StabilometryTask(data[2]) : null;
+        measurement.eyesClosedSoftSurface = (data[3] != null) ? new StabilometryTask(data[3]) : null;
+
+        string drawingFile = $"Data{measurement.ID}.json";
+        string rawFileName = $"RawData{measurement.ID}.json";
 
         SaveMeasurement(data, measurementID);
-        SaveJson(data, fileName);
+        SaveJson(data, rawFileName);
     }
 
     /// <summary>
@@ -87,7 +109,7 @@ public class DataUploadMenuScript : MonoBehaviour
         File.WriteAllText(newFilePath, json);
     }
 
-    
+
 
     /// <summary>
     /// Calculates all measurement values and returns the object.
@@ -120,5 +142,18 @@ public class DataUploadMenuScript : MonoBehaviour
 
         positionDropdown.value = 0;
         positionDropdown.RefreshShownValue();
+    }
+
+    private Pose GetSelectedPose()
+    {
+        Debug.Log("Method GetSelectedPose not implemented.");
+
+        return Pose.BothLegsJoinedParallel;
+    }
+
+    private MyDateTime GetSelectedDateTime()
+    {
+        Debug.Log("Method GetSelectedDateTime not implemented.");
+        return new MyDateTime(0, 0, 0, 0, 0);
     }
 }

@@ -32,9 +32,9 @@ public class StabilometryTask
     //95% of data
     public EllipseValues confidence95EllipseArea;
 
-    public List<DataPoint> stabilometryData = null;
-
     public List<Vector2> stabilometryDrawData = null;
+
+    private float drawingErrorValue = 0.1f;
 
     #endregion
 
@@ -44,8 +44,6 @@ public class StabilometryTask
 
     public StabilometryTask(List<DataPoint> stabilometryData)
     {
-        this.stabilometryData = stabilometryData;
-
         duration = CalculateDuration(stabilometryData);
         frequency = CalculateFrequency(stabilometryData);
 
@@ -85,8 +83,22 @@ public class StabilometryTask
 
     private List<Vector2> PrepareDataForDrawing(List<DataPoint> unfilteredData)
     {
-        // TODO: implement this
         List<Vector2> result = new List<Vector2>();
+
+        Vector2 previousValue = unfilteredData[0].GetVecotor2(Both);
+        result.Add(previousValue);
+
+        for (int i = 1; i < unfilteredData.Count; i++)
+        {
+            Vector2 currentValue = unfilteredData[i].GetVecotor2(Both);
+            Vector2 difference = currentValue - previousValue;
+
+            if (difference.magnitude > drawingErrorValue)
+            {
+                previousValue = currentValue;
+                result.Add(currentValue);
+            }
+        }
 
         return result;
     }

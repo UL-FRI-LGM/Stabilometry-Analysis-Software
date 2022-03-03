@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class StabilometryMeasurement
 {
+    #region Variables
     public int ID,
-        patientID,
-        fileID;
+        patientID;
 
     public StabilometryTask eyesOpenSolidSurface,
         eyesClosedSolidSurface,
@@ -17,12 +17,12 @@ public class StabilometryMeasurement
     public Pose pose;
 
     public MyDateTime dateTime;
+    #endregion
 
     public StabilometryMeasurement()
     {
         this.ID = -1;
         this.patientID = -1;
-        this.fileID = -1;
         this.pose = Pose.BothLegsJoinedParallel;
         this.dateTime = null;
         this.eyesOpenSolidSurface = null;
@@ -31,13 +31,12 @@ public class StabilometryMeasurement
         this.eyesClosedSoftSurface = null;
     }
 
-    public StabilometryMeasurement(int ID, int patientID, int fileID, Pose pose, MyDateTime dateTime, 
+    public StabilometryMeasurement(int ID, int patientID, Pose pose, MyDateTime dateTime, 
         StabilometryTask eyesOpenSolidSurface, StabilometryTask eyesClosedSolidSurface,
         StabilometryTask eyesOpenSoftSurface, StabilometryTask eyesClosedSoftSurface)
     {
         this.ID = ID;
         this.patientID = patientID;
-        this.fileID = fileID;
         this.pose = pose;
         this.dateTime = dateTime;
         this.eyesOpenSolidSurface = eyesOpenSolidSurface;
