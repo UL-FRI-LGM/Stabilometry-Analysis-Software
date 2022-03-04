@@ -30,11 +30,11 @@ public class StabilometryTask
         swayMaximalAmplitudeML;
 
     //95% of data
-    public EllipseValues confidence95EllipseArea;
+    public EllipseValues confidence95Ellipse;
 
     public List<Vector2> stabilometryDrawData = null;
 
-    private float drawingErrorValue = 0.1f;
+    private float drawingErrorValue = 0.01f;
 
     #endregion
 
@@ -51,7 +51,6 @@ public class StabilometryTask
 
         stabilometryDrawData = PrepareDataForDrawing(filteredData);
 
-
         swayPath = CalculateSwayPath(filteredData, Both);
         swayPathAP = CalculateSwayPath(filteredData, AP);
         swayPathML = CalculateSwayPath(filteredData, ML);
@@ -67,7 +66,7 @@ public class StabilometryTask
         swayMaximalAmplitudeAP = CalculateMaximalAmplitude(filteredData, AP);
         swayMaximalAmplitudeML = CalculateMaximalAmplitude(filteredData, ML);
 
-        confidence95EllipseArea = new EllipseValues(filteredData);
+        confidence95Ellipse = new EllipseValues(filteredData);
     }
 
     /// <summary>

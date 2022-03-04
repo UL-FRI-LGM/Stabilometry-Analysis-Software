@@ -34,7 +34,7 @@ public class DatabaseScript : MonoBehaviour
     // Parameters are foreign IDs of Calculated parameters in Parameter table
     private static readonly string[] MeasurementTableColumnNames =
     {
-        "EntryID", "PatientID", "DateTime",
+        "EntryID", "PatientID", "DateTime", "Pose",
         "EyesOpenSolidSurfaceID", "EyesClosedSolidSurfaceID","EyesOpenSoftSurfaceID","EyesClosedSoftSurfaceID"
     };
     private static readonly string[] MeasurementTableColumnValues =
@@ -53,8 +53,7 @@ public class DatabaseScript : MonoBehaviour
 
     private void OpenDatabase()
     {
-        // TODO replace with Application.persistentDataPath.
-        string connectionPath = "URI=file:" + Application.dataPath + @"/" + DatabaseName;
+        string connectionPath = "URI=file:" + Application.persistentDataPath + @"/" + DatabaseName;
 
         try
         {
@@ -146,6 +145,8 @@ public class DatabaseScript : MonoBehaviour
             return -1;
         //else
 
+        stabilometryTask.ID = GetLastTaskID() + 1;
+
         string[] values =
         {
             stabilometryTask.ID.ToString(),
@@ -161,7 +162,8 @@ public class DatabaseScript : MonoBehaviour
             stabilometryTask.swayAverageAmplitudeAP.ToString(),
             stabilometryTask.swayAverageAmplitudeML.ToString(),
             stabilometryTask.swayMaximalAmplitudeAP.ToString(),
-            stabilometryTask.swayMaximalAmplitudeML.ToString()
+            stabilometryTask.swayMaximalAmplitudeML.ToString(),
+            stabilometryTask.confidence95Ellipse.area.ToString()
         };
 
         IDataReader reader = InsertIntoTable(TaskTableName,TaskTableColumnNames, values);
@@ -189,6 +191,7 @@ public class DatabaseScript : MonoBehaviour
             measurement.ID.ToString(),
             measurement.patientID.ToString(),
             measurement.dateTime.ToString(),
+            measurement.PoseToString(),
             eyesOpenSolidSurfaceID.ToString(),
             eyesClosedSolidSurfaceID.ToString(),
             eyesOpenSoftSurfaceID.ToString(),
@@ -219,7 +222,7 @@ public class DatabaseScript : MonoBehaviour
             query += $",'{values[i]}'";
 
         query += ")";
-        Debug.Log(query);
+        //Debug.Log(query);
         IDataReader reader = ExecuteQuery(query);
 
         return reader;
@@ -261,7 +264,7 @@ public class DatabaseScript : MonoBehaviour
     /// Returns the last parameters ID.
     /// </summary>
     /// <returns></returns>
-    public int GetLastParametersID()
+    public int GetLastTaskID()
     {
         string parameterID = TaskTableColumnNames[0];
 

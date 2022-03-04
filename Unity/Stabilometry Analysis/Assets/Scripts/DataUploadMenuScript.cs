@@ -73,33 +73,35 @@ public class DataUploadMenuScript : MonoBehaviour
     /// <param name="data"></param>
     private void SaveValues(List<DataPoint>[] data)
     {
-
         StabilometryMeasurement measurement = new StabilometryMeasurement();
         measurement.ID = mainScript.database.GetLastMeasurementID() + 1;
         measurement.patientID = mainScript.currentPatient.ID;
         measurement.pose = GetSelectedPose();
         measurement.dateTime = GetSelectedDateTime();
+
         measurement.eyesOpenSolidSurface = (data[0] != null) ? new StabilometryTask(data[0]) : null;
         measurement.eyesClosedSolidSurface = (data[1] != null) ? new StabilometryTask(data[1]) : null;
         measurement.eyesOpenSoftSurface = (data[2] != null) ? new StabilometryTask(data[2]) : null;
         measurement.eyesClosedSoftSurface = (data[3] != null) ? new StabilometryTask(data[3]) : null;
 
-        string drawingFile = $"Data{measurement.ID}.json";
-        string rawFileName = $"RawData{measurement.ID}.json";
+        mainScript.database.AddMeasurement(measurement);
 
-        SaveMeasurement(data, measurementID);
-        SaveJson(data, rawFileName);
+        string fileName = $"Data{measurement.ID}.json";
+        SaveDrawingJson(measurement.GetDrawingData(), fileName);
+
+        string rawFileName = $"RawData{measurement.ID}.json";
+        SaveRawJson(data, rawFileName);
     }
 
     /// <summary>
-    /// Saves data as a JSON document
+    /// Saves Raw data as a JSON document
     /// </summary>
     /// <param name="data"></param>
-    private void SaveJson(List<DataPoint>[] data, string fileName)
+    private void SaveRawJson(List<DataPoint>[] data, string fileName)
     {
         string json = JsonHelper.ToJson(data);
 
-        string jsonDirectory = $@"{Application.dataPath}\JSON";
+        string jsonDirectory = $@"{Application.persistentDataPath}\JSON\Raw";
 
         if (!Directory.Exists(jsonDirectory))
             Directory.CreateDirectory(jsonDirectory);
@@ -109,20 +111,22 @@ public class DataUploadMenuScript : MonoBehaviour
         File.WriteAllText(newFilePath, json);
     }
 
-
-
     /// <summary>
-    /// Calculates all measurement values and returns the object.
+    /// Saves data as a JSON document
     /// </summary>
-    /// <param name="measurementID"></param>
-    /// <returns></returns>
-    private void SaveMeasurement(List<DataPoint>[] Data, int measurementID)
+    /// <param name="data"></param>
+    private void SaveDrawingJson(DrawingTaskValues[] data, string fileName)
     {
-        StabilometryMeasurement measurement = new StabilometryMeasurement();
+        string json = JsonHelper.ToJson(data);
 
-        measurement.ID = measurementID;
-        mainScript.database.AddMeasurement(measurement);
+        string jsonDirectory = $@"{Application.persistentDataPath}\JSON\Data";
 
+        if (!Directory.Exists(jsonDirectory))
+            Directory.CreateDirectory(jsonDirectory);
+
+        string newFilePath = $@"{jsonDirectory}\{fileName}";
+
+        File.WriteAllText(newFilePath, json);
     }
 
     private void OnDisable()
