@@ -11,28 +11,29 @@ public class StabilometryImageScript : MonoBehaviour
         TestDot = null,
         DataHolder = null;
 
-    Vector2 position = Vector2.zero; 
+    private Vector2 position = Vector2.zero;
+
+    private float multiplicator = 10f;
     #endregion
 
     private void Start()
     {
-        DrawImage(null);
     }
 
     public void DrawImage(StabilometryTask stabilometryTask)
     {
         position = transform.position;
 
-        List<Vector2> testPositions = new List<Vector2>();
-        testPositions.Add(new Vector2(0, 0));
-        testPositions.Add(new Vector2(0, 50));
-        testPositions.Add(new Vector2(50, 0));
-        testPositions.Add(new Vector2(100, 100));
-        testPositions.Add(new Vector2(100, -100));
-        testPositions.Add(new Vector2(-100, -230));
+        //List<Vector2> testPositions = new List<Vector2>();
+        //testPositions.Add(new Vector2(0, 0));
+        //testPositions.Add(new Vector2(0, 50));
+        //testPositions.Add(new Vector2(50, 0));
+        //testPositions.Add(new Vector2(100, 100));
+        //testPositions.Add(new Vector2(100, -100));
+        //testPositions.Add(new Vector2(-100, -230));
 
-        //DrawStabilometryPath(testPositions);
-        //DrawEllipsPath(testPositions);
+        DrawStabilometryPath(stabilometryTask.stabilometryDrawData);
+        DrawEllipsPath(stabilometryTask.confidence95Ellipse.ellipsePoints);
     }
 
     /// <summary>
@@ -65,6 +66,9 @@ public class StabilometryImageScript : MonoBehaviour
     /// <param name="linePrefab"></param>
     private void DrawLine(Vector2 currentPosition, Vector2 previousPosition, GameObject linePrefab)
     {
+        currentPosition *= multiplicator;
+        previousPosition *= previousPosition;
+
         Vector2 difference = currentPosition - previousPosition;
         Vector2 adjustedLinePosition = position + (currentPosition + previousPosition) / 2;
         GameObject instance = Instantiate(linePrefab, adjustedLinePosition, Quaternion.FromToRotation(Vector3.right, difference), DataHolder.transform);

@@ -19,6 +19,9 @@ public class DataUploadMenuScript : MonoBehaviour
 
     public MainScript mainScript { get; set; } = null;
 
+    //TODO Remove this
+    [SerializeField]
+    private GameObject StabilometryImage = null;
     #endregion
 
     private void Update()
@@ -86,11 +89,23 @@ public class DataUploadMenuScript : MonoBehaviour
 
         mainScript.database.AddMeasurement(measurement);
 
+        //TODO remove this
+        HandleStabilometryImage(measurement.eyesOpenSolidSurface);
+
         string fileName = $"Data{measurement.ID}.json";
         SaveDrawingJson(measurement.GetDrawingData(), fileName);
 
         string rawFileName = $"RawData{measurement.ID}.json";
         SaveRawJson(data, rawFileName);
+    }
+
+    private void HandleStabilometryImage(StabilometryTask task)
+    {
+        if (task == null)
+            return;
+
+        GameObject instance = Instantiate(StabilometryImage, transform.parent);
+        instance.GetComponent<StabilometryImageScript>().DrawImage(task);
     }
 
     /// <summary>
