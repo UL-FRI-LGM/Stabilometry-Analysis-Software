@@ -84,19 +84,26 @@ public class StabilometryTask
     {
         List<Vector2> result = new List<Vector2>();
 
+        Vector2 firstValue = unfilteredData[0].GetVecotor2(Both);
+
         Vector2 previousValue = unfilteredData[0].GetVecotor2(Both);
-        result.Add(previousValue);
+        result.Add(firstValue - firstValue);
 
         for (int i = 1; i < unfilteredData.Count; i++)
         {
             Vector2 currentValue = unfilteredData[i].GetVecotor2(Both);
             Vector2 difference = currentValue - previousValue;
 
-            if (difference.magnitude > drawingErrorValue)
+            if (previousValue != currentValue)
             {
                 previousValue = currentValue;
-                result.Add(currentValue);
+                result.Add(currentValue - firstValue);
             }
+            //if (difference.magnitude > drawingErrorValue)
+            //{
+            //    previousValue = currentValue;
+            //    result.Add(currentValue);
+            //}
         }
 
         return result;
@@ -104,12 +111,14 @@ public class StabilometryTask
 
     private float CalculateFrequency(List<DataPoint> unfilteredData)
     {
-        float result = 0;
+        float differenceSum = 0;
 
         for (int i = 1; i < unfilteredData.Count; i++)
-            result += unfilteredData[i].time - unfilteredData[i - 1].time;
+            differenceSum += unfilteredData[i].time - unfilteredData[i - 1].time;
 
-        return result / (unfilteredData.Count - 1);
+        float averageValue = differenceSum / (unfilteredData.Count - 1);
+
+        return 1/ (averageValue);
     }
 
     private float CalculateDuration(List<DataPoint> unfilteredData)

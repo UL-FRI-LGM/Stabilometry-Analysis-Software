@@ -91,6 +91,7 @@ public class DataUploadMenuScript : MonoBehaviour
 
         //TODO remove this
         HandleStabilometryImage(measurement.eyesOpenSolidSurface);
+        //HandleStabilometryImage(data[0]);
 
         string fileName = $"Data{measurement.ID}.json";
         SaveDrawingJson(measurement.GetDrawingData(), fileName);
@@ -99,8 +100,19 @@ public class DataUploadMenuScript : MonoBehaviour
         SaveRawJson(data, rawFileName);
     }
 
+    private void HandleStabilometryImage(List<DataPoint> data)
+    {
+        Debug.LogWarning("Delete This");
+        if (data == null)
+            return;
+
+        GameObject instance = Instantiate(StabilometryImage, transform.parent);
+        instance.GetComponent<StabilometryImageScript>().DrawImage(data);
+    }
+
     private void HandleStabilometryImage(StabilometryTask task)
     {
+
         if (task == null)
             return;
 
