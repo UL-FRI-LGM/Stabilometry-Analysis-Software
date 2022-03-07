@@ -13,7 +13,7 @@ public class StabilometryImageScript : MonoBehaviour
 
     private Vector2 position = Vector2.zero;
 
-    private float multiplicator = 1000f;
+    private float multiplicator = 2500f;
     #endregion
 
     private void Start()
@@ -53,14 +53,9 @@ public class StabilometryImageScript : MonoBehaviour
         //testPositions.Add(new Vector2(100, -100));
         //testPositions.Add(new Vector2(-100, -230));
 
-        int index = 0;
-
         List<Vector2> drawData = new List<Vector2>();
         foreach (Vector2 element in stabilometryTask.stabilometryDrawData)
         {
-            if (index > 100)
-                break;
-            index++;
 
             drawData.Add(element * multiplicator);
         }
@@ -86,11 +81,11 @@ public class StabilometryImageScript : MonoBehaviour
 
         }
 
-        for (int i = 0; i < stabilometryData.Count; i++)
-        {
-            Vector2 adjustedDotPosition = position + stabilometryData[i];
-            Instantiate(TestDot, adjustedDotPosition, Quaternion.identity, DataHolder.transform);
-        }
+        //for (int i = 0; i < stabilometryData.Count; i++)
+        //{
+        //    Vector2 adjustedDotPosition = position + stabilometryData[i];
+        //    Instantiate(TestDot, adjustedDotPosition, Quaternion.identity, DataHolder.transform);
+        //}
     }
 
     /// <summary>

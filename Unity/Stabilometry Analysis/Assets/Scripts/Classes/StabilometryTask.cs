@@ -34,7 +34,7 @@ public class StabilometryTask
 
     public List<Vector2> stabilometryDrawData = null;
 
-    private float drawingErrorValue = 0.01f;
+    private float drawingErrorValue = 0.001f;
 
     #endregion
 
@@ -94,7 +94,7 @@ public class StabilometryTask
             Vector2 currentValue = unfilteredData[i].GetVecotor2(Both);
             Vector2 difference = currentValue - previousValue;
 
-            if (previousValue != currentValue)
+            if (difference.magnitude > drawingErrorValue)
             {
                 previousValue = currentValue;
                 result.Add(currentValue - firstValue);
