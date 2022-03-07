@@ -24,6 +24,8 @@ public class EllipseValues
 
         List<Vector2> normalizedVector = NormalizeVector(stabilometryData);
 
+        Debug.Log(CalculateMean(normalizedVector));
+
         CMatrix cMatrix = CalculateCMatrix(normalizedVector, CalculateMean(normalizedVector));
 
         float[] eigenvalues = CalculateEigenVectors(cMatrix);

@@ -13,37 +13,43 @@ public class StabilometryImageScript : MonoBehaviour
 
     private Vector2 position = Vector2.zero;
 
-    private float multiplicator = 2500f;
+    //private float multiplicator = 2500f;
+    private float multiplicator = 100f;
     #endregion
+
+    private void Awake()
+    {
+        position = transform.position;
+    }
 
     private void Start()
     {
     }
 
-    public void DrawImage(List<DataPoint> rawData)
-    {
+    //public void DrawImage(List<DataPoint> rawData)
+    //{
 
-        position = transform.position;
+    //    position = transform.position;
 
-        List<Vector2> data = new List<Vector2>();
+    //    List<Vector2> data = new List<Vector2>();
 
-        int index = 0;
+    //    int index = 0;
 
-        foreach (DataPoint element in rawData)
-        {
-            if (index > 100)
-                break;
-            data.Add(element.GetVecotor2(Axes.Both));
-            index++;
-        }
+    //    foreach (DataPoint element in rawData)
+    //    {
+    //        if (index > 100)
+    //            break;
+    //        data.Add(element.GetVecotor2(Axes.Both));
+    //        index++;
+    //    }
 
-        DrawStabilometryPath(data);
+    //    DrawStabilometryPath(data);
 
-    }
+    //}
 
     public void DrawImage(StabilometryTask stabilometryTask)
     {
-        position = transform.position;
+        //position = transform.position;
 
         //List<Vector2> testPositions = new List<Vector2>();
         //testPositions.Add(new Vector2(0, 0));
@@ -53,20 +59,9 @@ public class StabilometryImageScript : MonoBehaviour
         //testPositions.Add(new Vector2(100, -100));
         //testPositions.Add(new Vector2(-100, -230));
 
-        List<Vector2> drawData = new List<Vector2>();
-        foreach (Vector2 element in stabilometryTask.stabilometryDrawData)
-        {
+        DrawStabilometryPath(stabilometryTask.stabilometryDrawData);
 
-            drawData.Add(element * multiplicator);
-        }
-
-        foreach (Vector2 element in drawData)
-            Debug.Log(element);
-
-            DrawStabilometryPath(drawData);
-
-        //DrawStabilometryPath(stabilometryTask.stabilometryDrawData);
-        //DrawEllipsPath(stabilometryTask.confidence95Ellipse.ellipsePoints);
+        DrawEllipsPath(stabilometryTask.confidence95Ellipse.ellipsePoints);
     }
 
     /// <summary>
@@ -75,17 +70,10 @@ public class StabilometryImageScript : MonoBehaviour
     /// <param name="stabilometryData"></param>
     private void DrawStabilometryPath(List<Vector2> stabilometryData)
     {
-        for (int i = 1; i < stabilometryData.Count; i++)
-        {
-            DrawLine(stabilometryData[i], stabilometryData[i - 1], StabilometryLine);
+        List<Vector2> drawData = ScalePoints(stabilometryData);
 
-        }
-
-        //for (int i = 0; i < stabilometryData.Count; i++)
-        //{
-        //    Vector2 adjustedDotPosition = position + stabilometryData[i];
-        //    Instantiate(TestDot, adjustedDotPosition, Quaternion.identity, DataHolder.transform);
-        //}
+        for (int i = 1; i < drawData.Count; i++)
+            DrawLine(drawData[i], drawData[i - 1], StabilometryLine);
     }
 
     /// <summary>
@@ -94,10 +82,24 @@ public class StabilometryImageScript : MonoBehaviour
     /// <param name="ellipseData"></param>
     private void DrawEllipsPath(List<Vector2> ellipseData)
     {
-        for (int i = 1; i < ellipseData.Count; i++)
-            DrawLine(ellipseData[i], ellipseData[i - 1], EllipseLine);
+        List<Vector2> drawData = ScalePoints(ellipseData);
 
-        DrawLine(ellipseData[ellipseData.Count - 1], ellipseData[0], EllipseLine);
+        for (int i = 1; i < drawData.Count; i++)
+        {
+            //Debug.Log(drawData[i]);
+            DrawLine(drawData[i], drawData[i - 1], EllipseLine);
+        }
+
+        DrawLine(drawData[drawData.Count - 1], drawData[0], EllipseLine);
+    }
+
+    private List<Vector2> ScalePoints(List<Vector2> dataPoints)
+    {
+        List<Vector2> result = new List<Vector2>();
+        foreach (Vector2 point in dataPoints)
+            result.Add(point * multiplicator);
+
+        return result;
     }
 
     /// <summary>
@@ -116,6 +118,11 @@ public class StabilometryImageScript : MonoBehaviour
 
         rect.sizeDelta = new Vector2(difference.magnitude, rect.sizeDelta.y);
 
+    }
+
+    public void TestEllipse(List<Vector2> data)
+    {
+        DrawEllipsPath(data);
     }
 
 }
