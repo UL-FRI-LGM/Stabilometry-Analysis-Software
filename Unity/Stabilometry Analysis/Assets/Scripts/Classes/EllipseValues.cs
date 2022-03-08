@@ -15,31 +15,33 @@ public class EllipseValues
 
     #endregion
 
-    
+
     public EllipseValues(List<DataPoint> stabilometryData)
     {
         if (stabilometryData.Count < 1)
             return;
         // else
 
+        
+
         List<Vector2> normalizedVector = NormalizeVector(stabilometryData);
 
-        Debug.Log(CalculateMean(normalizedVector));
+        Vector2 mean = CalculateMean(normalizedVector);
 
-        CMatrix cMatrix = CalculateCMatrix(normalizedVector, CalculateMean(normalizedVector));
+        CMatrix cMatrix = CalculateCMatrix(normalizedVector, mean);
 
-        float[] eigenvalues = CalculateEigenVectors(cMatrix);
+        float[] eigenValues = CalculateEigenValues(cMatrix);
 
-        float semiMajorAxis = Mathf.Sqrt(eigenvalues[0] / (normalizedVector.Count - 1));
-        float semiMinorAxis = Mathf.Sqrt(eigenvalues[1] / (normalizedVector.Count - 1));
+        float semiMajorAxis = Mathf.Sqrt(eigenValues[0] / (normalizedVector.Count - 1));
+        float semiMinorAxis = Mathf.Sqrt(eigenValues[1] / (normalizedVector.Count - 1));
 
         // Calculates the smallest area of ellipse where at least 95% of the data points are located.
         this.area = ellipse95Multiplicator * Mathf.PI * semiMajorAxis * semiMinorAxis;
 
-        this.ellipsePoints = CalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenvalues, cMatrix);
+        this.ellipsePoints = CalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenValues, cMatrix, 4, mean);
     }
 
-    private Vector2 CalculateMean(List<Vector2> stabilometryData)
+    private static Vector2 CalculateMean(List<Vector2> stabilometryData)
     {
         Vector2 result = new Vector2();
 
@@ -49,7 +51,7 @@ public class EllipseValues
         return result / stabilometryData.Count;
     }
 
-    private CMatrix CalculateCMatrix(List<Vector2> stabilometryData, Vector2 mean)
+    private static CMatrix CalculateCMatrix(List<Vector2> stabilometryData, Vector2 mean)
     {
         CMatrix result = new CMatrix();
 
@@ -69,7 +71,7 @@ public class EllipseValues
     /// </summary>
     /// <param name="cMatrix"></param>
     /// <returns></returns>
-    private float[] CalculateEigenVectors(CMatrix cMatrix)
+    private static float[] CalculateEigenValues(CMatrix cMatrix)
     {
         float[] result = new float[2];
 
@@ -84,18 +86,18 @@ public class EllipseValues
     }
 
     /// <summary>
-    /// Returns list of points
+    /// Returns list of Vector2 points that start at 0,0;
     /// </summary>
     /// <param name="stabilometryData"></param>
     /// <returns></returns>
-    private List<Vector2> NormalizeVector(List<DataPoint> stabilometryData)
+    private static List<Vector2> NormalizeVector(List<DataPoint> stabilometryData)
     {
         List<Vector2> result = new List<Vector2>();
 
         Vector2 firstValue = stabilometryData[0].GetVecotor2(Both);
 
         foreach (DataPoint point in stabilometryData)
-            result.Add(point.GetVecotor2(Both) - firstValue);
+            result.Add(point.GetVecotor2(Both));// - firstValue);
 
         return result;
     }
@@ -108,21 +110,21 @@ public class EllipseValues
     /// <param name="eigenvalues"></param>
     /// <param name="cMatrix"></param>
     /// <returns></returns>
-    private List<Vector2> CalculateEllipsePoints(float semiMajorAxis, float semiMinorAxis, float[] eigenvalues, CMatrix cMatrix)
+    private static List<Vector2> CalculateEllipsePoints(float semiMajorAxis, float semiMinorAxis, float[] eigenvalues, CMatrix cMatrix, int pointNumber, Vector2 mean)
     {
         List<Vector2> result = new List<Vector2>();
 
         Vector2 eigenvector0 = CalculateEigenVector(eigenvalues[0], cMatrix);
-        Vector2 eigenvector1 = CalculateEigenVector(eigenvalues[0], cMatrix);
+        Vector2 eigenvector1 = CalculateEigenVector(eigenvalues[1], cMatrix);
 
-        List<float> radianValues = GetRadianValues(10);
+        List<float> radianValues = GetRadianValues(pointNumber);
 
         float sqrtMultip = Mathf.Sqrt(ellipse95Multiplicator);
 
         foreach (float value in radianValues)
         {
-            
-            Vector2 finalValue = sqrtMultip  *(Mathf.Cos(value) * semiMajorAxis * eigenvector0 
+
+            Vector2 finalValue = sqrtMultip * (Mathf.Cos(value) * semiMajorAxis * eigenvector0
                 + Mathf.Sin(value) * semiMinorAxis * eigenvector1);
 
             result.Add(finalValue);
@@ -131,11 +133,11 @@ public class EllipseValues
         return result;
     }
 
-    private Vector2 CalculateEigenVector(float eigenvalue, CMatrix cMatrix)
+    private static Vector2 CalculateEigenVector(float eigenvalue, CMatrix cMatrix)
     {
         Vector2 result = new Vector2();
 
-        float tempValue = (cMatrix.Cxx - eigenvalue)/cMatrix.Cxy;
+        float tempValue = (cMatrix.Cxx - eigenvalue) / cMatrix.Cxy;
 
         result.x = 1f / Mathf.Sqrt(1 + Mathf.Pow(tempValue, 2));
         result.y = -tempValue * result.x;
@@ -150,7 +152,7 @@ public class EllipseValues
     /// <param name="startValue"></param>
     /// <param name="valueNumber"></param>
     /// <returns></returns>
-    private List<float> GetRadianValues(int valueNumber)
+    private static List<float> GetRadianValues(int valueNumber)
     {
         List<float> result = new List<float>();
 
@@ -164,7 +166,223 @@ public class EllipseValues
 
         for (int i = 0; i < valueNumber; i++)
             result.Add(increment * i);
-        
+
         return result;
     }
+
+    #region Testing
+    /// <summary>
+    /// Function for testing functions
+    /// </summary>
+    public static void TestFunctions()
+    {
+        List<DataPoint> dataPoints = new List<DataPoint>();
+        dataPoints.Add(new DataPoint(1, 1, 1));
+        dataPoints.Add(new DataPoint(2, 1, 2));
+        dataPoints.Add(new DataPoint(3, 2, 1));
+        dataPoints.Add(new DataPoint(4, 5, -1));
+
+        List<Vector2> normalizedVector = TestNormaliseVector(dataPoints);
+
+        //test CalculateMean
+        Vector2 mean = TestCalculateMean(normalizedVector);
+        //test CalculateCMatrix
+
+        TestCalculateCMatrix(normalizedVector, mean);
+
+        //For preetier numbers
+        CMatrix matrix = new CMatrix();
+        matrix.Cxx = 17;
+        matrix.Cxy = -8;
+        matrix.Cyy = 5;
+
+        //test CalculateEigenVectors
+        float[] eigenValues = TestCalculateEigenValues(matrix);
+        //test CalculateEllipsePoints
+
+        Debug.Log($"{eigenValues[0]} and {eigenValues[1]}");
+
+        float semiMajorAxis = Mathf.Sqrt(eigenValues[0] / (normalizedVector.Count - 1));
+        float semiMinorAxis = Mathf.Sqrt(eigenValues[1] / (normalizedVector.Count - 1));
+
+        Debug.Log($"{semiMajorAxis} and {semiMinorAxis}");
+
+        TestAreaSize(semiMajorAxis, semiMinorAxis);
+
+        TestCalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenValues, matrix, mean);
+    }
+
+    private static List<Vector2> TestNormaliseVector(List<DataPoint> dataPoints)
+    {
+        List<Vector2> resultPoints = new List<Vector2>();
+        resultPoints.Add(new Vector2(0, 0));
+        resultPoints.Add(new Vector2(0, 1));
+        resultPoints.Add(new Vector2(1, 0));
+        resultPoints.Add(new Vector2(4, -2));
+
+        //bool normalizeWork = ListsIdentical(NormalizeVector(dataPoints), resultPoints);
+        //Debug.Log($"normalisation works {normalizeWork}");
+
+        return resultPoints;
+    }
+
+    private static Vector2 TestCalculateMean(List<Vector2> data)
+    {
+        Vector2 result = new Vector2(1.25f, -0.25f);
+        Vector2 newValue = CalculateMean(data);
+
+        bool same = (result == newValue);
+
+        if (!same)
+            Debug.LogError($"{result} vs {newValue}");
+
+        Debug.Log($"CalcuateMean works {same}");
+
+        return result;
+    }
+
+    private static void TestCalculateCMatrix(List<Vector2> stabilometryData, Vector2 mean)
+    {
+        CMatrix result = new CMatrix();
+        result.Cxx = 10.75f;
+        result.Cxy = -6.75f;
+        result.Cyy = 4.75f;
+        CMatrix test = CalculateCMatrix(stabilometryData, mean);
+
+        bool same = (test.Cxx == result.Cxx && test.Cxy == result.Cxy && test.Cyy == result.Cyy);
+
+        if (!same)
+            Debug.LogError($"{result.Cxx}, {result.Cxy}, {result.Cyy} vs {test.Cxx}, {test.Cxy}, {test.Cyy}");
+
+        Debug.Log($"CMatrix is the same {same}");
+
+    }
+
+    private static float[] TestCalculateEigenValues(CMatrix matrix)
+    {
+        float[] result = new float[2] { 21, 1 };
+
+        float[] test = CalculateEigenValues(matrix);
+
+        bool same = (result[0] == test[0] && result[1] == test[1]);
+
+        if (!same)
+            Debug.LogError($"{result} vs {test}");
+
+        Debug.Log($"Eigenvalues are the same {same}");
+
+        return result;
+    }
+
+    private static void TestCalculateEllipsePoints(float semiMajorAxis, float semiMinorAxis, float[] eigenvalues, CMatrix cMatrix, Vector2 mean)
+    {
+        List<Vector2> result = new List<Vector2>();
+
+        Vector2[] eigenvectors = TestCalculateEigenVector(eigenvalues, cMatrix);
+
+        List<float> radianValues = TestGetRadianValues();
+
+        float sqrtMultip = Mathf.Sqrt(ellipse95Multiplicator);
+
+        foreach (float value in radianValues)
+        {
+
+            Vector2 finalValue = sqrtMultip * (Mathf.Cos(value) * semiMajorAxis * eigenvectors[0]
+                + Mathf.Sin(value) * semiMinorAxis * eigenvectors[1]);
+
+            result.Add(finalValue);
+        }
+
+        List<Vector2> testResult = CalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenvalues, cMatrix, 4, mean);
+
+        ListsIdentical(result,testResult);
+    }
+
+    private static Vector2[] TestCalculateEigenVector(float[] eigenValue, CMatrix matrix)
+    {
+        Vector2[] result = new Vector2[2];
+        result[0] = new Vector2(
+            2 * Mathf.Sqrt(5)/5,
+            -Mathf.Sqrt(5)/5
+            );
+
+        result[1] = new Vector2(
+            Mathf.Sqrt(5)/5,
+             2 * Mathf.Sqrt(5) / 5
+            );
+
+        Vector2 test1 = CalculateEigenVector(eigenValue[0], matrix);
+        bool firstSame = (test1 == result[0]);
+
+        if (!firstSame)
+            Debug.LogError($"{result[0]} vs {test1}");
+
+        Debug.Log($"EigenVectors1 are the same {firstSame}");
+
+        Vector2 test2 = CalculateEigenVector(eigenValue[1], matrix);
+        
+        bool secondSame = (test2 == result[1]);
+
+        if (!secondSame)
+            Debug.LogError($"{result[1]} vs {test2}");
+
+        Debug.Log($"EigenVectors are the same {secondSame }");
+
+        return result;
+    }
+
+    private static List<float> TestGetRadianValues()
+    {
+        List<float> result = new List<float>();
+        result.Add(0);
+        result.Add(Mathf.PI/2);
+        result.Add(Mathf.PI);
+        result.Add(3*Mathf.PI/2);
+
+        List<float> testData = GetRadianValues(4);
+
+        if (testData.Count != result.Count)
+            Debug.LogError($"test data has {testData.Count} data while result has {result.Count} data");
+
+        for (int i = 0; i< result.Count; i++)
+        {
+            if (result[i] != testData[i])
+                Debug.LogError($"{result[i]} is not the same as {testData[i]}");
+        }
+
+        return result;
+    }
+
+    private static void TestAreaSize(float semiMajorAxis, float semiMinorAxis)
+    {
+        // Calculates the smallest area of ellipse where at least 95% of the data points are located.
+        float area = ellipse95Multiplicator * Mathf.PI * semiMajorAxis * semiMinorAxis;
+
+        float testArea = ellipse95Multiplicator * Mathf.PI * Mathf.Sqrt(21f / 3f) * Mathf.Sqrt(1f / 3f);
+
+        bool same = (area == testArea);
+        Debug.Log($"Eigenvalues are the same {same}");
+
+        if (!same)
+            Debug.LogError($"{area} vs {testArea}");
+    }
+
+    private static bool ListsIdentical(List<Vector2> first, List<Vector2> second)
+    {
+        if (first.Count != second.Count)
+        {
+            Debug.LogError($"{first.Count} vs {second.Count}");
+            return false;
+        }
+
+        for (int i = 0; i < first.Count; i++)
+            if (first[i] != second[i])
+            {
+                Debug.LogError($"{first[i]} is not the same as {second[i]}");
+                return false;
+            }
+
+        return true;
+    }
+    #endregion
 }

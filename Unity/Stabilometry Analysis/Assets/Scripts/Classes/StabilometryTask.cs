@@ -44,10 +44,17 @@ public class StabilometryTask
 
     public StabilometryTask(List<DataPoint> stabilometryData)
     {
+        
         duration = CalculateDuration(stabilometryData);
         frequency = CalculateFrequency(stabilometryData);
 
         List<DataPoint> filteredData = FilterData(stabilometryData);
+
+        //filteredData = new List<DataPoint>();
+        //filteredData.Add(new DataPoint(1, 0.05f, 0.05f));
+        //filteredData.Add(new DataPoint(1, 0.05f, 0.06f));
+        //filteredData.Add(new DataPoint(1, 0.07f, 0.05f));
+
 
         stabilometryDrawData = PrepareDataForDrawing(filteredData);
 

@@ -13,8 +13,8 @@ public class StabilometryImageScript : MonoBehaviour
 
     private Vector2 position = Vector2.zero;
 
-    //private float multiplicator = 2500f;
-    private float multiplicator = 100f;
+    private float multiplicator = 2500f;
+    //private float multiplicator = 100f;
     #endregion
 
     private void Awake()
