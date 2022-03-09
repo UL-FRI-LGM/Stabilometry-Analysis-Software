@@ -9,11 +9,13 @@ public class EllipseValues
     #region Variables
 
     public float area = 0;
-    public List<Vector2> ellipsePoints = null;
-
     public Vector2 mean = Vector2.zero;
 
+    public Vector2 eigenVector0 = Vector2.zero,
+        eigenVector1 = Vector2.zero;
+
     private const float ellipse95Multiplicator = 5.991f;
+
 
     #endregion
 
@@ -38,7 +40,8 @@ public class EllipseValues
         // Calculates the smallest area of ellipse where at least 95% of the data points are located.
         this.area = ellipse95Multiplicator * Mathf.PI * semiMajorAxis * semiMinorAxis;
 
-        this.ellipsePoints = CalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenValues, cMatrix, 50, mean);
+        this.eigenVector0 = CalculateEigenVector(eigenValues[0], cMatrix);
+        this.eigenVector1 = CalculateEigenVector(eigenValues[1], cMatrix);
     }
 
     private static Vector2 CalculateMean(List<Vector2> stabilometryData)
@@ -108,28 +111,25 @@ public class EllipseValues
     /// <param name="eigenvalues"></param>
     /// <param name="cMatrix"></param>
     /// <returns></returns>
-    private static List<Vector2> CalculateEllipsePoints(float semiMajorAxis, float semiMinorAxis, float[] eigenvalues, CMatrix cMatrix, int pointNumber, Vector2 mean)
-    {
-        List<Vector2> result = new List<Vector2>();
+    //private static List<Vector2> CalculateEllipsePoints(float semiMajorAxis, float semiMinorAxis, float[] eigenvalues, CMatrix cMatrix, int pointNumber, Vector2 mean)
+    //{
+    //    List<Vector2> result = new List<Vector2>();
 
-        Vector2 eigenvector0 = CalculateEigenVector(eigenvalues[0], cMatrix);
-        Vector2 eigenvector1 = CalculateEigenVector(eigenvalues[1], cMatrix);
+    //    List<float> radianValues = GetRadianValues(pointNumber);
 
-        List<float> radianValues = GetRadianValues(pointNumber);
+    //    float sqrtMultip = Mathf.Sqrt(ellipse95Multiplicator);
 
-        float sqrtMultip = Mathf.Sqrt(ellipse95Multiplicator);
+    //    foreach (float value in radianValues)
+    //    {
 
-        foreach (float value in radianValues)
-        {
+    //        Vector2 finalValue = sqrtMultip * (Mathf.Cos(value) * semiMajorAxis * eigenvector0
+    //            + Mathf.Sin(value) * semiMinorAxis * eigenvector1);
 
-            Vector2 finalValue = sqrtMultip * (Mathf.Cos(value) * semiMajorAxis * eigenvector0
-                + Mathf.Sin(value) * semiMinorAxis * eigenvector1);
+    //        result.Add(finalValue);
+    //    }
 
-            result.Add(finalValue);
-        }
-
-        return result;
-    }
+    //    return result;
+    //}
 
     private static Vector2 CalculateEigenVector(float eigenvalue, CMatrix cMatrix)
     {
@@ -203,7 +203,7 @@ public class EllipseValues
 
         TestAreaSize(semiMajorAxis, semiMinorAxis);
 
-        TestCalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenValues, matrix, mean);
+        //TestCalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenValues, matrix, mean);
     }
 
     private static Vector2 TestCalculateMean(List<Vector2> data)
@@ -254,29 +254,29 @@ public class EllipseValues
         return result;
     }
 
-    private static void TestCalculateEllipsePoints(float semiMajorAxis, float semiMinorAxis, float[] eigenvalues, CMatrix cMatrix, Vector2 mean)
-    {
-        List<Vector2> result = new List<Vector2>();
+    //private static void TestCalculateEllipsePoints(float semiMajorAxis, float semiMinorAxis, float[] eigenvalues, CMatrix cMatrix, Vector2 mean)
+    //{
+    //    List<Vector2> result = new List<Vector2>();
 
-        Vector2[] eigenvectors = TestCalculateEigenVector(eigenvalues, cMatrix);
+    //    Vector2[] eigenvectors = TestCalculateEigenVector(eigenvalues, cMatrix);
 
-        List<float> radianValues = TestGetRadianValues();
+    //    List<float> radianValues = TestGetRadianValues();
 
-        float sqrtMultip = Mathf.Sqrt(ellipse95Multiplicator);
+    //    float sqrtMultip = Mathf.Sqrt(ellipse95Multiplicator);
 
-        foreach (float value in radianValues)
-        {
+    //    foreach (float value in radianValues)
+    //    {
 
-            Vector2 finalValue = sqrtMultip * (Mathf.Cos(value) * semiMajorAxis * eigenvectors[0]
-                + Mathf.Sin(value) * semiMinorAxis * eigenvectors[1]);
+    //        Vector2 finalValue = sqrtMultip * (Mathf.Cos(value) * semiMajorAxis * eigenvectors[0]
+    //            + Mathf.Sin(value) * semiMinorAxis * eigenvectors[1]);
 
-            result.Add(finalValue);
-        }
+    //        result.Add(finalValue);
+    //    }
 
-        List<Vector2> testResult = CalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenvalues, cMatrix, 4, mean);
+    //    List<Vector2> testResult = CalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenvalues, cMatrix, 4, mean);
 
-        ListsIdentical(result,testResult);
-    }
+    //    ListsIdentical(result,testResult);
+    //}
 
     private static Vector2[] TestCalculateEigenVector(float[] eigenValue, CMatrix matrix)
     {
