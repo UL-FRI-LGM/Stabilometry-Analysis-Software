@@ -11,6 +11,8 @@ public class EllipseValues
     public float area = 0;
     public List<Vector2> ellipsePoints = null;
 
+    public Vector2 mean = Vector2.zero;
+
     private const float ellipse95Multiplicator = 5.991f;
 
     #endregion
@@ -20,13 +22,11 @@ public class EllipseValues
     {
         if (stabilometryData.Count < 1)
             return;
-        // else
+        // else        
 
-        
+        List<Vector2> normalizedVector = GetVectorList(stabilometryData);
 
-        List<Vector2> normalizedVector = NormalizeVector(stabilometryData);
-
-        Vector2 mean = CalculateMean(normalizedVector);
+        mean = CalculateMean(normalizedVector);
 
         CMatrix cMatrix = CalculateCMatrix(normalizedVector, mean);
 
@@ -38,7 +38,7 @@ public class EllipseValues
         // Calculates the smallest area of ellipse where at least 95% of the data points are located.
         this.area = ellipse95Multiplicator * Mathf.PI * semiMajorAxis * semiMinorAxis;
 
-        this.ellipsePoints = CalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenValues, cMatrix, 4, mean);
+        this.ellipsePoints = CalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenValues, cMatrix, 50, mean);
     }
 
     private static Vector2 CalculateMean(List<Vector2> stabilometryData)
@@ -90,14 +90,12 @@ public class EllipseValues
     /// </summary>
     /// <param name="stabilometryData"></param>
     /// <returns></returns>
-    private static List<Vector2> NormalizeVector(List<DataPoint> stabilometryData)
+    private static List<Vector2> GetVectorList(List<DataPoint> stabilometryData)
     {
         List<Vector2> result = new List<Vector2>();
 
-        Vector2 firstValue = stabilometryData[0].GetVecotor2(Both);
-
         foreach (DataPoint point in stabilometryData)
-            result.Add(point.GetVecotor2(Both));// - firstValue);
+            result.Add(point.GetVecotor2(Both));
 
         return result;
     }
@@ -182,7 +180,7 @@ public class EllipseValues
         dataPoints.Add(new DataPoint(3, 2, 1));
         dataPoints.Add(new DataPoint(4, 5, -1));
 
-        List<Vector2> normalizedVector = TestNormaliseVector(dataPoints);
+        List<Vector2> normalizedVector = GetVectorList(dataPoints);
 
         //test CalculateMean
         Vector2 mean = TestCalculateMean(normalizedVector);
@@ -200,35 +198,17 @@ public class EllipseValues
         float[] eigenValues = TestCalculateEigenValues(matrix);
         //test CalculateEllipsePoints
 
-        Debug.Log($"{eigenValues[0]} and {eigenValues[1]}");
-
         float semiMajorAxis = Mathf.Sqrt(eigenValues[0] / (normalizedVector.Count - 1));
         float semiMinorAxis = Mathf.Sqrt(eigenValues[1] / (normalizedVector.Count - 1));
-
-        Debug.Log($"{semiMajorAxis} and {semiMinorAxis}");
 
         TestAreaSize(semiMajorAxis, semiMinorAxis);
 
         TestCalculateEllipsePoints(semiMajorAxis, semiMinorAxis, eigenValues, matrix, mean);
     }
 
-    private static List<Vector2> TestNormaliseVector(List<DataPoint> dataPoints)
-    {
-        List<Vector2> resultPoints = new List<Vector2>();
-        resultPoints.Add(new Vector2(0, 0));
-        resultPoints.Add(new Vector2(0, 1));
-        resultPoints.Add(new Vector2(1, 0));
-        resultPoints.Add(new Vector2(4, -2));
-
-        //bool normalizeWork = ListsIdentical(NormalizeVector(dataPoints), resultPoints);
-        //Debug.Log($"normalisation works {normalizeWork}");
-
-        return resultPoints;
-    }
-
     private static Vector2 TestCalculateMean(List<Vector2> data)
     {
-        Vector2 result = new Vector2(1.25f, -0.25f);
+        Vector2 result = new Vector2(2.25f, 0.75f);
         Vector2 newValue = CalculateMean(data);
 
         bool same = (result == newValue);

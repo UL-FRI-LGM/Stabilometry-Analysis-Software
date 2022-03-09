@@ -50,13 +50,9 @@ public class StabilometryTask
 
         List<DataPoint> filteredData = FilterData(stabilometryData);
 
-        //filteredData = new List<DataPoint>();
-        //filteredData.Add(new DataPoint(1, 0.05f, 0.05f));
-        //filteredData.Add(new DataPoint(1, 0.05f, 0.06f));
-        //filteredData.Add(new DataPoint(1, 0.07f, 0.05f));
+        confidence95Ellipse = new EllipseValues(filteredData);
 
-
-        stabilometryDrawData = PrepareDataForDrawing(filteredData);
+        stabilometryDrawData = PrepareDataForDrawing(filteredData, confidence95Ellipse.mean);
 
         swayPath = CalculateSwayPath(filteredData, Both);
         swayPathAP = CalculateSwayPath(filteredData, AP);
@@ -73,7 +69,6 @@ public class StabilometryTask
         swayMaximalAmplitudeAP = CalculateMaximalAmplitude(filteredData, AP);
         swayMaximalAmplitudeML = CalculateMaximalAmplitude(filteredData, ML);
 
-        confidence95Ellipse = new EllipseValues(filteredData);
     }
 
     /// <summary>
@@ -87,14 +82,12 @@ public class StabilometryTask
         return unfilteredData;
     }
 
-    private List<Vector2> PrepareDataForDrawing(List<DataPoint> unfilteredData)
+    private List<Vector2> PrepareDataForDrawing(List<DataPoint> unfilteredData, Vector2 mean)
     {
         List<Vector2> result = new List<Vector2>();
 
-        Vector2 firstValue = unfilteredData[0].GetVecotor2(Both);
-
         Vector2 previousValue = unfilteredData[0].GetVecotor2(Both);
-        result.Add(firstValue - firstValue);
+        result.Add(previousValue - mean);
 
         for (int i = 1; i < unfilteredData.Count; i++)
         {
@@ -104,13 +97,8 @@ public class StabilometryTask
             if (difference.magnitude > drawingErrorValue)
             {
                 previousValue = currentValue;
-                result.Add(currentValue - firstValue);
+                result.Add(currentValue - mean);
             }
-            //if (difference.magnitude > drawingErrorValue)
-            //{
-            //    previousValue = currentValue;
-            //    result.Add(currentValue);
-            //}
         }
 
         return result;
