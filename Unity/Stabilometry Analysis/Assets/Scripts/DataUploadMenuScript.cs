@@ -89,10 +89,6 @@ public class DataUploadMenuScript : MonoBehaviour
 
         mainScript.database.AddMeasurement(measurement);
 
-        //TODO remove this
-        HandleStabilometryImage(measurement.eyesOpenSolidSurface);
-        //HandleStabilometryImage(data[0]);
-
         string fileName = $"Data{measurement.ID}.json";
         SaveDrawingJson(measurement.GetDrawingData(), fileName);
 
@@ -110,15 +106,15 @@ public class DataUploadMenuScript : MonoBehaviour
         //instance.GetComponent<StabilometryImageScript>().DrawImage(data);
     }
 
-    private void HandleStabilometryImage(StabilometryTask task)
-    {
+    //private void HandleStabilometryImage(StabilometryTask task)
+    //{
 
-        if (task == null)
-            return;
+    //    if (task == null)
+    //        return;
 
-        GameObject instance = Instantiate(StabilometryImage, transform.parent);
-        instance.GetComponent<StabilometryImageScript>().DrawImage(task);
-    }
+    //    GameObject instance = Instantiate(StabilometryImage, transform.parent);
+    //    instance.GetComponent<StabilometryImageScript>().DrawImage(task);
+    //}
 
     /// <summary>
     /// Saves Raw data as a JSON document

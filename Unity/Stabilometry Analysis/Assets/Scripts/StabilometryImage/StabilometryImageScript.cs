@@ -9,7 +9,8 @@ public class StabilometryImageScript : MonoBehaviour
     private GameObject StabilometryLine = null,
         EllipseLine = null,
         TestDot = null,
-        DataHolder = null;
+        DataHolder = null,
+        EllipseDataHolder = null;
 
     private Vector2 position = Vector2.zero;
 
@@ -26,27 +27,6 @@ public class StabilometryImageScript : MonoBehaviour
     {
     }
 
-    //public void DrawImage(List<DataPoint> rawData)
-    //{
-
-    //    position = transform.position;
-
-    //    List<Vector2> data = new List<Vector2>();
-
-    //    int index = 0;
-
-    //    foreach (DataPoint element in rawData)
-    //    {
-    //        if (index > 100)
-    //            break;
-    //        data.Add(element.GetVecotor2(Axes.Both));
-    //        index++;
-    //    }
-
-    //    DrawStabilometryPath(data);
-
-    //}
-
     public void DrawImage(StabilometryTask stabilometryTask)
     {
         //position = transform.position;
@@ -61,7 +41,7 @@ public class StabilometryImageScript : MonoBehaviour
 
         DrawStabilometryPath(stabilometryTask.stabilometryDrawData);
 
-        DrawEllipsPath(stabilometryTask.confidence95Ellipse.ellipsePoints);
+        DrawEllipsPath(stabilometryTask.confidence95Ellipse.GetEllipsePoints(40));
     }
 
     /// <summary>
@@ -73,7 +53,7 @@ public class StabilometryImageScript : MonoBehaviour
         List<Vector2> drawData = ScalePoints(stabilometryData);
 
         for (int i = 1; i < drawData.Count; i++)
-            DrawLine(drawData[i], drawData[i - 1], StabilometryLine);
+            DrawLine(drawData[i], drawData[i - 1], StabilometryLine, DataHolder);
     }
 
     /// <summary>
@@ -87,10 +67,10 @@ public class StabilometryImageScript : MonoBehaviour
         for (int i = 1; i < drawData.Count; i++)
         {
             //Debug.Log(drawData[i]);
-            DrawLine(drawData[i], drawData[i - 1], EllipseLine);
+            DrawLine(drawData[i], drawData[i - 1], EllipseLine, EllipseDataHolder);
         }
 
-        DrawLine(drawData[drawData.Count - 1], drawData[0], EllipseLine);
+        DrawLine(drawData[drawData.Count - 1], drawData[0], EllipseLine, EllipseDataHolder);
     }
 
     private List<Vector2> ScalePoints(List<Vector2> dataPoints)
@@ -108,11 +88,11 @@ public class StabilometryImageScript : MonoBehaviour
     /// <param name="currentPosition"></param>
     /// <param name="previousPosition"></param>
     /// <param name="linePrefab"></param>
-    private void DrawLine(Vector2 currentPosition, Vector2 previousPosition, GameObject linePrefab)
+    private void DrawLine(Vector2 currentPosition, Vector2 previousPosition, GameObject linePrefab, GameObject parent)
     {
         Vector2 difference = currentPosition - previousPosition;
         Vector2 adjustedLinePosition = position + (currentPosition + previousPosition) / 2;
-        GameObject instance = Instantiate(linePrefab, adjustedLinePosition, Quaternion.FromToRotation(Vector3.right, difference), DataHolder.transform);
+        GameObject instance = Instantiate(linePrefab, adjustedLinePosition, Quaternion.FromToRotation(Vector3.right, difference), parent.transform);
 
         RectTransform rect = instance.GetComponent<RectTransform>();
 

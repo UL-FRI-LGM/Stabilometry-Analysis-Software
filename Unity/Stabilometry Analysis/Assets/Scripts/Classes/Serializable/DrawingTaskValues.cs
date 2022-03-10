@@ -7,11 +7,11 @@ using UnityEngine;
 public class DrawingTaskValues
 {
     public List<Vector2> linePoints = null;
-    public List<Vector2> ellipsePoints = null;
+    public DrawingEllipseValues ellipseValues = null;
 
     public DrawingTaskValues(StabilometryTask task)
     {
         linePoints = task.stabilometryDrawData;
-        ellipsePoints = task.confidence95Ellipse.ellipsePoints;
+        ellipseValues = new DrawingEllipseValues(task.confidence95Ellipse);
     }
 }

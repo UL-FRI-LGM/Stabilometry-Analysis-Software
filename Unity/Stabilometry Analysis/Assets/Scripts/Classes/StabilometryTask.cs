@@ -8,7 +8,7 @@ public class StabilometryTask
     #region Variables
     public int ID;
     public float duration,
-        frequency;
+        sampleTime;
 
     public float
         swayPath,
@@ -44,9 +44,9 @@ public class StabilometryTask
 
     public StabilometryTask(List<DataPoint> stabilometryData)
     {
-        
+
         duration = CalculateDuration(stabilometryData);
-        frequency = CalculateFrequency(stabilometryData);
+        sampleTime = CalculateSampleTime(stabilometryData);
 
         List<DataPoint> filteredData = FilterData(stabilometryData);
 
@@ -104,7 +104,7 @@ public class StabilometryTask
         return result;
     }
 
-    private float CalculateFrequency(List<DataPoint> unfilteredData)
+    private static float CalculateSampleTime(List<DataPoint> unfilteredData)
     {
         float differenceSum = 0;
 
@@ -113,10 +113,10 @@ public class StabilometryTask
 
         float averageValue = differenceSum / (unfilteredData.Count - 1);
 
-        return 1/ (averageValue);
+        return 1 / (averageValue);
     }
 
-    private float CalculateDuration(List<DataPoint> unfilteredData)
+    private static float CalculateDuration(List<DataPoint> unfilteredData)
     {
         float result = unfilteredData[unfilteredData.Count - 1].time
             - unfilteredData[0].time;
@@ -130,7 +130,7 @@ public class StabilometryTask
     /// <param name="stabilometryData"></param>
     /// <param name="axes"></param>
     /// <returns></returns>
-    private float CalculateSwayPath(List<DataPoint> stabilometryData, Axes axes)
+    private static float CalculateSwayPath(List<DataPoint> stabilometryData, Axes axes)
     {
         if (stabilometryData.Count <= 1)
             return 0f;
@@ -156,7 +156,7 @@ public class StabilometryTask
     /// </summary>
     /// <param name="stabilometryData"></param>
     /// <returns></returns>
-    private float CalculateMeanDistance(List<DataPoint> stabilometryData)
+    private static float CalculateMeanDistance(List<DataPoint> stabilometryData)
     {
         if (stabilometryData.Count <= 1)
             return 0f;
@@ -179,7 +179,7 @@ public class StabilometryTask
     /// <param name="stabilometryData"></param>
     /// <param name="axes"></param>
     /// <returns></returns>
-    private float CalculateMeanSwayVelocity(List<DataPoint> stabilometryData, Axes axes)
+    private static float CalculateMeanSwayVelocity(List<DataPoint> stabilometryData, Axes axes)
     {
 
         if (stabilometryData.Count <= 1)
@@ -209,7 +209,7 @@ public class StabilometryTask
     /// <param name="axes"></param>
     /// <param name="swayPath"></param>
     /// <returns></returns>
-    private float CalculateAverageAmplitude(List<DataPoint> stabilometryData, Axes axes, float swayPath)
+    private static float CalculateAverageAmplitude(List<DataPoint> stabilometryData, Axes axes, float swayPath)
     {
 
         if (stabilometryData.Count <= 1)
@@ -250,7 +250,7 @@ public class StabilometryTask
     /// <param name="stabilometryData"></param>
     /// <param name="axes"></param>
     /// <returns></returns>
-    private float CalculateMaximalAmplitude(List<DataPoint> stabilometryData, Axes axes)
+    private static float CalculateMaximalAmplitude(List<DataPoint> stabilometryData, Axes axes)
     {
 
         if (stabilometryData.Count <= 1)
@@ -274,4 +274,221 @@ public class StabilometryTask
         return maxValue - minValue;
     }
 
+    #region Testing
+
+    public static void TestFunctions()
+    {
+        List<DataPoint> testData = new List<DataPoint>();
+        testData.Add(new DataPoint(0.0f, 1, 1));
+        testData.Add(new DataPoint(0.1f, 3, 4));
+        testData.Add(new DataPoint(0.2f, 5, 2));
+        testData.Add(new DataPoint(0.3f, 2, 2));
+
+        TetsCalculateSampleTime(testData);
+
+        TestCalculateDuration(testData);
+
+        TestCalculateSwayPath(testData);
+
+        TestCalculateMeanDistance(testData);
+
+        TestCalculateMeanSwayVelocity(testData);
+
+        TestCalculateAverageAmplitude(testData);
+
+        TestCalculateMaximalAmplitude(testData);
+
+        EllipseValues.TestFunctions();
+    }
+
+    private static void TetsCalculateSampleTime(List<DataPoint> testData)
+    {
+        float correctValue = 10;
+
+        float test = CalculateSampleTime(testData);
+
+        bool pass = correctValue == test;
+
+        if (!pass)
+            Debug.LogError($"{correctValue} is not the same as {test}");
+
+        Debug.Log($"Frequency calculation passes {pass}");
+    }
+
+    private static void TestCalculateDuration(List<DataPoint> testData)
+    {
+        float correctValue = 0.3f;
+
+        float test = CalculateDuration(testData);
+
+        bool pass = correctValue == test;
+
+        if (!pass)
+            Debug.LogError($"{correctValue} is not the same as {test}");
+
+        Debug.Log($"Frequency calculation passes {pass}");
+        
+    }
+
+    /// <summary>
+    /// Sums all the path.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <param name="axes"></param>
+    /// <returns></returns>
+    private static void TestCalculateSwayPath(List<DataPoint> testData)
+    {
+        float correctValueBoth = Mathf.Sqrt(13) +  Mathf.Sqrt(8) + 3;
+
+        float testBoth = CalculateSwayPath(testData, Both);
+
+        bool passBoth = correctValueBoth == testBoth;
+
+        if (!passBoth)
+            Debug.LogError($"{correctValueBoth} is not the same as {testBoth}");
+        
+        float correctValueAP = 5;
+
+        float testAP = CalculateSwayPath(testData, AP);
+        bool passAP = correctValueAP == testAP;
+
+        if (!passAP)
+            Debug.LogError($"{correctValueAP} is not the same as {testAP}");
+
+
+        float correctValueML = 7;
+
+        float testML = CalculateSwayPath(testData, ML);
+        bool passML = correctValueML == testML;
+
+        if (!passML)
+            Debug.LogError($"{correctValueML} is not the same as {testML}");
+
+
+        Debug.Log($"Sway Path calculation passes {passBoth && passAP && passML}");
+    }
+
+    /// <summary>
+    /// Mean distance from the starting point.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <returns></returns>
+    private static void TestCalculateMeanDistance(List<DataPoint> testData)
+    {
+        float correctValue = (Mathf.Sqrt(13) + Mathf.Sqrt(17) + Mathf.Sqrt(2))/4;
+
+        float test = CalculateMeanDistance(testData);
+
+        bool pass = correctValue == test;
+
+        if (!pass)
+            Debug.LogError($"{correctValue} is not the same as {test}");
+
+        Debug.Log($"Mean Distance calculation passes {pass}");
+    }
+
+    /// <summary>
+    /// Mean velocity.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <param name="axes"></param>
+    /// <returns></returns>
+    private static void TestCalculateMeanSwayVelocity(List<DataPoint> testData)
+    {
+
+        float correctValueBoth = (Mathf.Sqrt(13) + Mathf.Sqrt(8) + 3 )/( 0.1f * 3f);
+
+        float testBoth = CalculateMeanSwayVelocity(testData, Both);
+
+        bool passBoth = System.Math.Round(correctValueBoth,4) == System.Math.Round(testBoth,4);
+
+        if (!passBoth)
+            Debug.LogError($"{correctValueBoth} is not the same as {testBoth}");
+
+        float correctValueAP = 5 /( 0.1f * 3f);
+
+        float testAP = CalculateMeanSwayVelocity(testData, AP);
+        bool passAP = System.Math.Round(correctValueAP,4) == System.Math.Round(testAP,4);
+
+        if (!passAP)
+            Debug.LogError($"{correctValueAP} is not the same as {testAP}");
+
+
+        float correctValueML = 7 / (0.1f * 3f);
+
+        float testML = CalculateMeanSwayVelocity(testData, ML);
+        bool passML = System.Math.Round(correctValueML,4) == System.Math.Round(testML,4);
+
+        if (!passML)
+            Debug.LogError($"{correctValueML} is not the same as {testML}");
+
+
+        Debug.Log($"Mean Sway Velocity calculation passes {passBoth && passAP && passML}");
+    }
+
+
+    /// <summary>
+    /// Calculates the average amplitude in given direction.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <param name="axes"></param>
+    /// <param name="swayPath"></param>
+    /// <returns></returns>
+    private static void TestCalculateAverageAmplitude(List<DataPoint> testData)
+    {
+        float correctValueAP = 2.5f;
+
+        float swayPathAP = CalculateSwayPath(testData, AP);
+
+        float testAP = CalculateAverageAmplitude(testData, AP, swayPathAP);
+        bool passAP = correctValueAP == testAP;
+
+        if (!passAP)
+            Debug.LogError($"{correctValueAP} is not the same as {testAP}");
+
+        float correctValueML = 3.5f;
+
+        float swayPathML = CalculateSwayPath(testData, ML);
+
+        float testML =  CalculateAverageAmplitude(testData, ML, swayPathML);
+        bool passML = correctValueML == testML;
+
+        if (!passML)
+            Debug.LogError($"{correctValueML} is not the same as {testML}");
+
+
+        Debug.Log($"Average Amplitude calculation passes {passAP && passML}");
+
+    }
+
+    /// <summary>
+    /// Returns the maximum amplitude in given axis.
+    /// </summary>
+    /// <param name="stabilometryData"></param>
+    /// <param name="axes"></param>
+    /// <returns></returns>
+    private static void TestCalculateMaximalAmplitude(List<DataPoint> testData)
+    {
+
+        float correctValueAP = 3f;
+
+        float testAP = CalculateMaximalAmplitude(testData, AP);
+        bool passAP = correctValueAP == testAP;
+
+        if (!passAP)
+            Debug.LogError($"{correctValueAP} is not the same as {testAP}");
+
+        float correctValueML = 4f;
+
+        float testML = CalculateMaximalAmplitude(testData, ML);
+        bool passML = correctValueML == testML;
+
+        if (!passML)
+            Debug.LogError($"{correctValueML} is not the same as {testML}");
+
+
+        Debug.Log($"Maximal Amplitude calculation passes {passAP && passML}");
+    }
+
+    #endregion
 }

@@ -20,7 +20,7 @@ public class DatabaseScript : MonoBehaviour
 
     private static readonly string[] TaskTableColumnNames =
     {
-        "EntryID", "Duration", "Frequency", "SwayPath", "SwayPathAP", 
+        "EntryID", "Duration", "SampleTime", "SwayPath", "SwayPathAP", 
         "SwayPathML", "MeanDistance", "MeanSwayVelocity", "MeanSwayVelocityAP", "MeanSwayVelocityML", 
         "SwayAverageAmplitudeAP", "swayAverageAmplitudeML", "SwayMaximalAmplitudeAP", "SwayMaximalAmplitudeML", "ConfidenceEllipseArea"
     };
@@ -39,7 +39,7 @@ public class DatabaseScript : MonoBehaviour
     };
     private static readonly string[] MeasurementTableColumnValues =
     {
-        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "INTEGER", "TEXT",
+        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "REAL", "TEXT",
         "INTEGER", "INTEGER", "INTEGER", "INTEGER"};
 
     private SqliteConnection connection = null;
@@ -151,7 +151,7 @@ public class DatabaseScript : MonoBehaviour
         {
             stabilometryTask.ID.ToString(),
             stabilometryTask.duration.ToString(),
-            stabilometryTask.frequency.ToString(),
+            stabilometryTask.sampleTime.ToString(),
             stabilometryTask.swayPath.ToString(),
             stabilometryTask.swayPathAP.ToString(),
             stabilometryTask.swayPathML.ToString(),

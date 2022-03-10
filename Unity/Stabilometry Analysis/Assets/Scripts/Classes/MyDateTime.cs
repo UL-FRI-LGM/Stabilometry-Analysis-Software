@@ -6,10 +6,12 @@ public class MyDateTime
 {
     #region Variables
 
-    private const long hourMult = 100,
-        dayMult = 10000,
-        monthMult = 1000000,
-        yearMult = 100000000;
+    private const float
+        minuteMult = 0.0001f,
+        hourMult = 0.01f,
+        dayMult = 1,
+        monthMult = 100,
+        yearMult = 10000;
 
     public int
         year = 0,
@@ -33,7 +35,7 @@ public class MyDateTime
     /// Takes in myDateTime format and fills the correct values.
     /// </summary>
     /// <param name="myDateTime"></param>
-    public MyDateTime(long myDateTime)
+    public MyDateTime(float myDateTime)
     {
         year = (int)(myDateTime / yearMult);
         myDateTime -= year * yearMult;
@@ -46,7 +48,7 @@ public class MyDateTime
 
         hour = (int)(myDateTime / hourMult);
 
-        minutes = (int)(myDateTime - hour * hourMult);
+        minutes = (int)((myDateTime - hour * hourMult) / minuteMult);
     }
 
     /// <summary>
@@ -55,17 +57,17 @@ public class MyDateTime
     /// <returns></returns>
     override public string ToString()
     {
-        return GetInt().ToString();
+        return GetFloat().ToString();
     }
 
     /// <summary>
     /// Returns the date in format YYYYMMDDhhmm.
     /// </summary>
     /// <returns></returns>
-    public long GetInt()
+    public float GetFloat()
     {
-        long result = 0;
-        result += minutes;
+        float result = 0;
+        result += minutes * minuteMult;
         result += hour * hourMult;
         result += day * dayMult;
         result += month * monthMult;
