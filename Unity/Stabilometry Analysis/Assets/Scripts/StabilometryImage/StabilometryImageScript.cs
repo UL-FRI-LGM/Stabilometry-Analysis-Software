@@ -7,9 +7,7 @@ public class StabilometryImageScript : MonoBehaviour
 {
     #region Variables
     [SerializeField]
-    private GameObject StabilometryLine = null,
-        EllipseLine = null,
-        TestDot = null;
+    private GameObject TestDot = null;
 
     [SerializeField]
     private UILineRenderer pathLine = null,
