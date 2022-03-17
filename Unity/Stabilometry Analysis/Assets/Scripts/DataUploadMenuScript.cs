@@ -18,10 +18,6 @@ public class DataUploadMenuScript : MonoBehaviour
     private Button saveButton = null;
 
     public MainScript mainScript { get; set; } = null;
-
-    //TODO Remove this
-    [SerializeField]
-    private GameObject StabilometryImage = null;
     #endregion
 
     private void Update()
@@ -95,26 +91,6 @@ public class DataUploadMenuScript : MonoBehaviour
         string rawFileName = $"RawData{measurement.ID}.json";
         SaveRawJson(data, rawFileName);
     }
-
-    private void HandleStabilometryImage(List<DataPoint> data)
-    {
-        Debug.LogWarning("Delete This");
-        //if (data == null)
-        //    return;
-
-        //GameObject instance = Instantiate(StabilometryImage, transform.parent);
-        //instance.GetComponent<StabilometryImageScript>().DrawImage(data);
-    }
-
-    //private void HandleStabilometryImage(StabilometryTask task)
-    //{
-
-    //    if (task == null)
-    //        return;
-
-    //    GameObject instance = Instantiate(StabilometryImage, transform.parent);
-    //    instance.GetComponent<StabilometryImageScript>().DrawImage(task);
-    //}
 
     /// <summary>
     /// Saves Raw data as a JSON document
