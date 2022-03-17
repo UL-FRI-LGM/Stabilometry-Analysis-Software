@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI.Extensions;
 
 public class StabilometryImageScript : MonoBehaviour
 {
@@ -8,101 +9,49 @@ public class StabilometryImageScript : MonoBehaviour
     [SerializeField]
     private GameObject StabilometryLine = null,
         EllipseLine = null,
-        TestDot = null,
-        DataHolder = null,
-        EllipseDataHolder = null;
+        TestDot = null;
 
-    private Vector2 position = Vector2.zero;
+    [SerializeField]
+    private UILineRenderer pathLine = null,
+        ellipseLine = null;
 
     private float multiplicator = 2500f;
-    //private float multiplicator = 100f;
     #endregion
-
-    private void Awake()
-    {
-        position = transform.position;
-    }
-
-    private void Start()
-    {
-    }
 
     public void DrawImage(StabilometryTask stabilometryTask)
     {
-        //position = transform.position;
-
-        //List<Vector2> testPositions = new List<Vector2>();
-        //testPositions.Add(new Vector2(0, 0));
-        //testPositions.Add(new Vector2(0, 50));
-        //testPositions.Add(new Vector2(50, 0));
-        //testPositions.Add(new Vector2(100, 100));
-        //testPositions.Add(new Vector2(100, -100));
-        //testPositions.Add(new Vector2(-100, -230));
-
         DrawStabilometryPath(stabilometryTask.stabilometryDrawData);
 
         DrawEllipsPath(stabilometryTask.confidence95Ellipse.GetEllipsePoints(40));
     }
 
-    /// <summary>
-    /// Draws a stabilometry path. The data should be centered in fist data point.
-    /// </summary>
-    /// <param name="stabilometryData"></param>
+    ///// <summary>
+    ///// Draws a stabilometry path. The data should be centered in fist data point.
+    ///// </summary>
+    ///// <param name="stabilometryData"></param>
     private void DrawStabilometryPath(List<Vector2> stabilometryData)
     {
-        List<Vector2> drawData = ScalePoints(stabilometryData);
+        Vector2[] points = new Vector2[stabilometryData.Count];
 
-        for (int i = 1; i < drawData.Count; i++)
-            DrawLine(drawData[i], drawData[i - 1], StabilometryLine, DataHolder);
+        for(int i = 0; i< stabilometryData.Count; i++)
+            points[i] = stabilometryData[i] * multiplicator;
+
+        pathLine.Points = points;
     }
 
-    /// <summary>
-    /// Draws an elipsis
-    /// </summary>
-    /// <param name="ellipseData"></param>
+    ///// <summary>
+    ///// Draws an elipsis
+    ///// </summary>
+    ///// <param name="ellipseData"></param>
     private void DrawEllipsPath(List<Vector2> ellipseData)
     {
-        List<Vector2> drawData = ScalePoints(ellipseData);
+        Vector2[] points = new Vector2[ellipseData.Count + 1];
 
-        for (int i = 1; i < drawData.Count; i++)
-        {
-            //Debug.Log(drawData[i]);
-            DrawLine(drawData[i], drawData[i - 1], EllipseLine, EllipseDataHolder);
-        }
+        for (int i = 0; i < ellipseData.Count; i++)
+            points[i] = ellipseData[i] * multiplicator;
 
-        DrawLine(drawData[drawData.Count - 1], drawData[0], EllipseLine, EllipseDataHolder);
+        points[points.Length - 1] = ellipseData[0] * multiplicator;
+
+        ellipseLine.Points = points;
     }
-
-    private List<Vector2> ScalePoints(List<Vector2> dataPoints)
-    {
-        List<Vector2> result = new List<Vector2>();
-        foreach (Vector2 point in dataPoints)
-            result.Add(point * multiplicator);
-
-        return result;
-    }
-
-    /// <summary>
-    /// Connects two points with a linePrefab.
-    /// </summary>
-    /// <param name="currentPosition"></param>
-    /// <param name="previousPosition"></param>
-    /// <param name="linePrefab"></param>
-    private void DrawLine(Vector2 currentPosition, Vector2 previousPosition, GameObject linePrefab, GameObject parent)
-    {
-        Vector2 difference = currentPosition - previousPosition;
-        Vector2 adjustedLinePosition = position + (currentPosition + previousPosition) / 2;
-        GameObject instance = Instantiate(linePrefab, adjustedLinePosition, Quaternion.FromToRotation(Vector3.right, difference), parent.transform);
-
-        RectTransform rect = instance.GetComponent<RectTransform>();
-
-        rect.sizeDelta = new Vector2(difference.magnitude, rect.sizeDelta.y);
-
-    }
-
-    public void TestEllipse(List<Vector2> data)
-    {
-        DrawEllipsPath(data);
-    }
-
 }
