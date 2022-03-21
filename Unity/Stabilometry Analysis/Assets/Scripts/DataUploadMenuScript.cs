@@ -44,7 +44,12 @@ public class DataUploadMenuScript : MonoBehaviour
 
         if (dataPresent)
         {
-            SaveValues(data);
+            int newID = mainScript.database.GetLastMeasurementID() + 1;
+            StabilometryMeasurement measurement = JSONHandler.SaveValues(newID, data, mainScript.currentPatient.ID, GetSelectedPose(), GetSelectedDateTime());
+
+            if (measurement != null)
+                mainScript.database.AddMeasurement(measurement);
+
             mainScript.menuSwitching.OpenInitialMenu();
         }
     }
@@ -61,74 +66,6 @@ public class DataUploadMenuScript : MonoBehaviour
             result[i] = fileImporters[i].ReadData();
 
         return result;
-    }
-
-    /// <summary>
-    /// Calculates and saves the values into the database
-    /// </summary>
-    /// <param name="data"></param>
-    private void SaveValues(List<DataPoint>[] data)
-    {
-        StabilometryMeasurement measurement = new StabilometryMeasurement();
-        measurement.ID = mainScript.database.GetLastMeasurementID() + 1;
-        measurement.patientID = mainScript.currentPatient.ID;
-        measurement.pose = GetSelectedPose();
-        measurement.dateTime = GetSelectedDateTime();
-
-        measurement.eyesOpenSolidSurface = (data[0] != null) ? new StabilometryTask(data[0]) : null;
-        measurement.eyesClosedSolidSurface = (data[1] != null) ? new StabilometryTask(data[1]) : null;
-        measurement.eyesOpenSoftSurface = (data[2] != null) ? new StabilometryTask(data[2]) : null;
-        measurement.eyesClosedSoftSurface = (data[3] != null) ? new StabilometryTask(data[3]) : null;
-
-        if (measurement.eyesOpenSolidSurface != null)
-        {
-            imageSciprt.gameObject.SetActive(true);
-            imageSciprt.DrawImage(measurement.eyesOpenSolidSurface);
-        }
-
-        mainScript.database.AddMeasurement(measurement);
-
-        string fileName = $"Data{measurement.ID}.json";
-        SaveDrawingJson(measurement.GetDrawingData(), fileName);
-
-        string rawFileName = $"RawData{measurement.ID}.json";
-        SaveRawJson(data, rawFileName);
-    }
-
-    /// <summary>
-    /// Saves Raw data as a JSON document
-    /// </summary>
-    /// <param name="data"></param>
-    private void SaveRawJson(List<DataPoint>[] data, string fileName)
-    {
-        string json = JsonHelper.ToJson(data);
-
-        string jsonDirectory = $@"{Application.persistentDataPath}\JSON\Raw";
-
-        if (!Directory.Exists(jsonDirectory))
-            Directory.CreateDirectory(jsonDirectory);
-
-        string newFilePath = $@"{jsonDirectory}\{fileName}";
-
-        File.WriteAllText(newFilePath, json);
-    }
-
-    /// <summary>
-    /// Saves data as a JSON document
-    /// </summary>
-    /// <param name="data"></param>
-    private void SaveDrawingJson(DrawingTaskValues[] data, string fileName)
-    {
-        string json = JsonHelper.ToJson(data);
-
-        string jsonDirectory = $@"{Application.persistentDataPath}\JSON\Data";
-
-        if (!Directory.Exists(jsonDirectory))
-            Directory.CreateDirectory(jsonDirectory);
-
-        string newFilePath = $@"{jsonDirectory}\{fileName}";
-
-        File.WriteAllText(newFilePath, json);
     }
 
     private void OnDisable()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class InitialMenuScript : MonoBehaviour
 {
@@ -91,6 +92,36 @@ public class InitialMenuScript : MonoBehaviour
     public void DeletePatientButton()
     {
         mainScript.DeleteCurrentPatient();
+    }
+
+    public void StartDeletionOfAllData()
+    {
+        ShowDataDeletionWarning();
+    }
+
+    public void DeleteAllData()
+    {
+        mainScript.database.CloseDatabase();
+
+        DirectoryInfo directory = new DirectoryInfo(Application.persistentDataPath);
+
+        foreach (FileInfo file in directory.GetFiles())
+        {
+            file.Delete();
+        }
+
+        foreach (DirectoryInfo dir in directory.GetDirectories())
+        {
+            dir.Delete(true);
+        }
+
+        mainScript.ExitApplication();
+    }
+
+    // TODO make this work
+    private void ShowDataDeletionWarning()
+    {
+        DeleteAllData();
     }
     #endregion
 }

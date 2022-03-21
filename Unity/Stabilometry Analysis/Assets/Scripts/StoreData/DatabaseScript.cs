@@ -92,6 +92,18 @@ public class DatabaseScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Closes the database, used for clearing data.
+    /// </summary>
+    public void CloseDatabase()
+    {
+        if (connection != null)
+        {
+            connection.Close();
+            Debug.Log("Connection closed.");
+        }
+    }
+
     private void OnDestroy()
     {
         if (connection != null)
