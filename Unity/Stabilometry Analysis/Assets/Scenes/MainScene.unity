@@ -338,8 +338,7 @@ MonoBehaviour:
   - {fileID: 568780637}
   positionDropdown: {fileID: 1518881788}
   saveButton: {fileID: 578381882}
-  StabilometryImage: {fileID: 4955002056944118085, guid: 0d8096ba51677b1438a747be8648db2f,
-    type: 3}
+  imageSciprt: {fileID: 1753970017}
 --- !u!1 &11562195
 GameObject:
   m_ObjectHideFlags: 0
@@ -6147,6 +6146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 948468276}
   - component: {fileID: 948468277}
+  - component: {fileID: 948468278}
   m_Layer: 5
   m_Name: Analysis Menu
   m_TagString: Untagged
@@ -6182,6 +6182,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 948468275}
   m_CullTransparentMesh: 0
+--- !u!114 &948468278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948468275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13634ef76fee90243abfc9dbaf480662, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stabilometryImagePrefab: {fileID: 0}
 --- !u!1 &986748395
 GameObject:
   m_ObjectHideFlags: 0
@@ -10018,7 +10031,8 @@ MonoBehaviour:
   m_improveResolution: 0
   m_Resolution: 0
   m_useNativeSize: 0
-  m_points: []
+  m_points:
+  - {x: 0, y: 0}
   lineThickness: 3
   relativeSize: 0
   lineList: 0
@@ -11461,6 +11475,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1697639312}
   m_CullTransparentMesh: 0
+--- !u!114 &1753970017 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8362696301392017073, guid: 0d8096ba51677b1438a747be8648db2f,
+    type: 3}
+  m_PrefabInstance: {fileID: 986823528}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89914eeaa958fb54bb0f2e42273197ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1768072329
 GameObject:
   m_ObjectHideFlags: 0

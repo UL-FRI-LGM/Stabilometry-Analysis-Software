@@ -8,16 +8,13 @@ using UnityEngine.UI;
 public class DataUploadMenuScript : MonoBehaviour
 {
     #region Variables
-    [SerializeField]
-    private FileImporter[] fileImporters = null;
-
-    [SerializeField]
-    private TMP_Dropdown positionDropdown = null;
-
-    [SerializeField]
-    private Button saveButton = null;
+    [SerializeField] private FileImporter[] fileImporters = null;
+    [SerializeField] private TMP_Dropdown positionDropdown = null;
+    [SerializeField] private Button saveButton = null;
 
     public MainScript mainScript { get; set; } = null;
+
+    [SerializeField] private StabilometryImageScript imageSciprt = null;
     #endregion
 
     private void Update()
@@ -82,6 +79,12 @@ public class DataUploadMenuScript : MonoBehaviour
         measurement.eyesClosedSolidSurface = (data[1] != null) ? new StabilometryTask(data[1]) : null;
         measurement.eyesOpenSoftSurface = (data[2] != null) ? new StabilometryTask(data[2]) : null;
         measurement.eyesClosedSoftSurface = (data[3] != null) ? new StabilometryTask(data[3]) : null;
+
+        if (measurement.eyesOpenSolidSurface != null)
+        {
+            imageSciprt.gameObject.SetActive(true);
+            imageSciprt.DrawImage(measurement.eyesOpenSolidSurface);
+        }
 
         mainScript.database.AddMeasurement(measurement);
 
