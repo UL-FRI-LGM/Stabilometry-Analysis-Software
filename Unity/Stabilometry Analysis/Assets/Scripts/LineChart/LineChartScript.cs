@@ -14,6 +14,11 @@ public class LineChartScript : MonoBehaviour
     private void Awake()
     {
         this.imageRect = GetComponent<RectTransform>();
+        Debug.Log($"{imageRect.anchoredPosition} and width/height {imageRect.sizeDelta}");
+    }
+
+    private void Start()
+    {
     }
 
     public void SetChartData(List<ChartData> chartData)
@@ -29,6 +34,11 @@ public class LineChartScript : MonoBehaviour
     {
         SetXLine(this.chartData);
         SetYline(this.chartData);
+    }
+
+    private void Update()
+    {
+     
     }
 
     private void SetXLine(List<ChartData> data)
