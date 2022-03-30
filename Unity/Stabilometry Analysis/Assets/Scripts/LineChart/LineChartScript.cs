@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI.Extensions;
 
 public class LineChartScript : MonoBehaviour
 {
     #region Variables
     [SerializeField] private GameObject LineObject = null;
 
+    [SerializeField] private UILineRenderer[] lineRenderers = null;
+
     private RectTransform imageRect = null;
-    private List<ChartData> chartData = null;
+    private List<ChartData[]> chartData = null;
     #endregion
 
     private void Awake()
@@ -21,7 +24,7 @@ public class LineChartScript : MonoBehaviour
     {
     }
 
-    public void SetChartData(List<ChartData> chartData)
+    public void SetChartData(List<ChartData[]> chartData)
     {
         this.chartData = chartData;
         UpdateChart();
@@ -34,6 +37,7 @@ public class LineChartScript : MonoBehaviour
     {
         SetXLine(this.chartData);
         SetYline(this.chartData);
+        DrawData(this.chartData);
     }
 
     private void Update()
@@ -41,13 +45,21 @@ public class LineChartScript : MonoBehaviour
      
     }
 
-    private void SetXLine(List<ChartData> data)
+    private void SetXLine(List<ChartData[]> data)
     {
 
     }
 
-    private void SetYline(List<ChartData> data)
+    private void SetYline(List<ChartData[]> data)
     {
+
+    }
+
+    private void DrawData(List<ChartData[]> data)
+    {
+        RectTransform drawingSpace = lineRenderers[0].GetComponent<RectTransform>();
+        Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / data.Count, drawingSpace.rect.height);
+
 
     }
 }
