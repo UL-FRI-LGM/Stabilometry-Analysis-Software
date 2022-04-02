@@ -35,30 +35,53 @@ public class LineChartScript : MonoBehaviour
     /// </summary>
     public void UpdateChart()
     {
-        SetXLine(this.chartData);
+        RectTransform drawingSpace = lineRenderers[0].GetComponent<RectTransform>();
+        Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / this.chartData.Count, drawingSpace.rect.height);
+
+        SetXLine(this.chartData, valueSpaceSize.x, drawingSpace);
         SetYline(this.chartData);
         DrawData(this.chartData);
     }
 
     private void Update()
     {
-     
+
     }
 
-    private void SetXLine(List<ChartData[]> data)
+    private void SetXLine(List<ChartData[]> data, float elementWidth, RectTransform drawingSpace)
     {
+        float leftmostPosition = drawingSpace.transform.localPosition.y;
 
+        if (data.Count % 2 != 0)
+            leftmostPosition -= elementWidth * data.Count / 2;
+        else
+            leftmostPosition -= elementWidth * (data.Count / 2 + 0.5f);
+
+        Vector2 startingPosition = new Vector2(leftmostPosition, drawingSpace.transform.localPosition.y);
+
+        for (int i = 0; i < data.Count; i++)
+            Debug.Log(startingPosition.x + i * elementWidth);
     }
 
     private void SetYline(List<ChartData[]> data)
     {
+        float largestValue = -1f;
+        foreach (ChartData[] group in data)
+        {
+            foreach (ChartData elemnt in group)
+            {
+                if (elemnt.value > largestValue)
+                    largestValue = elemnt.value;
+            }
+        }
+
 
     }
 
     private void DrawData(List<ChartData[]> data)
     {
-        RectTransform drawingSpace = lineRenderers[0].GetComponent<RectTransform>();
-        Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / data.Count, drawingSpace.rect.height);
+        
+        
 
 
     }

@@ -7,13 +7,15 @@ using System.Collections.Generic;
 
 public class FileImporter : MonoBehaviour
 {
-
+    #region Variables
     [SerializeField]
     private TextMeshProUGUI displayText = null;
 
     public bool pathFound { get; private set; } = false;
 
     private string path = "None";
+
+    #endregion
 
     public void ImportDataButton()
     {
