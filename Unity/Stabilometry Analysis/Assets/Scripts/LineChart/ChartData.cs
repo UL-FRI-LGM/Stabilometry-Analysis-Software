@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ChartData
 {
-    public float value;
+    public float[] values;
     public MyDateTime time;
 
-    public ChartData(float value, MyDateTime time)
+    public ChartData(float[] values, MyDateTime time)
     {
-        this.value = value;
+        this.values = values;
         this.time = time;
     }
 }

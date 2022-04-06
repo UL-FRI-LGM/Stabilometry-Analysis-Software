@@ -6,12 +6,15 @@ using UnityEngine.UI.Extensions;
 public class LineChartScript : MonoBehaviour
 {
     #region Variables
-    [SerializeField] private GameObject LineObject = null;
+    [SerializeField]
+    private GameObject
+        LineObject = null,
+        dotObject = null;
 
     [SerializeField] private UILineRenderer[] lineRenderers = null;
 
     private RectTransform imageRect = null;
-    private List<ChartData[]> chartData = null;
+    private List<ChartData> chartData = null;
     #endregion
 
     private void Awake()
@@ -22,9 +25,11 @@ public class LineChartScript : MonoBehaviour
 
     private void Start()
     {
+        List<ChartData> data = new List<ChartData>(10);
+        SetChartData(data);
     }
 
-    public void SetChartData(List<ChartData[]> chartData)
+    public void SetChartData(List<ChartData> chartData)
     {
         this.chartData = chartData;
         UpdateChart();
@@ -38,9 +43,9 @@ public class LineChartScript : MonoBehaviour
         RectTransform drawingSpace = lineRenderers[0].GetComponent<RectTransform>();
         Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / this.chartData.Count, drawingSpace.rect.height);
 
-        SetXLine(this.chartData, valueSpaceSize.x, drawingSpace);
+        DrawData(this.chartData, valueSpaceSize.x, drawingSpace);
         SetYline(this.chartData);
-        DrawData(this.chartData);
+        //DrawData(this.chartData);
     }
 
     private void Update()
@@ -48,7 +53,7 @@ public class LineChartScript : MonoBehaviour
 
     }
 
-    private void SetXLine(List<ChartData[]> data, float elementWidth, RectTransform drawingSpace)
+    private void DrawData(List<ChartData> data, float elementWidth, RectTransform drawingSpace)
     {
         float leftmostPosition = drawingSpace.transform.localPosition.y;
 
@@ -60,29 +65,27 @@ public class LineChartScript : MonoBehaviour
         Vector2 startingPosition = new Vector2(leftmostPosition, drawingSpace.transform.localPosition.y);
 
         for (int i = 0; i < data.Count; i++)
-            Debug.Log(startingPosition.x + i * elementWidth);
+        {
+            Vector2 position = new Vector2(startingPosition.x + i * elementWidth, transform.position.y);
+            Instantiate(dotObject, position, Quaternion.identity, transform);
+        }
     }
 
-    private void SetYline(List<ChartData[]> data)
+    private void SetYline(List<ChartData> data)
     {
         float largestValue = -1f;
-        foreach (ChartData[] group in data)
-        {
-            foreach (ChartData elemnt in group)
-            {
-                if (elemnt.value > largestValue)
-                    largestValue = elemnt.value;
-            }
-        }
-
+        foreach (ChartData element in data)
+            foreach (float value in element.values)
+                if (value > largestValue)
+                    largestValue = value;
 
     }
 
-    private void DrawData(List<ChartData[]> data)
-    {
-        
-        
+    //private void DrawData(List<ChartData> data)
+    //{
 
 
-    }
+
+
+    //}
 }
