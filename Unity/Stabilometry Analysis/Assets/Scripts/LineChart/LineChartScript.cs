@@ -25,7 +25,7 @@ public class LineChartScript : MonoBehaviour
 
     private void Start()
     {
-        List<ChartData> data = new List<ChartData>(10);
+        List<ChartData> data = new List<ChartData>(new ChartData[10]);
         SetChartData(data);
     }
 
@@ -41,10 +41,11 @@ public class LineChartScript : MonoBehaviour
     public void UpdateChart()
     {
         RectTransform drawingSpace = lineRenderers[0].GetComponent<RectTransform>();
-        Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / this.chartData.Count, drawingSpace.rect.height);
+        Debug.Log(drawingSpace.rect);
+        Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / (this.chartData.Count), drawingSpace.rect.height);
 
-        DrawData(this.chartData, valueSpaceSize.x, drawingSpace);
-        SetYline(this.chartData);
+        //SetYline(this.chartData);
+        DrawData(this.chartData, valueSpaceSize, drawingSpace);
         //DrawData(this.chartData);
     }
 
@@ -53,21 +54,28 @@ public class LineChartScript : MonoBehaviour
 
     }
 
-    private void DrawData(List<ChartData> data, float elementWidth, RectTransform drawingSpace)
+    private void DrawData(List<ChartData> data, Vector2 valueSpaceSize, RectTransform drawingSpace)
     {
-        float leftmostPosition = drawingSpace.transform.localPosition.y;
+        float leftmostPosition = drawingSpace.transform.position.x;
 
-        if (data.Count % 2 != 0)
-            leftmostPosition -= elementWidth * data.Count / 2;
-        else
-            leftmostPosition -= elementWidth * (data.Count / 2 + 0.5f);
+        //if (data.Count % 2 != 0)
+        //    leftmostPosition -= valueSpaceSize.x* data.Count / 2;
+        //else
+        //    leftmostPosition -= valueSpaceSize.x * (data.Count / 2 - 0.5f);
 
-        Vector2 startingPosition = new Vector2(leftmostPosition, drawingSpace.transform.localPosition.y);
+        Vector2 startingPosition = new Vector2(leftmostPosition, drawingSpace.transform.position.y);
+
+        Debug.Log(data.Count);
+
+        //Instantiate(dotObject, startingPosition, Quaternion.identity, transform);
+
+        LineObject.GetComponent<RectTransform>().sizeDelta = valueSpaceSize;
 
         for (int i = 0; i < data.Count; i++)
         {
-            Vector2 position = new Vector2(startingPosition.x + i * elementWidth, transform.position.y);
-            Instantiate(dotObject, position, Quaternion.identity, transform);
+            Vector2 position = new Vector2(startingPosition.x + i * valueSpaceSize.x, transform.position.y);
+            //Instantiate(LineObject, position, Quaternion.identity, transform);
+            Instantiate(LineObject, position, Quaternion.identity, lineRenderers[0].transform);
         }
     }
 

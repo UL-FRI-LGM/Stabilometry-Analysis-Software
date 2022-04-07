@@ -19,7 +19,7 @@ public class TestScript : MonoBehaviour
         //GameObject instance = Instantiate(stabilometryImage, canvas.transform);
         //instance.GetComponent<StabilometryImageScript>().TestEllipse(testValues.ellipsePoints);
 
-        StabilometryTask.TestFunctions();
+        //StabilometryTask.TestFunctions();
     }
 
     // Update is called once per frame
