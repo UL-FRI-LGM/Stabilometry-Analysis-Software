@@ -41,8 +41,8 @@ public class LineChartScript : MonoBehaviour
     public void UpdateChart()
     {
         RectTransform drawingSpace = lineRenderers[0].GetComponent<RectTransform>();
-        Debug.Log(drawingSpace.rect);
-        Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / (this.chartData.Count), drawingSpace.rect.height);
+
+        Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / (float)(this.chartData.Count), drawingSpace.rect.height);
 
         //SetYline(this.chartData);
         DrawData(this.chartData, valueSpaceSize, drawingSpace);
@@ -56,26 +56,29 @@ public class LineChartScript : MonoBehaviour
 
     private void DrawData(List<ChartData> data, Vector2 valueSpaceSize, RectTransform drawingSpace)
     {
-        float leftmostPosition = drawingSpace.transform.position.x;
+        float leftmostPosition = 0;
 
-        //if (data.Count % 2 != 0)
-        //    leftmostPosition -= valueSpaceSize.x* data.Count / 2;
-        //else
-        //    leftmostPosition -= valueSpaceSize.x * (data.Count / 2 - 0.5f);
+        if (data.Count % 2 != 0)
+            leftmostPosition -= valueSpaceSize.x * data.Count / 2;
+        else
+            leftmostPosition -= valueSpaceSize.x * (data.Count / 2 - 0.5f);
 
-        Vector2 startingPosition = new Vector2(leftmostPosition, drawingSpace.transform.position.y);
+        Vector2 startingPosition = new Vector2(leftmostPosition, 0);
 
-        Debug.Log(data.Count);
+        //Debug.Log(data.Count);
 
         //Instantiate(dotObject, startingPosition, Quaternion.identity, transform);
 
-        LineObject.GetComponent<RectTransform>().sizeDelta = valueSpaceSize;
 
+        RectTransform lineRect = LineObject.GetComponent<RectTransform>();
+        lineRect.sizeDelta = valueSpaceSize;
+
+        //valueSpaceSize.x
         for (int i = 0; i < data.Count; i++)
         {
-            Vector2 position = new Vector2(startingPosition.x + i * valueSpaceSize.x, transform.position.y);
-            //Instantiate(LineObject, position, Quaternion.identity, transform);
-            Instantiate(LineObject, position, Quaternion.identity, lineRenderers[0].transform);
+            lineRect.anchoredPosition = new Vector2(startingPosition.x + i * lineRect.rect.width, startingPosition.y);
+            Instantiate(LineObject, lineRenderers[0].transform);
+            //Instantiate(LineObject, position, Quaternion.identity, lineRenderers[0].transform);
         }
     }
 
