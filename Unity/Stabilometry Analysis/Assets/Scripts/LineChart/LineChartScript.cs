@@ -26,6 +26,13 @@ public class LineChartScript : MonoBehaviour
     private void Start()
     {
         List<ChartData> data = new List<ChartData>(new ChartData[10]);
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            float[] values = new float[4];
+            values[0] = i;
+            data[i] = new ChartData(values, null);
+        }
         SetChartData(data);
     }
 
@@ -44,8 +51,8 @@ public class LineChartScript : MonoBehaviour
 
         Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / (float)(this.chartData.Count), drawingSpace.rect.height);
 
-        //SetYline(this.chartData);
-        DrawData(this.chartData, valueSpaceSize, drawingSpace);
+        float maxValue = GetLargestValue(this.chartData);
+        DrawData(this.chartData, valueSpaceSize, drawingSpace, maxValue);
         //DrawData(this.chartData);
     }
 
@@ -54,7 +61,7 @@ public class LineChartScript : MonoBehaviour
 
     }
 
-    private void DrawData(List<ChartData> data, Vector2 valueSpaceSize, RectTransform drawingSpace)
+    private void DrawData(List<ChartData> data, Vector2 valueSpaceSize, RectTransform drawingSpace, float largestValue)
     {
         float leftmostPosition = 0;
 
@@ -69,34 +76,32 @@ public class LineChartScript : MonoBehaviour
 
         //Instantiate(dotObject, startingPosition, Quaternion.identity, transform);
 
+        float valueCoverter = valueSpaceSize.y / largestValue;
 
         RectTransform lineRect = LineObject.GetComponent<RectTransform>();
         lineRect.sizeDelta = valueSpaceSize;
+
+        RectTransform dotRect = dotObject.GetComponent<RectTransform>();
 
         //valueSpaceSize.x
         for (int i = 0; i < data.Count; i++)
         {
             lineRect.anchoredPosition = new Vector2(startingPosition.x + i * lineRect.rect.width, startingPosition.y);
-            Instantiate(LineObject, lineRenderers[0].transform);
-            //Instantiate(LineObject, position, Quaternion.identity, lineRenderers[0].transform);
+            GameObject slice = Instantiate(LineObject, lineRenderers[0].transform);
+
+            dotRect.anchoredPosition = new Vector2(0, data[i].values[0] * valueCoverter);
+            Instantiate(dotObject, slice.transform);
         }
     }
 
-    private void SetYline(List<ChartData> data)
+    private float GetLargestValue(List<ChartData> data)
     {
         float largestValue = -1f;
         foreach (ChartData element in data)
             foreach (float value in element.values)
                 if (value > largestValue)
                     largestValue = value;
-
+        
+        return largestValue;
     }
-
-    //private void DrawData(List<ChartData> data)
-    //{
-
-
-
-
-    //}
 }
