@@ -12,15 +12,15 @@ public class LineChartScript : MonoBehaviour
         dotObject = null;
 
     [SerializeField] private UILineRenderer[] lineRenderers = null;
+    [SerializeField] private GameObject dotsHolder = null;
 
-    private RectTransform imageRect = null;
+    private RectTransform chartRect = null;
     private List<ChartData> chartData = null;
     #endregion
 
     private void Awake()
     {
-        this.imageRect = GetComponent<RectTransform>();
-        Debug.Log($"{imageRect.anchoredPosition} and width/height {imageRect.sizeDelta}");
+        this.chartRect = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
     }
 
     private void Start()
@@ -52,7 +52,7 @@ public class LineChartScript : MonoBehaviour
         Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / (float)(this.chartData.Count), drawingSpace.rect.height);
 
         float maxValue = GetLargestValue(this.chartData);
-        DrawData(this.chartData, valueSpaceSize, drawingSpace, maxValue);
+        DrawData(this.chartData, valueSpaceSize, this.chartRect, maxValue);
         //DrawData(this.chartData);
     }
 
@@ -79,7 +79,7 @@ public class LineChartScript : MonoBehaviour
         float valueCoverter = valueSpaceSize.y / largestValue;
 
         RectTransform lineRect = LineObject.GetComponent<RectTransform>();
-        lineRect.sizeDelta = valueSpaceSize;
+        lineRect.sizeDelta = new Vector2(valueSpaceSize.x, drawingSpace.rect.height);
 
         RectTransform dotRect = dotObject.GetComponent<RectTransform>();
 
@@ -87,10 +87,10 @@ public class LineChartScript : MonoBehaviour
         for (int i = 0; i < data.Count; i++)
         {
             lineRect.anchoredPosition = new Vector2(startingPosition.x + i * lineRect.rect.width, startingPosition.y);
-            GameObject slice = Instantiate(LineObject, lineRenderers[0].transform);
+            GameObject slice = Instantiate(LineObject, drawingSpace.transform);
 
-            dotRect.anchoredPosition = new Vector2(0, data[i].values[0] * valueCoverter);
-            Instantiate(dotObject, slice.transform);
+            dotRect.anchoredPosition = new Vector2(startingPosition.x + i * lineRect.rect.width, data[i].values[0] * valueCoverter);
+            Instantiate(dotObject, dotsHolder.transform);
         }
     }
 
