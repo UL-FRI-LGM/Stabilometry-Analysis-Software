@@ -38,7 +38,7 @@ public class LineChartScript : MonoBehaviour
 
         for (int i = 0; i < data.Count; i++)
         {
-            float[] values = new float[4] { i, i * 2, i / 2f, i * i };
+            float[] values = new float[4] { i, i * 2, i / 2f, i *i };
             data[i] = new ChartData(values, null);
         }
         SetChartData(data);
