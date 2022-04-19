@@ -38,7 +38,10 @@ public class LineChartScript : MonoBehaviour
 
         for (int i = 0; i < data.Count; i++)
         {
-            float[] values = new float[4] { i, i * 2, i / 2f, i *i };
+            float[] values = new float[4] { i, i * 2, i / 2f, i * i };
+            if (i % 3 == 0)
+                values[1] = -1;
+            
             data[i] = new ChartData(values, null);
         }
         SetChartData(data);
@@ -88,8 +91,7 @@ public class LineChartScript : MonoBehaviour
     private void SpawnElements(List<ChartData> data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, RectTransform lineRect)
     {
 
-        for (int i = 0; i < lineRenderers.Length; i++)
-            lineRenderers[i].Points = new Vector2[data.Count];
+        FillLineRenderers(data, startingPosition.x, valueConverter, lineRect);
 
         for (int i = 0; i < data.Count; i++)
         {
@@ -101,6 +103,78 @@ public class LineChartScript : MonoBehaviour
 
             SpawnDots(data[i], xPosition, valueConverter, i);
         }
+
+    }
+
+    private void FillLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect)
+    {
+        List<Vector2>[] drawingData = PrepareDataForLineRenderers(data, leftmostPosition, valueConverter, lineRect);
+
+        Debug.Log(drawingData[0].Count);
+
+        for (int i = 0; i < lineRenderers.Length; i++)
+        {
+            Vector2[] points = new Vector2[drawingData[i].Count];
+            for (int k = 0; k < drawingData[i].Count; k++)
+            {
+                //Debug.Log(drawingData[i][k]);
+                points[k] = drawingData[i][k];
+            }
+
+
+            lineRenderers[i].Points = points;
+            //foreach (Vector2 point in lineRenderers[i].Points)
+            //    Debug.Log(point);
+        }
+        
+    }
+
+    private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data,float leftmostPosition, float valueConverter, RectTransform lineRect)
+    {
+        List<Vector2>[] result = new List<Vector2>[4];
+
+        for (int i = 0; i < result.Length; i++)
+            result[i] = new List<Vector2>();
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            for (int k = 0; k < data[i].values.Length; k++)
+            {
+                float xPosition = leftmostPosition + i * lineRect.rect.width;
+                float yPositon = data[i].values[k] * valueConverter;
+
+                float previousValue = (i <= 0) ? -1 : data[i - 1].values[k];
+                float nextValue = (i >= data.Count - 1) ? -1 : data[i + 1].values[k];
+
+                //Debug.Log($"{i} {previousValue} {nextValue}");
+
+                switch(AddNTimes(previousValue, data[i].values[k], nextValue))
+                {
+                    case (1):
+                        result[k].Add(new Vector2(xPosition, yPositon));
+                        break;
+                    case (2):                        
+                        result[k].Add(new Vector2(xPosition, yPositon));
+                        result[k].Add(new Vector2(xPosition, yPositon));
+                        break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private int AddNTimes(float previous, float current, float next)
+    {
+        if (current < 0)
+            return 0;
+
+        else if (previous >= 0 && next >= 0)
+            return 2;
+        
+        // else
+
+        return 1;
     }
 
     private void SpawnDots(ChartData data, float xPosition, float valueConverter, int number)
@@ -112,8 +186,6 @@ public class LineChartScript : MonoBehaviour
                 Vector2 newPosition = new Vector2(xPosition, data.values[i] * valueConverter);
                 dotRects[i].anchoredPosition = newPosition;
                 Instantiate(dotObjects[i], dotsHolder.transform);
-
-                lineRenderers[i].Points[number] = new Vector2(xPosition, data.values[i] * valueConverter);
             }
         }
     }
