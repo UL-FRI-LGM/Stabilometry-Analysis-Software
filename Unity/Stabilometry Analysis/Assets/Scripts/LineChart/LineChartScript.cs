@@ -63,8 +63,9 @@ public class LineChartScript : MonoBehaviour
         Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / (float)(this.chartData.Count), drawingSpace.rect.height);
 
         float maxValue = GetLargestValue(this.chartData);
-        SetYAxis(maxValue);
-        DrawData(this.chartData, valueSpaceSize, this.chartRect, maxValue);
+        float modifiedMaxValue = ModifyMaxValue(maxValue);
+        SetYAxis(modifiedMaxValue);
+        DrawData(this.chartData, valueSpaceSize, this.chartRect, modifiedMaxValue);
     }
 
     private void DrawData(List<ChartData> data, Vector2 valueSpaceSize, RectTransform drawingSpace, float largestValue)
@@ -123,8 +124,6 @@ public class LineChartScript : MonoBehaviour
 
 
             lineRenderers[i].Points = points;
-            //foreach (Vector2 point in lineRenderers[i].Points)
-            //    Debug.Log(point);
         }
         
     }
@@ -221,5 +220,25 @@ public class LineChartScript : MonoBehaviour
                     largestValue = value;
 
         return largestValue;
+    }
+
+    private float ModifyMaxValue(float maxValue)
+    {
+        float result = 0;
+
+        if (maxValue <= 1)
+            return 1;
+
+        // else
+        if (maxValue <= 2)
+            return 2;
+
+        //else
+        if (maxValue % 4 == 0)
+            return maxValue;
+
+        //else
+
+        return (Mathf.Floor(maxValue / 4) + 1)  * 4;
     }
 }
