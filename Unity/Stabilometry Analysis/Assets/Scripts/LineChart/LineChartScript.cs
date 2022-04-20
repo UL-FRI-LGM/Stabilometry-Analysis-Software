@@ -9,7 +9,10 @@ public class LineChartScript : MonoBehaviour
     #region Variables
     [SerializeField] private GameObject LineObject = null;
 
-    [SerializeField] private GameObject[] dotObjects = null;
+    [SerializeField] private GameObject[] 
+        dotObjects = null,
+        yAxisLines = null;
+
     [SerializeField] private TextMeshProUGUI[] valueTexts = null;
 
     [SerializeField] private UILineRenderer[] lineRenderers = null;
@@ -20,10 +23,14 @@ public class LineChartScript : MonoBehaviour
 
     private RectTransform[] dotRects = null;
 
+    private List<GameObject> spawnedObjects = null;
+
     #endregion
 
     private void Awake()
     {
+        spawnedObjects = new List<GameObject>();
+
         this.chartRect = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
 
         this.dotRects = new RectTransform[dotObjects.Length];
@@ -47,6 +54,23 @@ public class LineChartScript : MonoBehaviour
         SetChartData(data);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            RespawnChart();
+        }
+    }
+
+    private void RespawnChart()
+    {
+        foreach (GameObject spawnedObject in spawnedObjects)
+            Destroy(spawnedObject);
+
+        SetChartData(this.chartData);
+
+    }
+
     public void SetChartData(List<ChartData> chartData)
     {
         this.chartData = chartData;
@@ -64,7 +88,8 @@ public class LineChartScript : MonoBehaviour
 
         float maxValue = GetLargestValue(this.chartData);
         float modifiedMaxValue = ModifyMaxValue(maxValue);
-        SetYAxis(modifiedMaxValue);
+
+        SetYAxis(modifiedMaxValue, drawingSpace);
         DrawData(this.chartData, valueSpaceSize, this.chartRect, modifiedMaxValue);
     }
 
@@ -100,32 +125,26 @@ public class LineChartScript : MonoBehaviour
             lineRect.anchoredPosition = new Vector2(startingPosition.x + i * lineRect.rect.width, startingPosition.y);
             GameObject slice = Instantiate(LineObject, drawingSpace.transform);
 
+            spawnedObjects.Add(slice);
+
             float xPosition = startingPosition.x + i * lineRect.rect.width;
 
             SpawnDots(data[i], xPosition, valueConverter, i);
         }
-
     }
 
     private void FillLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect)
     {
         List<Vector2>[] drawingData = PrepareDataForLineRenderers(data, leftmostPosition, valueConverter, lineRect);
 
-        Debug.Log(drawingData[0].Count);
-
         for (int i = 0; i < lineRenderers.Length; i++)
         {
             Vector2[] points = new Vector2[drawingData[i].Count];
             for (int k = 0; k < drawingData[i].Count; k++)
-            {
-                //Debug.Log(drawingData[i][k]);
                 points[k] = drawingData[i][k];
-            }
-
 
             lineRenderers[i].Points = points;
-        }
-        
+        } 
     }
 
     private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data,float leftmostPosition, float valueConverter, RectTransform lineRect)
@@ -184,32 +203,27 @@ public class LineChartScript : MonoBehaviour
             {
                 Vector2 newPosition = new Vector2(xPosition, data.values[i] * valueConverter);
                 dotRects[i].anchoredPosition = newPosition;
-                Instantiate(dotObjects[i], dotsHolder.transform);
+                GameObject dot = Instantiate(dotObjects[i], dotsHolder.transform);
+
+                spawnedObjects.Add(dot);
             }
         }
     }
 
-    private void SetYAxis(float highestValue)
+    private void SetYAxis(float highestValue, RectTransform drawingSpace)
     {
         float increment = highestValue/(valueTexts.Length - 1);
 
         for (int i = 0; i < valueTexts.Length; i++)
             valueTexts[i].text = $"{i * increment}";
-
+        
+        RepositionLines(drawingSpace);
     }
 
-    ///// <summary>
-    ///// Converts the value to the appropriate position. Min values are presumed to be 0.
-    ///// </summary>
-    ///// <param name="value"></param>
-    ///// <param name="maxValue"></param>
-    ///// <param name="newMin"></param>
-    ///// <param name="newMax"></param>
-    ///// <returns></returns>
-    //private float ConvertPosition(float value, float maxValue, float newMin, float newMax)
-    //{
-    //    return value * (newMax - newMin) / maxValue + newMin;
-    //}
+    private void RepositionLines(RectTransform drawingSpace)
+    {
+
+    }
 
     private float GetLargestValue(List<ChartData> data)
     {
@@ -224,8 +238,6 @@ public class LineChartScript : MonoBehaviour
 
     private float ModifyMaxValue(float maxValue)
     {
-        float result = 0;
-
         if (maxValue <= 1)
             return 1;
 
