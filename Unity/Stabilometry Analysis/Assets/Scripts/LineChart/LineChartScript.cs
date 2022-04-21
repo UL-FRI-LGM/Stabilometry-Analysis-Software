@@ -222,7 +222,16 @@ public class LineChartScript : MonoBehaviour
 
     private void RepositionLines(RectTransform drawingSpace)
     {
+        float increase =  drawingSpace.rect.height / 4f;
+        Debug.Log(drawingSpace.rect.height);
+        for (int i = 0; i < yAxisLines.Length; i++) 
+        {
+            float newYPosition = drawingSpace.localPosition.y + (i - yAxisLines.Length/2) * increase;
 
+            RectTransform rect = yAxisLines[i].GetComponent<RectTransform>();
+
+            rect.localPosition= new Vector2(rect.localPosition.x, newYPosition);
+        }
     }
 
     private float GetLargestValue(List<ChartData> data)
