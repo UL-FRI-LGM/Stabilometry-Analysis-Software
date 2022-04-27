@@ -653,6 +653,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LineObject: {fileID: 994757921248465065, guid: 503cb4f1860fda747839172ea9bf512d,
     type: 3}
+  DataLine: {fileID: 5482669180941510766, guid: ee04ac0d1f9416e4e81b8f4f6b784c8b,
+    type: 3}
   dotObjects:
   - {fileID: 1344842095034770085, guid: 842b6e6268389b144bedfe5e995e39b1, type: 3}
   - {fileID: 5878593915789916733, guid: 2d1d2ee1536f53144b537e8b4a21bdb1, type: 3}

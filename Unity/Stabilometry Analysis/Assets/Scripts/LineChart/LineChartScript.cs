@@ -7,7 +7,9 @@ using TMPro;
 public class LineChartScript : MonoBehaviour
 {
     #region Variables
-    [SerializeField] private GameObject LineObject = null;
+    [SerializeField] private GameObject 
+        LineObject = null,
+        DataLine = null;
 
     [SerializeField] private GameObject[] 
         dotObjects = null,

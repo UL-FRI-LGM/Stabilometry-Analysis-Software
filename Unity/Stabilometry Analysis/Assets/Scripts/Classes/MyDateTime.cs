@@ -60,6 +60,20 @@ public class MyDateTime
         return GetFloat().ToString();
     }
 
+    public string ToStringShort()
+    {
+        string hourString = (hour < 10) ? $"0{hour}" : hour.ToString();
+        string minuteString = (minutes < 10) ? $"0{minutes}" : minutes.ToString();
+
+        string dayString = (day < 10) ? $"0{day}" : day.ToString();
+        string monthString = (month < 10) ? $"0{month}" : month.ToString();
+        
+        int shortYear = year % 100;
+        string yearString = (shortYear < 10) ? $"0{shortYear}" : shortYear.ToString();
+
+        return $"{hourString}:{minuteString}\n{dayString}.{monthString}.{yearString}";
+    }
+
     /// <summary>
     /// Returns the date in format YYYYMMDDhhmm.
     /// </summary>
