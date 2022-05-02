@@ -16,6 +16,22 @@ public class StabilometryImageScript : MonoBehaviour
     private float multiplicator = 2500f;
     #endregion
 
+    // To be removed 
+    private void Awake()
+    {
+        List<DataPoint> dataPoints = new List<DataPoint>();
+
+        dataPoints.Add(new DataPoint(0, 0.005f, 0.005f));
+        dataPoints.Add(new DataPoint(0, 0.01f, 0.01f));
+        dataPoints.Add(new DataPoint(0, 0.019f, 0.015f));
+        dataPoints.Add(new DataPoint(0, 0.019f, 0.015f));
+        dataPoints.Add(new DataPoint(0, 0.019f, -0.01f));
+        dataPoints.Add(new DataPoint(0, -0.019f, -0.01f));
+
+        StabilometryTask task = new StabilometryTask(dataPoints);
+        DrawImage(task);
+    }
+
     public void DrawImage(StabilometryTask stabilometryTask)
     {
         DrawStabilometryPath(stabilometryTask.stabilometryDrawData);
