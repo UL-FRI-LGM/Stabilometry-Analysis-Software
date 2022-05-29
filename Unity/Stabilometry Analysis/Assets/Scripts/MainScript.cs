@@ -33,7 +33,7 @@ public class MainScript : MonoBehaviour
         addEditPatientMenu.mainScript = this;
         menuHeaderScript.mainScript = this;
         dataUploadMenuScript.mainScript = this;
-        stabilometryImagesMenuScript.mainScript = this;
+        //stabilometryImagesMenuScript.mainScript = this;
     }
 
     public void DeleteCurrentPatient()
