@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AccordionComponent : MonoBehaviour
+public class AccordionCompareTwoValues : MonoBehaviour
 {
     #region Variables
     [SerializeField]
