@@ -4,13 +4,13 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class TestTweening : MonoBehaviour
+public class AccordionElement : MonoBehaviour
 {
     [SerializeField]
     private Image blackImage = null;
 
     private bool open = true;
-
+    
 
     private float maxSize = -170;
     private float minSize = 0;
