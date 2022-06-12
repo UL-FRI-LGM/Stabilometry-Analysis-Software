@@ -4,21 +4,45 @@ using UnityEngine;
 
 public class AccordionHeaderComponent : MonoBehaviour
 {
-    #region Variables
-    [SerializeField]
-    private GameObject[] elements = null;
+    private RectTransform buttonTransform = null;
+    private RectTransform contentTransform = null;
+    private AccordionComponent parentScript = null;
 
-    #endregion
+    private int index = -1;
 
-    // Start is called before the first frame update
-    void Start()
+    public bool open { set; get; } = false;
+
+
+    public float closedSize
     {
-        
+        get
+        {
+            return buttonTransform.sizeDelta.y;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public float openSize
     {
-        
+        get
+        {
+            return buttonTransform.sizeDelta.y + contentTransform.sizeDelta.y;
+        }
+    }
+
+    private void Awake()
+    {
+        buttonTransform = GetComponent<RectTransform>();
+        contentTransform = transform.GetChild(0).GetComponent<RectTransform>();
+    }
+
+    public void SetParentScript(AccordionComponent parentScript, int indeks)
+    {
+        this.parentScript = parentScript;
+        this.index = indeks;
+    }
+
+    public void HeaderClicked()
+    {
+        parentScript.HeaderClicked(index);
     }
 }
