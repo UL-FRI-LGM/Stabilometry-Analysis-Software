@@ -1,17 +1,25 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AccordionHeaderComponent : MonoBehaviour
 {
+    #region Variables
+    public bool open { set; get; } = false;
+
+    [SerializeField]
+    private Image elementHolder = null;
+
     private RectTransform buttonTransform = null;
     private RectTransform contentTransform = null;
     private AccordionComponent parentScript = null;
 
     private int index = -1;
 
-    public bool open { set; get; } = false;
 
+    private float duration = 0.5f;
 
     public float closedSize
     {
@@ -28,6 +36,7 @@ public class AccordionHeaderComponent : MonoBehaviour
             return buttonTransform.sizeDelta.y + contentTransform.sizeDelta.y;
         }
     }
+    #endregion
 
     private void Awake()
     {
@@ -43,6 +52,31 @@ public class AccordionHeaderComponent : MonoBehaviour
 
     public void HeaderClicked()
     {
-        parentScript.HeaderClicked(index);
+        parentScript.ElementClicked(index);
+    }
+
+    public void OpenClose()
+    {
+        if (open)
+            ExpandSpace();
+        else
+            CollapseSpace();
+
+        open = !open;
+    }
+
+    private void ExpandSpace()
+    {
+        elementHolder.DOFillAmount(0, duration);
+    }
+
+    private void CollapseSpace()
+    {
+        elementHolder.DOFillAmount(1, duration);
+    }
+
+    public void SetNewPosition(float yPosition)
+    {
+        buttonTransform.DOMoveY(yPosition, duration);
     }
 }

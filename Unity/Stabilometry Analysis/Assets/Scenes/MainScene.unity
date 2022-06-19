@@ -26664,7 +26664,7 @@ GameObject:
   m_Component:
   - component: {fileID: 801057118}
   m_Layer: 5
-  m_Name: GameObject
+  m_Name: Accordion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37350,7 +37350,7 @@ GameObject:
   - component: {fileID: 1146807407}
   - component: {fileID: 1146807406}
   m_Layer: 5
-  m_Name: Button
+  m_Name: AccordionElement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
