@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AccordionComponent : MonoBehaviour
+public class TestAccordionComponent : MonoBehaviour
 {
     #region Variables
     [SerializeField]
@@ -25,7 +25,7 @@ public class AccordionComponent : MonoBehaviour
             else if (headers[i].open)
                 headers[i].OpenClose();
 
-            headers[i].SetNewPosition();
+            headers[i].SetNewPosition(0);
         }
 
     }
