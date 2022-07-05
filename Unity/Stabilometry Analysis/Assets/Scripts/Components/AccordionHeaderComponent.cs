@@ -14,7 +14,7 @@ public class AccordionHeaderComponent : MonoBehaviour
 
     private RectTransform buttonTransform = null;
     private RectTransform contentTransform = null;
-    private TestAccordionComponent parentScript = null;
+    private MyAccordionScript parentScript = null;
 
     private int index = -1;
 
@@ -44,7 +44,7 @@ public class AccordionHeaderComponent : MonoBehaviour
         contentTransform = transform.GetChild(0).GetComponent<RectTransform>();
     }
 
-    public void SetParentScript(TestAccordionComponent parentScript, int indeks)
+    public void SetParentScript(MyAccordionScript parentScript, int indeks)
     {
         this.parentScript = parentScript;
         this.index = indeks;

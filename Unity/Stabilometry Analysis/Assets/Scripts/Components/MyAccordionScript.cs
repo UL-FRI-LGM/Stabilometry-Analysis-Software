@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestAccordionComponent : MonoBehaviour
+public class MyAccordionScript : MonoBehaviour
 {
     #region Variables
     [SerializeField]
@@ -18,7 +18,7 @@ public class TestAccordionComponent : MonoBehaviour
 
     public void ElementClicked(int index)
     {
-        for (int i = 0; i< headers.Length; i++)
+        for (int i = 0; i < headers.Length; i++)
         {
             if (i == index)
                 headers[i].OpenClose();
