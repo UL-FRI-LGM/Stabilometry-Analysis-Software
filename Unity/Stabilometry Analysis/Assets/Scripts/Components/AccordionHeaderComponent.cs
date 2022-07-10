@@ -7,9 +7,14 @@ using UnityEngine.UI;
 public class AccordionHeaderComponent : MonoBehaviour
 {
     #region Variables
+    private float maxSize = -170;
+    private float minSize = 0;
+
     public bool open { set; get; } = false;
 
     [SerializeField]
+    private Image blocker = null;
+
     private Image elementHolder = null;
 
     private RectTransform buttonTransform = null;
@@ -21,27 +26,25 @@ public class AccordionHeaderComponent : MonoBehaviour
 
     private float duration = 0.5f;
 
-    public float closedSize
+    public float GetSize
     {
         get
         {
-            return buttonTransform.sizeDelta.y;
-        }
-    }
+            if (open)
+                return 2* buttonTransform.sizeDelta.y + contentTransform.sizeDelta.y;
+            else
+                return buttonTransform.sizeDelta.y;
 
-    public float openSize
-    {
-        get
-        {
-            return buttonTransform.sizeDelta.y + contentTransform.sizeDelta.y;
         }
     }
     #endregion
 
     private void Awake()
     {
-        buttonTransform = GetComponent<RectTransform>();
-        contentTransform = transform.GetChild(0).GetComponent<RectTransform>();
+        buttonTransform = transform.GetChild(0).GetComponent<RectTransform>();
+        contentTransform = transform.GetChild(1).GetComponent<RectTransform>();
+
+        elementHolder = contentTransform.GetComponent<Image>();
     }
 
     public void SetParentScript(MyAccordionScript parentScript, int indeks)
@@ -58,25 +61,34 @@ public class AccordionHeaderComponent : MonoBehaviour
     public void OpenClose()
     {
         if (open)
-            ExpandSpace();
-        else
             CollapseSpace();
+        else
+            ExpandSpace();
 
         open = !open;
     }
 
+    public void Close()
+    {
+        CollapseSpace();
+
+        open = false;
+    }
+
     private void ExpandSpace()
     {
-        elementHolder.DOFillAmount(0, duration);
+        blocker.gameObject.SetActive(false);
+        elementHolder.DOFillAmount(1, duration);
     }
 
     private void CollapseSpace()
     {
-        elementHolder.DOFillAmount(1, duration);
+        elementHolder.DOFillAmount(0, duration);
+        blocker.gameObject.SetActive(true);
     }
 
     public void SetNewPosition(float yPosition)
     {
-        buttonTransform.DOMoveY(yPosition, duration);
+        transform.DOMoveY(yPosition, duration);
     }
 }

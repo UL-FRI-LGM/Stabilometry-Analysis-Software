@@ -7,7 +7,15 @@ public class MyAccordionScript : MonoBehaviour
     #region Variables
     [SerializeField]
     private AccordionHeaderComponent[] headers = null;
+
+    private bool updating = false;
+    private RectTransform rectTransform = null;
     #endregion
+
+    private void Awake()
+    {
+        rectTransform = (RectTransform)transform;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -18,15 +26,25 @@ public class MyAccordionScript : MonoBehaviour
 
     public void ElementClicked(int index)
     {
+        if (updating)
+            return;
+        else
+            updating = true;
+
+        float newPosition = transform.position.y;
+
         for (int i = 0; i < headers.Length; i++)
         {
             if (i == index)
                 headers[i].OpenClose();
-            else if (headers[i].open)
-                headers[i].OpenClose();
+            else 
+                headers[i].Close();
 
-            headers[i].SetNewPosition(0);
+            headers[i].SetNewPosition(newPosition);
+
+            newPosition -= headers[i].GetSize;
         }
 
+        updating = false;
     }
 }
