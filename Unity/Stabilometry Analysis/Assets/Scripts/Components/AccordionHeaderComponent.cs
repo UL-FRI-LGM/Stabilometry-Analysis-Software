@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using UITween;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -90,6 +89,7 @@ public class AccordionHeaderComponent : MonoBehaviour
 
     public void SetNewPosition(float yPosition)
     {
-        transform.DOMoveY(yPosition, duration);
+        GetComponent<RectTransform>().DOAnchorPosY(yPosition, duration);
+        //transform.DOMoveY(yPosition, duration);
     }
 }

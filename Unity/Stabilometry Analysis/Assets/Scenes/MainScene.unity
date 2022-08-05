@@ -72444,7 +72444,6 @@ GameObject:
   - component: {fileID: 4380585881033916055}
   - component: {fileID: 5673598743293385714}
   - component: {fileID: 1373987551493975458}
-  - component: {fileID: 8819488636458565512}
   m_Layer: 5
   m_Name: Accordion Component
   m_TagString: Untagged
@@ -75683,18 +75682,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7642730161470350563}
   m_CullTransparentMesh: 0
---- !u!114 &8819488636458565512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5350390232435276733}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc8c3f60eeb8f9141a611edf41093230, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8917738374834656345
 MonoBehaviour:
   m_ObjectHideFlags: 0
