@@ -3,17 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI.Extensions;
 using TMPro;
+using static Parameter;
 
 public class LineChartScript : MonoBehaviour
 {
     #region Variables
-    [SerializeField] private GameObject 
+    [SerializeField]
+    private GameObject
         LineObject = null,
         DataLine = null;
 
-    [SerializeField] private GameObject[] 
+    [SerializeField]
+    private GameObject[]
         dotObjects = null,
         yAxisLines = null;
+
+    [SerializeField] private TextMeshProUGUI title = null;
 
     [SerializeField] private TextMeshProUGUI[] valueTexts = null;
 
@@ -26,6 +31,8 @@ public class LineChartScript : MonoBehaviour
     private RectTransform[] dotRects = null;
 
     private List<GameObject> spawnedObjects = null;
+
+    private Parameter chosenParameter = Parameter.SWAY_PATH_TOTAL;
 
     #endregion
 
@@ -41,6 +48,7 @@ public class LineChartScript : MonoBehaviour
             this.dotRects[i] = this.dotObjects[i].GetComponent<RectTransform>();
     }
 
+    //Todo Remove this
     private void Start()
     {
         List<ChartData> data = new List<ChartData>(new ChartData[10]);
@@ -50,10 +58,10 @@ public class LineChartScript : MonoBehaviour
             float[] values = new float[4] { i, i * 2, i / 2f, i * i };
             if (i % 3 == 0)
                 values[1] = -1;
-            
+
             data[i] = new ChartData(values, null);
         }
-        SetChartData(data);
+        SetChartData(data, this.chosenParameter);
     }
 
     private void Update()
@@ -69,13 +77,22 @@ public class LineChartScript : MonoBehaviour
         foreach (GameObject spawnedObject in spawnedObjects)
             Destroy(spawnedObject);
 
-        SetChartData(this.chartData);
+        SetChartData(this.chartData, this.chosenParameter);
 
     }
 
-    public void SetChartData(List<ChartData> chartData)
+    public void SetChartTitle(Parameter chosenParameter)
+    {
+        this.chosenParameter = chosenParameter;
+        SetTitle(chosenParameter);
+    }
+
+    public void SetChartData(List<ChartData> chartData, Parameter chosenParameter)
     {
         this.chartData = chartData;
+        this.chosenParameter = chosenParameter;
+
+        SetTitle(chosenParameter);
         UpdateChart();
     }
 
@@ -146,10 +163,10 @@ public class LineChartScript : MonoBehaviour
                 points[k] = drawingData[i][k];
 
             lineRenderers[i].Points = points;
-        } 
+        }
     }
 
-    private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data,float leftmostPosition, float valueConverter, RectTransform lineRect)
+    private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect)
     {
         List<Vector2>[] result = new List<Vector2>[4];
 
@@ -168,12 +185,12 @@ public class LineChartScript : MonoBehaviour
 
                 //Debug.Log($"{i} {previousValue} {nextValue}");
 
-                switch(AddNTimes(previousValue, data[i].values[k], nextValue))
+                switch (AddNTimes(previousValue, data[i].values[k], nextValue))
                 {
                     case (1):
                         result[k].Add(new Vector2(xPosition, yPositon));
                         break;
-                    case (2):                        
+                    case (2):
                         result[k].Add(new Vector2(xPosition, yPositon));
                         result[k].Add(new Vector2(xPosition, yPositon));
                         break;
@@ -191,7 +208,7 @@ public class LineChartScript : MonoBehaviour
 
         else if (previous >= 0 && next >= 0)
             return 2;
-        
+
         // else
 
         return 1;
@@ -214,25 +231,25 @@ public class LineChartScript : MonoBehaviour
 
     private void SetYAxis(float highestValue, RectTransform drawingSpace)
     {
-        float increment = highestValue/(valueTexts.Length - 1);
+        float increment = highestValue / (valueTexts.Length - 1);
 
         for (int i = 0; i < valueTexts.Length; i++)
             valueTexts[i].text = $"{i * increment}";
-        
+
         RepositionLines(drawingSpace);
     }
 
     private void RepositionLines(RectTransform drawingSpace)
     {
-        float increase =  drawingSpace.rect.height / 4f;
-        Debug.Log(drawingSpace.rect.height);
-        for (int i = 0; i < yAxisLines.Length; i++) 
+        float increase = drawingSpace.rect.height / 4f;
+        //Debug.Log(drawingSpace.rect.height);
+        for (int i = 0; i < yAxisLines.Length; i++)
         {
-            float newYPosition = drawingSpace.localPosition.y + (i - yAxisLines.Length/2) * increase;
+            float newYPosition = drawingSpace.localPosition.y + (i - yAxisLines.Length / 2) * increase;
 
             RectTransform rect = yAxisLines[i].GetComponent<RectTransform>();
 
-            rect.localPosition= new Vector2(rect.localPosition.x, newYPosition);
+            rect.localPosition = new Vector2(rect.localPosition.x, newYPosition);
         }
     }
 
@@ -262,6 +279,52 @@ public class LineChartScript : MonoBehaviour
 
         //else
 
-        return (Mathf.Floor(maxValue / 4) + 1)  * 4;
+        return (Mathf.Floor(maxValue / 4) + 1) * 4;
+    }
+
+    private void SetTitle(Parameter parameter)
+    {
+        switch (parameter)
+        {
+            case (SWAY_PATH_TOTAL):
+                title.text = "Sway Path Total [cm]";
+                break;
+            case (SWAY_PATH_AP):
+                title.text = "Sway Path AP [cm]";
+                break;
+            case (SWAY_PATH_ML):
+                title.text = "Sway Path ML [cm]";
+                break;
+            case (MEAN_SWAY_VELOCITY_TOTAL):
+                title.text = "Mean Sway Velocity Total [cm/s]";
+                break;
+            case (MEAN_SWAY_VELOCITY_AP):
+                title.text = "Mean Sway Velocity AP [cm/s]";
+                break;
+            case (MEAN_SWAY_VELOCITY_ML):
+                title.text = "Mean Sway Velocity ML [cm/s]";
+                break;
+            case (SWAY_AVERAGE_AMPLITUDE_AP):
+                title.text = "Sway Average Amplitude AP [cm]";
+                break;
+            case (SWAY_AVERAGE_AMPLITUDE_ML):
+                title.text = "Sway Average Amplitude ML [cm]";
+                break;
+            case (SWAY_MAXIMAL_AMPLITUDE_AP):
+                title.text = "Sway Maximal Amplitude AP [cm]";
+                break;
+            case (SWAY_MAXIMAL_AMPLITUDE_ML):
+                title.text = "Sway Maximal Amplitude ML [cm]";
+                break;
+            case (MEAN_DISTANCE):
+                title.text = "Mean Distance [cm]";
+                break;
+            case (ELLIPSE_AREA):
+                title.text = "95% Ellipse Area Value [cm²]";
+                break;
+            default:
+                Debug.LogError($"{parameter} is not defined!");
+                break;
+        }
     }
 }
