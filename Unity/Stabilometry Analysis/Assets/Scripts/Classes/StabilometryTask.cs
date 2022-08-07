@@ -54,12 +54,12 @@ public class StabilometryTask
 
         stabilometryDrawData = PrepareDataForDrawing(filteredData, confidence95Ellipse.mean);
 
-        swayPath = CalculateSwayPath(filteredData, Both);
+        swayPath = CalculateSwayPath(filteredData, BOTH);
         swayPathAP = CalculateSwayPath(filteredData, AP);
         swayPathML = CalculateSwayPath(filteredData, ML);
         meanDistance = CalculateMeanDistance(filteredData);
 
-        meanSwayVelocity = CalculateMeanSwayVelocity(filteredData, Both);
+        meanSwayVelocity = CalculateMeanSwayVelocity(filteredData, BOTH);
         meanSwayVelocityAP = CalculateMeanSwayVelocity(filteredData, AP);
         meanSwayVelocityML = CalculateMeanSwayVelocity(filteredData, ML);
 
@@ -86,12 +86,12 @@ public class StabilometryTask
     {
         List<Vector2> result = new List<Vector2>();
 
-        Vector2 previousValue = unfilteredData[0].GetVecotor2(Both);
+        Vector2 previousValue = unfilteredData[0].GetVecotor2(BOTH);
         result.Add(previousValue - mean);
 
         for (int i = 1; i < unfilteredData.Count; i++)
         {
-            Vector2 currentValue = unfilteredData[i].GetVecotor2(Both);
+            Vector2 currentValue = unfilteredData[i].GetVecotor2(BOTH);
             Vector2 difference = currentValue - previousValue;
 
             if (difference.magnitude > drawingErrorValue)
@@ -165,10 +165,10 @@ public class StabilometryTask
         float result = 0f;
 
 
-        Vector2 firstValue = stabilometryData[0].GetVecotor2(Both);
+        Vector2 firstValue = stabilometryData[0].GetVecotor2(BOTH);
 
         for (int i = 1; i < stabilometryData.Count; i++)
-            result += Vector2.Distance(stabilometryData[i].GetVecotor2(Both), firstValue);
+            result += Vector2.Distance(stabilometryData[i].GetVecotor2(BOTH), firstValue);
 
         return result / stabilometryData.Count;
     }
@@ -340,7 +340,7 @@ public class StabilometryTask
     {
         float correctValueBoth = Mathf.Sqrt(13) +  Mathf.Sqrt(8) + 3;
 
-        float testBoth = CalculateSwayPath(testData, Both);
+        float testBoth = CalculateSwayPath(testData, BOTH);
 
         bool passBoth = correctValueBoth == testBoth;
 
@@ -398,7 +398,7 @@ public class StabilometryTask
 
         float correctValueBoth = (Mathf.Sqrt(13) + Mathf.Sqrt(8) + 3 )/( 0.1f * 3f);
 
-        float testBoth = CalculateMeanSwayVelocity(testData, Both);
+        float testBoth = CalculateMeanSwayVelocity(testData, BOTH);
 
         bool passBoth = System.Math.Round(correctValueBoth,4) == System.Math.Round(testBoth,4);
 

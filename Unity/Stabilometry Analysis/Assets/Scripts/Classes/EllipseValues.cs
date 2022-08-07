@@ -116,7 +116,7 @@ public class EllipseValues
         List<Vector2> result = new List<Vector2>();
 
         foreach (DataPoint point in stabilometryData)
-            result.Add(point.GetVecotor2(Both));
+            result.Add(point.GetVecotor2(BOTH));
 
         return result;
     }

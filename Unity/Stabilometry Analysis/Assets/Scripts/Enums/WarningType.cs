@@ -1,6 +1,6 @@
 ﻿public enum WarningType
 {
-    DeletePatient,
-    DeleteDatabase,
-    DeleteStabilometry
+    DELETE_PATIENT,
+    DELETE_DATABASE,
+    DELETE_STABILOMETRY
 }

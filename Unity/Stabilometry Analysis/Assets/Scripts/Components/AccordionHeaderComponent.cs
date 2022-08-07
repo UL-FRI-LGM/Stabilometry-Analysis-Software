@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class AccordionHeaderComponent : MonoBehaviour
 {
     #region Variables
+    public RectTransform ElementTransform { get; set; } = null;
+
     private float maxSize = -170;
     private float minSize = 0;
 
@@ -23,7 +25,6 @@ public class AccordionHeaderComponent : MonoBehaviour
 
     private int index = -1;
 
-
     private float duration = 0.5f;
 
     public float GetSize
@@ -31,16 +32,18 @@ public class AccordionHeaderComponent : MonoBehaviour
         get
         {
             if (open)
-                return 2* buttonTransform.sizeDelta.y + contentTransform.sizeDelta.y;
+                return 2 * buttonTransform.sizeDelta.y + contentTransform.sizeDelta.y;
             else
                 return buttonTransform.sizeDelta.y;
 
         }
     }
+
     #endregion
 
     private void Awake()
     {
+        ElementTransform = GetComponent<RectTransform>();
         buttonTransform = transform.GetChild(0).GetComponent<RectTransform>();
         contentTransform = transform.GetChild(1).GetComponent<RectTransform>();
 
@@ -89,7 +92,7 @@ public class AccordionHeaderComponent : MonoBehaviour
 
     public void SetNewPosition(float yPosition)
     {
-        GetComponent<RectTransform>().DOAnchorPosY(yPosition, duration);
+        ElementTransform.DOAnchorPosY(yPosition, duration);
         //transform.DOMoveY(yPosition, duration);
     }
 }

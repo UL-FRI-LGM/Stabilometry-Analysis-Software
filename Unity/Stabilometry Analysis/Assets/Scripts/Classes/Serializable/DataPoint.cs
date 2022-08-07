@@ -29,7 +29,7 @@ public class DataPoint
     {
         switch (axes)
         {
-            case (Both):
+            case (BOTH):
                 return new Vector2(x,y);
             case (AP):
                 return new Vector2(0,y);

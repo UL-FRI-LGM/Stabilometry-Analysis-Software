@@ -33,7 +33,7 @@ public class StabilometryMeasurement
     {
         this.ID = -1;
         this.patientID = -1;
-        this.pose = Pose.BothLegsJoinedParallel;
+        this.pose = Pose.BOTH_LEGS_JOINED_PARALLEL;
         this.dateTime = null;
         this.eyesOpenSolidSurface = null;
         this.eyesClosedSolidSurface = null;
@@ -70,19 +70,19 @@ public class StabilometryMeasurement
     {
         switch (pose)
         {
-            case (BothLegsJoinedParallel):
+            case (BOTH_LEGS_JOINED_PARALLEL):
                 return BothLegsJoinedParallelString;
-            case (BothLegs30Angle):
+            case (BOTH_LEGS_30_ANGLE):
                 return BothLegs30AngleString;
-            case (BothLegsParallelApart):
+            case (BOTH_LEGS_PARALLEL_APART):
                 return BothLegsParallelApartString;
-            case (TandemLeftFront):
+            case (TANDEM_LEFT_FRONT):
                 return TandemLeftFrontString;
-            case (TandemRightFront):
+            case (TANDEM_RIGHT_FRONT):
                 return TandemRightFrontString;
-            case (LeftLeg):
+            case (LEFT_LEG):
                 return LeftLegString;
-            case (RightLeg):
+            case (RIGHT_LEG):
                 return RightLegString;
             default:
                 Debug.LogError($"Pose {pose} is not defined.");
@@ -95,25 +95,25 @@ public class StabilometryMeasurement
         switch (poseString)
         {
             case (BothLegsJoinedParallelString):
-                this.pose = BothLegsJoinedParallel;
+                this.pose = BOTH_LEGS_JOINED_PARALLEL;
                 break;
             case (BothLegs30AngleString):
-                this.pose = BothLegs30Angle;
+                this.pose = BOTH_LEGS_30_ANGLE;
                 break;
             case (BothLegsParallelApartString):
-                this.pose = BothLegsParallelApart;
+                this.pose = BOTH_LEGS_PARALLEL_APART;
                 break;
             case (TandemLeftFrontString):
-                this.pose = TandemLeftFront;
+                this.pose = TANDEM_LEFT_FRONT;
                 break;
             case (TandemRightFrontString):
-                this.pose = TandemRightFront;
+                this.pose = TANDEM_RIGHT_FRONT;
                 break;
             case (LeftLegString):
-                this.pose = LeftLeg;
+                this.pose = LEFT_LEG;
                 break;
             case (RightLegString):
-                this.pose = RightLeg;
+                this.pose = RIGHT_LEG;
                 break;
             default:
                 Debug.LogError($"{poseString} is not defined.");

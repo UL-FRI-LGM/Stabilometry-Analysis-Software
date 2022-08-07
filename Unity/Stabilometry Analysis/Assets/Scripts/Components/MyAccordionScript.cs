@@ -31,7 +31,7 @@ public class MyAccordionScript : MonoBehaviour
         else
             updating = true;
 
-        float newPosition = 0;
+        float newPosition = headers[0].ElementTransform.localPosition.y;
 
         for (int i = 0; i < headers.Length; i++)
         {

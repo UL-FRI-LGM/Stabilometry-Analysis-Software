@@ -1,6 +1,6 @@
 ﻿public enum Axes
 {
-    Both,
+    BOTH,
     AP,
     ML
 }

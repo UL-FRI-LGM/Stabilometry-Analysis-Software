@@ -91,7 +91,7 @@ public class DataUploadMenuScript : MonoBehaviour
     {
         Debug.Log("Method GetSelectedPose not implemented.");
 
-        return Pose.BothLegsJoinedParallel;
+        return Pose.BOTH_LEGS_JOINED_PARALLEL;
     }
 
     private MyDateTime GetSelectedDateTime()
