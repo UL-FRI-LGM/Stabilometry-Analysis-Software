@@ -7,7 +7,7 @@ public class AccordionToggler : MonoBehaviour
 {
     #region Variables
     public Toggle toggle { get; set; } = null;
-    public AnalysisMenuScript analysisMenuScript {get; set;} = null;
+    public StabilometryAnalysisParameterMenuScript  analysisMenuScript {get; set;} = null;
     #endregion
 
     private void Awake()

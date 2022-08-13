@@ -55,7 +55,7 @@ public class InitialMenuScript : MonoBehaviour
 
     public void OnInputFieldChange()
     {
-
+        Debug.LogWarning("Function not implemented.");
     }
 
     #region Button functions
@@ -81,7 +81,6 @@ public class InitialMenuScript : MonoBehaviour
     public void AnalysisButton(GameObject analysisMenu)
     {
         mainScript.menuSwitching.OpenMenu(analysisMenu);
-
     }
 
     public void ReportButton(GameObject reportMenu)

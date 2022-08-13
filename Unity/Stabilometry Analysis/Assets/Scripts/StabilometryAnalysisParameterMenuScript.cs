@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AnalysisMenuScript : MonoBehaviour
+public class StabilometryAnalysisParameterMenuScript  : MonoBehaviour
 {
     #region Variables
+    public MainScript mainScript { get; set; } = null;
+
     [SerializeField] private AccordionToggler[] 
         parameterTogglers = null,
         taskTogglers = null;
@@ -20,6 +22,7 @@ public class AnalysisMenuScript : MonoBehaviour
     private List<GameObject> instantiatedCharts = null;
     private Vector2 lineChartSize = new Vector2(590, 300);
     private Vector2 firstPosition = new Vector2();
+
     #endregion
 
     private void Awake()
@@ -33,6 +36,16 @@ public class AnalysisMenuScript : MonoBehaviour
     private void Start()
     {
         UpdateCharts();
+    }
+
+    public void OpenMenu(GameObject menu)
+    {
+        mainScript.menuSwitching.OpenMenu(menu);
+    }
+
+    public void OpenDataMenu()
+    {
+
     }
 
     private void SetToggleDependencies()

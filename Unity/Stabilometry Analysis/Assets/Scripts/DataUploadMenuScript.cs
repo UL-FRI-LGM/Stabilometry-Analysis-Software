@@ -14,7 +14,7 @@ public class DataUploadMenuScript : MonoBehaviour
 
     public MainScript mainScript { get; set; } = null;
 
-    [SerializeField] private StabilometryImageScript imageSciprt = null;
+    //[SerializeField] private StabilometryImageScript imageSciprt = null;
     #endregion
 
     private void Update()
@@ -89,14 +89,14 @@ public class DataUploadMenuScript : MonoBehaviour
 
     private Pose GetSelectedPose()
     {
-        Debug.Log("Method GetSelectedPose not implemented.");
+        Debug.LogWarning("Method GetSelectedPose not implemented.");
 
         return Pose.BOTH_LEGS_JOINED_PARALLEL;
     }
 
     private MyDateTime GetSelectedDateTime()
     {
-        Debug.Log("Method GetSelectedDateTime not implemented.");
+        Debug.LogWarning("Method GetSelectedDateTime not implemented.");
         return new MyDateTime(0, 0, 0, 0, 0);
     }
 }

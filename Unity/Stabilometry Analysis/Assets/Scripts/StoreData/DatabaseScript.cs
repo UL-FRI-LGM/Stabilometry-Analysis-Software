@@ -381,7 +381,24 @@ public class DatabaseScript : MonoBehaviour
     /// <returns></returns>
     public int GetNumberOfDataEntries(Patient patient)
     {
-        return 0;
+        string query = $"SELECT COUNT(*) FROM {MeasurementTableName} WHERE {MeasurementTableColumnNames[1]} == {patient.ID}";
+
+        int result = 0;
+
+        IDataReader reader = ExecuteQuery(query);
+
+        // Reader should never be null.
+        if (reader == null)
+            Debug.LogError("Reader was null");
+
+        // If there are any parameters in the database
+        if (reader.Read())
+            result = reader.GetInt32(0);
+
+        if (reader != null)
+            reader.Close();
+
+        return result;
     }
     #endregion
 

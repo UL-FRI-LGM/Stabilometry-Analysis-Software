@@ -47,7 +47,6 @@ public class FileImporter : MonoBehaviour
             path = FileBrowser.Result[0];
             displayText.text = path;
             pathFound = true;
-
         }
         else
         {

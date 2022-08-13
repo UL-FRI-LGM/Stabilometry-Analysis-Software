@@ -51,17 +51,20 @@ public class LineChartScript : MonoBehaviour
     //Todo Remove this
     private void Start()
     {
-        List<ChartData> data = new List<ChartData>(new ChartData[10]);
+        //List<ChartData> data = new List<ChartData>(new ChartData[10]);
 
-        for (int i = 0; i < data.Count; i++)
-        {
-            float[] values = new float[4] { i, i * 2, i / 2f, i * i };
-            if (i % 3 == 0)
-                values[1] = -1;
+        //List<ChartData> data = new List<ChartData>();
 
-            data[i] = new ChartData(values, null);
-        }
-        SetChartData(data, this.chosenParameter);
+        //for (int i = 0; i < data.Count; i++)
+        //{
+        //    float[] values = new float[4] { i, i * 2, i / 2f, i * i };
+        //    if (i % 3 == 0)
+        //        values[1] = -1;
+
+        //    data[i] = new ChartData(values, null);
+        //}
+
+        SetTitle(chosenParameter);
     }
 
     private void Update()
