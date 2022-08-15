@@ -20,8 +20,8 @@ public class DatabaseScript : MonoBehaviour
 
     private static readonly string[] TaskTableColumnNames =
     {
-        "EntryID", "Duration", "SampleTime", "SwayPath", "SwayPathAP", 
-        "SwayPathML", "MeanDistance", "MeanSwayVelocity", "MeanSwayVelocityAP", "MeanSwayVelocityML", 
+        "EntryID", "Duration", "SampleTime", "SwayPath", "SwayPathAP",
+        "SwayPathML", "MeanDistance", "MeanSwayVelocity", "MeanSwayVelocityAP", "MeanSwayVelocityML",
         "SwayAverageAmplitudeAP", "swayAverageAmplitudeML", "SwayMaximalAmplitudeAP", "SwayMaximalAmplitudeML", "ConfidenceEllipseArea"
     };
     private static readonly string[] TaskTableColumnValues =
@@ -178,7 +178,7 @@ public class DatabaseScript : MonoBehaviour
             stabilometryTask.confidence95Ellipse.area.ToString()
         };
 
-        IDataReader reader = InsertIntoTable(TaskTableName,TaskTableColumnNames, values);
+        IDataReader reader = InsertIntoTable(TaskTableName, TaskTableColumnNames, values);
         if (reader == null)
             return -1;
         //else
@@ -203,7 +203,7 @@ public class DatabaseScript : MonoBehaviour
             measurement.ID.ToString(),
             measurement.patientID.ToString(),
             measurement.dateTime.ToString(),
-            measurement.PoseToString(),
+            PoseConverter.PoseToString(measurement.pose),
             eyesOpenSolidSurfaceID.ToString(),
             eyesClosedSolidSurfaceID.ToString(),
             eyesOpenSoftSurfaceID.ToString(),
@@ -400,6 +400,97 @@ public class DatabaseScript : MonoBehaviour
 
         return result;
     }
+
+    public List<StabilometryMeasurement> GetAllMeasurements(Patient patient, Pose pose)
+    {
+        List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+
+        string entryIDText = MeasurementTableColumnNames[0];
+        string patientIDText = MeasurementTableColumnNames[1];
+        string dateTimeText = MeasurementTableColumnNames[2];
+        string poseText = MeasurementTableColumnNames[3];
+
+        string querry = $"SELECT * FROM  {MeasurementTableName} WHERE {patientIDText} == {patient.ID} AND {poseText} == '{PoseConverter.PoseToString(pose)}' ORDER BY {dateTimeText} ASC, {entryIDText} ASC;";
+
+        Debug.Log(querry);
+
+        IDataReader reader = ExecuteQuery(querry);
+
+        if (reader == null)
+        {
+            Debug.LogError("Reader was null.");
+            return null;
+        }
+
+        // else
+        while (reader.Read())
+        {
+            StabilometryMeasurement entry = new StabilometryMeasurement();
+
+            entry.ID = (int)reader.GetInt64(0);
+            entry.patientID = (int)reader.GetInt64(1);
+            entry.dateTime = new MyDateTime(reader.GetFloat(2));
+            entry.pose = PoseConverter.StringToPose((string)reader.GetValue(3));
+
+            entry.eyesOpenSolidSurface = GetTask((int)reader.GetInt64(4));
+            entry.eyesClosedSolidSurface = GetTask((int)reader.GetInt64(5));
+            entry.eyesOpenSoftSurface = GetTask((int)reader.GetInt64(6));
+            entry.eyesClosedSoftSurface = GetTask((int)reader.GetInt64(7));
+            
+            result.Add(entry);
+        }
+
+        reader.Close();
+
+        return result;
+    }
+
+    private StabilometryTask GetTask(int taskID)
+    {
+        if (taskID < 0)
+            return null;
+
+        // else
+
+        string taskIDName = TaskTableColumnNames[0];
+
+        string querry = $"SELECT * FROM  {TaskTableName} WHERE {taskIDName } == {taskID}";
+
+        IDataReader reader = ExecuteQuery(querry);
+
+        if (reader == null)
+        {
+            Debug.LogError("Reader was null.");
+            return null;
+        }
+
+        if (reader.Read())
+        {
+            StabilometryTask result = new StabilometryTask();
+            result.ID = (int)reader.GetInt64(0);
+            result.duration = reader.GetFloat(1);
+            result.sampleTime = reader.GetFloat(2);
+            result.swayPath = reader.GetFloat(3);
+
+            result.swayPathAP = reader.GetFloat(4);
+            result.swayPathML = reader.GetFloat(5);
+            result.meanDistance = reader.GetFloat(6);
+            result.meanSwayVelocity = reader.GetFloat(7);
+            result.meanSwayVelocityAP = reader.GetFloat(8);
+            result.meanSwayVelocityML = reader.GetFloat(9);
+            result.swayAverageAmplitudeAP = reader.GetFloat(10);
+            result.swayAverageAmplitudeML = reader.GetFloat(11);
+            result.swayMaximalAmplitudeAP = reader.GetFloat(12);
+            result.swayMaximalAmplitudeML = reader.GetFloat(13);
+
+            EllipseValues ellipseValues = new EllipseValues(reader.GetFloat(14));
+            result.confidence95Ellipse = ellipseValues;
+            return result;
+        }
+
+        return null;
+    }
+
     #endregion
 
     #region Update

@@ -19,6 +19,11 @@ public class EllipseValues
     #endregion
 
 
+    public EllipseValues(float area)
+    {
+        this.area = area;
+    }
+
     public EllipseValues(List<DataPoint> stabilometryData)
     {
         if (stabilometryData.Count < 1)

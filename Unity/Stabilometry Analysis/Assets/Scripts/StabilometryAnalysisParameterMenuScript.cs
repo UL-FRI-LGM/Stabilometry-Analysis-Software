@@ -35,7 +35,7 @@ public class StabilometryAnalysisParameterMenuScript  : MonoBehaviour
 
     private void Start()
     {
-        UpdateCharts();
+        //UpdateCharts();
     }
 
     public void OpenMenu(GameObject menu)
@@ -46,6 +46,18 @@ public class StabilometryAnalysisParameterMenuScript  : MonoBehaviour
     public void OpenDataMenu()
     {
 
+    }
+
+    private void OnEnable()
+    {
+
+        Pose currentPose = Pose.BOTH_LEGS_JOINED_PARALLEL;
+
+        List<StabilometryMeasurement> measurements =  mainScript.database.GetAllMeasurements(mainScript.currentPatient, currentPose);
+        Debug.Log(measurements.Count);
+        
+        //This doesn't work, fix it.
+        //UpdateCharts();
     }
 
     private void SetToggleDependencies()
