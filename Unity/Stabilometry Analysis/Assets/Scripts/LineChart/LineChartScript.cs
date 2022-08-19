@@ -48,25 +48,6 @@ public class LineChartScript : MonoBehaviour
             this.dotRects[i] = this.dotObjects[i].GetComponent<RectTransform>();
     }
 
-    //Todo Remove this
-    private void Start()
-    {
-        //List<ChartData> data = new List<ChartData>(new ChartData[10]);
-
-        //List<ChartData> data = new List<ChartData>();
-
-        //for (int i = 0; i < data.Count; i++)
-        //{
-        //    float[] values = new float[4] { i, i * 2, i / 2f, i * i };
-        //    if (i % 3 == 0)
-        //        values[1] = -1;
-
-        //    data[i] = new ChartData(values, null);
-        //}
-
-        SetTitle(chosenParameter);
-    }
-
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -169,6 +150,14 @@ public class LineChartScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Prepares the data to be spawned.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="leftmostPosition"></param>
+    /// <param name="valueConverter"></param>
+    /// <param name="lineRect"></param>
+    /// <returns></returns>
     private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect)
     {
         List<Vector2>[] result = new List<Vector2>[4];
@@ -204,6 +193,13 @@ public class LineChartScript : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// Used for determining if a line should be added.
+    /// </summary>
+    /// <param name="previous"></param>
+    /// <param name="current"></param>
+    /// <param name="next"></param>
+    /// <returns></returns>
     private int AddNTimes(float previous, float current, float next)
     {
         if (current < 0)
@@ -217,6 +213,13 @@ public class LineChartScript : MonoBehaviour
         return 1;
     }
 
+    /// <summary>
+    /// Spawn dots that represent values.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="xPosition"></param>
+    /// <param name="valueConverter"></param>
+    /// <param name="number"></param>
     private void SpawnDots(ChartData data, float xPosition, float valueConverter, int number)
     {
         for (int i = 0; i < data.values.Length; i++)
@@ -232,6 +235,11 @@ public class LineChartScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set values for Y bar.
+    /// </summary>
+    /// <param name="highestValue"></param>
+    /// <param name="drawingSpace"></param>
     private void SetYAxis(float highestValue, RectTransform drawingSpace)
     {
         float increment = highestValue / (valueTexts.Length - 1);
@@ -242,6 +250,10 @@ public class LineChartScript : MonoBehaviour
         RepositionLines(drawingSpace);
     }
 
+    /// <summary>
+    /// Reposition lines for the y axis.
+    /// </summary>
+    /// <param name="drawingSpace"></param>
     private void RepositionLines(RectTransform drawingSpace)
     {
         float increase = drawingSpace.rect.height / 4f;
@@ -256,6 +268,11 @@ public class LineChartScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets the largest value for calculating y axis values
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
     private float GetLargestValue(List<ChartData> data)
     {
         float largestValue = -1f;
@@ -267,6 +284,11 @@ public class LineChartScript : MonoBehaviour
         return largestValue;
     }
 
+    /// <summary>
+    /// Makes the highest value better for division with values.
+    /// </summary>
+    /// <param name="maxValue"></param>
+    /// <returns></returns>
     private float ModifyMaxValue(float maxValue)
     {
         if (maxValue <= 1)
@@ -285,6 +307,10 @@ public class LineChartScript : MonoBehaviour
         return (Mathf.Floor(maxValue / 4) + 1) * 4;
     }
 
+    /// <summary>
+    /// Sets the title of the chart.
+    /// </summary>
+    /// <param name="parameter"></param>
     private void SetTitle(Parameter parameter)
     {
         switch (parameter)

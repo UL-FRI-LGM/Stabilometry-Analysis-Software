@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class AccordionToggler : MonoBehaviour
 {
     #region Variables
+    public bool toggleChanged { get; set; } = false;
     public Toggle toggle { get; set; } = null;
     public StabilometryAnalysisParameterMenuScript  analysisMenuScript {get; set;} = null;
     #endregion
@@ -18,7 +19,7 @@ public class AccordionToggler : MonoBehaviour
     public void ChangeToggle()
     {
         toggle.isOn = !toggle.isOn;
-        analysisMenuScript.ToggleValueChanged();
+        toggleChanged = true;
     }
 
 }

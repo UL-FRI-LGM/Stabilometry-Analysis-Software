@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StabilometryAnalysisParameterMenuScript  : MonoBehaviour
+// Note about spawning charts. Start with spawning only one chart (because of speed).
+// This one chart should be stretched trhough the entire space.
+// When clicking on a chart toggler change sizes.
+// When clicking on any chart it opens the meni with data.
+public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
 {
     #region Variables
     public MainScript mainScript { get; set; } = null;
 
-    [SerializeField] private AccordionToggler[] 
+    [SerializeField]
+    private AccordionToggler[]
         parameterTogglers = null,
         taskTogglers = null;
 
-    [SerializeField] private GameObject
+    [SerializeField]
+    private GameObject
         lineChartPrefab = null,
         chartHolder = null,
         chartMask = null;
@@ -23,6 +29,11 @@ public class StabilometryAnalysisParameterMenuScript  : MonoBehaviour
     private Vector2 lineChartSize = new Vector2(590, 300);
     private Vector2 firstPosition = new Vector2();
 
+    private List<StabilometryMeasurement> patientData = null;
+
+    private Pose currentPose = Pose.BOTH_LEGS_JOINED_PARALLEL;
+    private bool hasData = false;
+    private bool chartsSpawned = false;
     #endregion
 
     private void Awake()
@@ -31,33 +42,6 @@ public class StabilometryAnalysisParameterMenuScript  : MonoBehaviour
 
         instantiatedCharts = new List<GameObject>();
         firstPosition = lineChartSize / 2f - chartHolder.GetComponent<RectTransform>().rect.size / 2f;
-    }
-
-    private void Start()
-    {
-        //UpdateCharts();
-    }
-
-    public void OpenMenu(GameObject menu)
-    {
-        mainScript.menuSwitching.OpenMenu(menu);
-    }
-
-    public void OpenDataMenu()
-    {
-
-    }
-
-    private void OnEnable()
-    {
-
-        Pose currentPose = Pose.BOTH_LEGS_JOINED_PARALLEL;
-
-        List<StabilometryMeasurement> measurements =  mainScript.database.GetAllMeasurements(mainScript.currentPatient, currentPose);
-        Debug.Log(measurements.Count);
-        
-        //This doesn't work, fix it.
-        //UpdateCharts();
     }
 
     private void SetToggleDependencies()
@@ -69,53 +53,70 @@ public class StabilometryAnalysisParameterMenuScript  : MonoBehaviour
             toggler.analysisMenuScript = this;
     }
 
-    private List<Parameter> GetChosenParameters(AccordionToggler[] parameterTogglers)
+    private void OnEnable()
     {
-        List<Parameter> result = new List<Parameter>();
+        hasData = false;
+        chartsSpawned = false;
+        currentPose = Pose.BOTH_LEGS_JOINED_PARALLEL;
 
-        for (int i = 0; i < parameterTogglers.Length; i++)
-            if (parameterTogglers[i].toggle.isOn)
-                result.Add((Parameter)i);
-
-        return result;
+        patientData = mainScript.database.GetAllMeasurements(mainScript.currentPatient, currentPose);
+        hasData = true;
     }
 
-    private List<Task> GetChosenTasks(AccordionToggler[] taskTogglers)
+    private void Update()
     {
-        List<Task> result = new List<Task>();
+        if (HasAnyToggleChanged())
+        {
+            UpdateCharts();
+        }
+    }
+
+    /// <summary>
+    /// Checks if any toggler has been changed.
+    /// </summary>
+    /// <returns></returns>
+    private bool HasAnyToggleChanged()
+    {
+        bool result = false;
         
-        for (int i = 0; i < taskTogglers.Length; i++)
-            if (taskTogglers[i].toggle.isOn)
-                result.Add((Task)i);
+        foreach (AccordionToggler toggler in parameterTogglers)
+        {
+            if (toggler.toggleChanged)
+            {
+                toggler.toggleChanged = false;
+                result = true;
+            }
+        }
+
+        foreach (AccordionToggler toggler in taskTogglers)
+        {
+            if (toggler.toggleChanged)
+            {
+                toggler.toggleChanged = false;
+                result = true;
+            }
+        }
 
         return result;
     }
 
+    /// <summary>
+    /// Spawns charts and updates scrollbar.
+    /// </summary>
     private void UpdateCharts()
     {
         SpawnCharts(GetChosenParameters(this.parameterTogglers), GetChosenTasks(this.taskTogglers));
 
+        // Update Scrollbar size.
         float maskSize = ((RectTransform)chartMask.transform).rect.size.y;
-        scrollbarScript.SetSize(CurrentSize(instantiatedCharts, maskSize), maskSize);
+        scrollbarScript.SetSize(GetCurrentChartAreaSize(instantiatedCharts, maskSize), maskSize);
     }
 
-    private float CurrentSize(List<GameObject> allInstances, float maskSize)
-    {
-        if (allInstances.Count < 2)
-            return maskSize;
-
-        // else
-
-        RectTransform firstRect = (RectTransform)allInstances[0].transform;
-        RectTransform lastRect = (RectTransform)allInstances[allInstances.Count - 1].transform;
-
-        float result = Mathf.Abs((firstRect.localPosition.y + firstRect.rect.height / 2f) - (lastRect.localPosition.y - lastRect.rect.height / 2f));
-
-        Debug.Log(result + " vs " + maskSize);
-        
-            return result;
-    }
-
+    /// <summary>
+    /// Destroys all charts and spawns new ones.
+    /// </summary>
+    /// <param name="allParameters"></param>
+    /// <param name="allTasks"></param>
     private void SpawnCharts(List<Parameter> allParameters, List<Task> allTasks)
     {
         foreach (GameObject instance in instantiatedCharts)
@@ -136,17 +137,80 @@ public class StabilometryAnalysisParameterMenuScript  : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks parameters to see which charts to spanw.
+    /// </summary>
+    /// <param name="parameterTogglers"></param>
+    /// <returns></returns>
+    private List<Parameter> GetChosenParameters(AccordionToggler[] parameterTogglers)
+    {
+        List<Parameter> result = new List<Parameter>();
+
+        for (int i = 0; i < parameterTogglers.Length; i++)
+            if (parameterTogglers[i].toggle.isOn)
+                result.Add((Parameter)i);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Checks to see which tasks have been chosen.
+    /// </summary>
+    /// <param name="taskTogglers"></param>
+    /// <returns></returns>
+    private List<Task> GetChosenTasks(AccordionToggler[] taskTogglers)
+    {
+        List<Task> result = new List<Task>();
+
+        for (int i = 0; i < taskTogglers.Length; i++)
+            if (taskTogglers[i].toggle.isOn)
+                result.Add((Task)i);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Get the size of the area for currently spawned charts.
+    /// </summary>
+    /// <param name="allInstances"></param>
+    /// <param name="maskSize"></param>
+    /// <returns></returns>
+    private float GetCurrentChartAreaSize(List<GameObject> allInstances, float maskSize)
+    {
+        if (allInstances.Count < 2)
+            return maskSize;
+
+        // else
+        RectTransform firstRect = (RectTransform)allInstances[0].transform;
+        RectTransform lastRect = (RectTransform)allInstances[allInstances.Count - 1].transform;
+
+        float result = Mathf.Abs((firstRect.localPosition.y + firstRect.rect.height / 2f) - (lastRect.localPosition.y - lastRect.rect.height / 2f));
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gets the position for the next line chart to spawn.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="originalPosition"></param>
+    /// <param name="chartSize"></param>
+    /// <returns></returns>
     private Vector2 GetNewPosition(int index, Vector2 originalPosition, Vector2 chartSize)
     {
-        float x = (index % 2 == 0)? originalPosition.x : -originalPosition.x;
+        float x = (index % 2 == 0) ? originalPosition.x : -originalPosition.x;
         int row = index / 2;
         float y = originalPosition.y - row * (chartSize.y + 20);
 
         return new Vector2(x, y);
     }
 
-    public void ToggleValueChanged()
+    /// <summary>
+    /// Used to open other menus.
+    /// </summary>
+    /// <param name="menu"></param>
+    public void OpenMenu(GameObject menu)
     {
-        UpdateCharts();
+        mainScript.menuSwitching.OpenMenu(menu);
     }
 }
