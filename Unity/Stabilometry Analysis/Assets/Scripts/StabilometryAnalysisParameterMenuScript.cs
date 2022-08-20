@@ -117,12 +117,14 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
     /// </summary>
     /// <param name="allParameters"></param>
     /// <param name="allTasks"></param>
-    private void SpawnCharts(List<Parameter> allParameters, List<Task> allTasks)
+    private void SpawnCharts(List<Parameter> allParameters, List<Task> selectedTasks)
     {
         foreach (GameObject instance in instantiatedCharts)
             Destroy(instance);
 
         instantiatedCharts = new List<GameObject>();
+
+        Debug.Log(allParameters);
 
         for (int i = 0; i < allParameters.Count; i++)
         {
@@ -131,10 +133,19 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
             instanceTransfrom.sizeDelta = lineChartSize;
             instanceTransfrom.localPosition = GetNewPosition(i, firstPosition, lineChartSize);
 
-            instance.GetComponent<LineChartScript>().SetChartTitle(allParameters[i]);
-
+            instance.GetComponent<LineChartScript>().SetChartData(GetCurrentChartData(allParameters[i]), allParameters[i], selectedTasks);
             instantiatedCharts.Add(instance);
         }
+    }
+
+    private List<ChartData> GetCurrentChartData(Parameter currentParameter)
+    {
+        List<ChartData> result = new List<ChartData>();
+
+        foreach(StabilometryMeasurement measurement in patientData)
+            result.Add(measurement.GetData(currentParameter));
+
+        return result;
     }
 
     /// <summary>

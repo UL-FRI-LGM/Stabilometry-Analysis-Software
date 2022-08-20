@@ -27,6 +27,7 @@ public class LineChartScript : MonoBehaviour
 
     private RectTransform chartRect = null;
     private List<ChartData> chartData = null;
+    private List<Task> selectedTasks = null;
 
     private RectTransform[] dotRects = null;
 
@@ -61,7 +62,7 @@ public class LineChartScript : MonoBehaviour
         foreach (GameObject spawnedObject in spawnedObjects)
             Destroy(spawnedObject);
 
-        SetChartData(this.chartData, this.chosenParameter);
+        SetChartData(this.chartData, this.chosenParameter, this.selectedTasks);
 
     }
 
@@ -71,10 +72,11 @@ public class LineChartScript : MonoBehaviour
         SetTitle(chosenParameter);
     }
 
-    public void SetChartData(List<ChartData> chartData, Parameter chosenParameter)
+    public void SetChartData(List<ChartData> chartData, Parameter chosenParameter, List<Task> allTasks)
     {
         this.chartData = chartData;
         this.chosenParameter = chosenParameter;
+
 
         SetTitle(chosenParameter);
         UpdateChart();
@@ -96,6 +98,13 @@ public class LineChartScript : MonoBehaviour
         DrawData(this.chartData, valueSpaceSize, this.chartRect, modifiedMaxValue);
     }
 
+    /// <summary>
+    /// Draws data for the given chart
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="valueSpaceSize"></param>
+    /// <param name="drawingSpace"></param>
+    /// <param name="largestValue"></param>
     private void DrawData(List<ChartData> data, Vector2 valueSpaceSize, RectTransform drawingSpace, float largestValue)
     {
         float leftmostPosition = 0;
@@ -106,7 +115,6 @@ public class LineChartScript : MonoBehaviour
             leftmostPosition -= valueSpaceSize.x * (data.Count / 2 - 0.5f);
 
         Vector2 startingPosition = new Vector2(leftmostPosition, 0);
-
 
         float valueConverter = valueSpaceSize.y / largestValue;
 
@@ -138,7 +146,7 @@ public class LineChartScript : MonoBehaviour
 
     private void FillLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect)
     {
-        List<Vector2>[] drawingData = PrepareDataForLineRenderers(data, leftmostPosition, valueConverter, lineRect);
+        List<Vector2>[] drawingData = PrepareDataForLineRenderers(data, leftmostPosition, valueConverter, lineRect, selectedTasks);
 
         for (int i = 0; i < lineRenderers.Length; i++)
         {
@@ -158,7 +166,7 @@ public class LineChartScript : MonoBehaviour
     /// <param name="valueConverter"></param>
     /// <param name="lineRect"></param>
     /// <returns></returns>
-    private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect)
+    private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect, List<Task> selectedTasks)
     {
         List<Vector2>[] result = new List<Vector2>[4];
 
@@ -167,24 +175,26 @@ public class LineChartScript : MonoBehaviour
 
         for (int i = 0; i < data.Count; i++)
         {
-            for (int k = 0; k < data[i].values.Length; k++)
+            for (int k = 0; k < selectedTasks.Count; k++)
             {
-                float xPosition = leftmostPosition + i * lineRect.rect.width;
-                float yPositon = data[i].values[k] * valueConverter;
+                Task currentTask = selectedTasks[k];
 
-                float previousValue = (i <= 0) ? -1 : data[i - 1].values[k];
-                float nextValue = (i >= data.Count - 1) ? -1 : data[i + 1].values[k];
+                float xPosition = leftmostPosition + i * lineRect.rect.width;
+                float yPositon = data[i].GetTaskValue(currentTask) * valueConverter;
+
+                float previousValue = (i <= 0) ? -1 : data[i - 1].GetTaskValue(currentTask);
+                float nextValue = (i >= data.Count - 1) ? -1 : data[i + 1].GetTaskValue(currentTask);
 
                 //Debug.Log($"{i} {previousValue} {nextValue}");
 
-                switch (AddNTimes(previousValue, data[i].values[k], nextValue))
+                switch (AddNTimes(previousValue, data[i].GetTaskValue(currentTask), nextValue))
                 {
                     case (1):
-                        result[k].Add(new Vector2(xPosition, yPositon));
+                        result[(int)currentTask].Add(new Vector2(xPosition, yPositon));
                         break;
                     case (2):
-                        result[k].Add(new Vector2(xPosition, yPositon));
-                        result[k].Add(new Vector2(xPosition, yPositon));
+                        result[(int)currentTask].Add(new Vector2(xPosition, yPositon));
+                        result[(int)currentTask].Add(new Vector2(xPosition, yPositon));
                         break;
                 }
             }
@@ -222,12 +232,13 @@ public class LineChartScript : MonoBehaviour
     /// <param name="number"></param>
     private void SpawnDots(ChartData data, float xPosition, float valueConverter, int number)
     {
-        for (int i = 0; i < data.values.Length; i++)
+        for (int i = 0; i < selectedTasks.Count; i++)
         {
-            if (data.values[i] >= 0)
+            Task currentTask = selectedTasks[i];
+            if (data.GetTaskValue(currentTask) >= 0)
             {
-                Vector2 newPosition = new Vector2(xPosition, data.values[i] * valueConverter);
-                dotRects[i].anchoredPosition = newPosition;
+                Vector2 newPosition = new Vector2(xPosition, data.GetTaskValue(currentTask) * valueConverter);
+                dotRects[(int)currentTask].anchoredPosition = newPosition;
                 GameObject dot = Instantiate(dotObjects[i], dotsHolder.transform);
 
                 spawnedObjects.Add(dot);
@@ -277,9 +288,11 @@ public class LineChartScript : MonoBehaviour
     {
         float largestValue = -1f;
         foreach (ChartData element in data)
-            foreach (float value in element.values)
-                if (value > largestValue)
-                    largestValue = value;
+        {
+            float elementLargestValue = element.GetLargestValue();
+            if (elementLargestValue > largestValue)
+                largestValue = elementLargestValue;
+        }
 
         return largestValue;
     }
