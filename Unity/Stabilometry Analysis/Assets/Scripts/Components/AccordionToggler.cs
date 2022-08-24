@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class AccordionToggler : MonoBehaviour
 {
     #region Variables
-    public bool toggleChanged { get; set; } = false;
-    public Toggle toggle { get; set; } = null;
-    public StabilometryAnalysisParameterMenuScript  analysisMenuScript {get; set;} = null;
+    public bool ToggleChanged { get; set; } = false;
+    private Toggle toggle { get; set; } = null;
+    public StabilometryAnalysisParameterMenuScript  AnalysisMenuScript {get; set;} = null;
     #endregion
 
     private void Awake()
@@ -16,10 +16,17 @@ public class AccordionToggler : MonoBehaviour
         toggle = transform.GetChild(0).GetComponent<Toggle>();
     }
 
+    public Toggle GetToggle()
+    {
+        if (toggle == null)
+            toggle = transform.GetChild(0).GetComponent<Toggle>();
+        return toggle;
+    }
+
     public void ChangeToggle()
     {
         toggle.isOn = !toggle.isOn;
-        toggleChanged = true;
+        ToggleChanged = true;
     }
 
 }

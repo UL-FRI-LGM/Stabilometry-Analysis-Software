@@ -47,10 +47,10 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
     private void SetToggleDependencies()
     {
         foreach (AccordionToggler toggler in parameterTogglers)
-            toggler.analysisMenuScript = this;
+            toggler.AnalysisMenuScript = this;
 
         foreach (AccordionToggler toggler in taskTogglers)
-            toggler.analysisMenuScript = this;
+            toggler.AnalysisMenuScript = this;
     }
 
     private void OnEnable()
@@ -61,6 +61,7 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
 
         patientData = mainScript.database.GetAllMeasurements(mainScript.currentPatient, currentPose);
         hasData = true;
+        UpdateCharts();
     }
 
     private void Update()
@@ -81,18 +82,18 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
         
         foreach (AccordionToggler toggler in parameterTogglers)
         {
-            if (toggler.toggleChanged)
+            if (toggler.ToggleChanged)
             {
-                toggler.toggleChanged = false;
+                toggler.ToggleChanged = false;
                 result = true;
             }
         }
 
         foreach (AccordionToggler toggler in taskTogglers)
         {
-            if (toggler.toggleChanged)
+            if (toggler.ToggleChanged)
             {
-                toggler.toggleChanged = false;
+                toggler.ToggleChanged = false;
                 result = true;
             }
         }
@@ -123,8 +124,6 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
             Destroy(instance);
 
         instantiatedCharts = new List<GameObject>();
-
-        Debug.Log(allParameters);
 
         for (int i = 0; i < allParameters.Count; i++)
         {
@@ -158,8 +157,10 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
         List<Parameter> result = new List<Parameter>();
 
         for (int i = 0; i < parameterTogglers.Length; i++)
-            if (parameterTogglers[i].toggle.isOn)
+        {
+            if (parameterTogglers[i].GetToggle().isOn)
                 result.Add((Parameter)i);
+        }
 
         return result;
     }
@@ -174,7 +175,7 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
         List<Task> result = new List<Task>();
 
         for (int i = 0; i < taskTogglers.Length; i++)
-            if (taskTogglers[i].toggle.isOn)
+            if (taskTogglers[i].GetToggle().isOn)
                 result.Add((Task)i);
 
         return result;

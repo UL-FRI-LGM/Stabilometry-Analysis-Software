@@ -16,6 +16,9 @@ public class ScrollbarScript : MonoBehaviour
 
     public void SetSize(float fullSize, float shownSize)
     {
+        if (scrollbar == null)
+            scrollbar = GetComponent<Scrollbar>();
+
         if (fullSize <= shownSize)
             scrollbar.size = 1;
         else

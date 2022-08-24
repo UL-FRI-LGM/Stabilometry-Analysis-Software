@@ -51,10 +51,10 @@ public class LineChartScript : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            RespawnChart();
-        }
+        //if (Input.GetKeyDown(KeyCode.R))
+        //{
+        //    RespawnChart();
+        //}
     }
 
     private void RespawnChart()
@@ -76,7 +76,7 @@ public class LineChartScript : MonoBehaviour
     {
         this.chartData = chartData;
         this.chosenParameter = chosenParameter;
-
+        this.selectedTasks = allTasks;
 
         SetTitle(chosenParameter);
         UpdateChart();
@@ -109,7 +109,9 @@ public class LineChartScript : MonoBehaviour
     {
         float leftmostPosition = 0;
 
-        if (data.Count % 2 != 0)
+        bool oddNumber = data.Count % 2 != 0;
+
+        if (oddNumber)
             leftmostPosition -= valueSpaceSize.x * data.Count / 2;
         else
             leftmostPosition -= valueSpaceSize.x * (data.Count / 2 - 0.5f);
@@ -127,34 +129,46 @@ public class LineChartScript : MonoBehaviour
 
     private void SpawnElements(List<ChartData> data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, RectTransform lineRect)
     {
+        bool oddNumber = data.Count % 2 != 0 ;
 
-        FillLineRenderers(data, startingPosition.x, valueConverter, lineRect);
+        float lineMove = (oddNumber) ? lineRect.rect.width * 0.5f : 0;
+
+        FillLineRenderers(data, startingPosition.x, valueConverter, lineRect, lineMove);
 
         for (int i = 0; i < data.Count; i++)
         {
             // Spawn slice objects
-            lineRect.anchoredPosition = new Vector2(startingPosition.x + i * lineRect.rect.width, startingPosition.y);
+            float xPosition = startingPosition.x + i * lineRect.rect.width;
+            if (oddNumber)
+                xPosition += lineRect.rect.width * 0.5f;
+            
+            lineRect.anchoredPosition = new Vector2(xPosition, startingPosition.y);
+
             GameObject slice = Instantiate(LineObject, drawingSpace.transform);
 
             spawnedObjects.Add(slice);
-
-            float xPosition = startingPosition.x + i * lineRect.rect.width;
 
             SpawnDots(data[i], xPosition, valueConverter, i);
         }
     }
 
-    private void FillLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect)
+    private void FillLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect, float lineMove)
     {
         List<Vector2>[] drawingData = PrepareDataForLineRenderers(data, leftmostPosition, valueConverter, lineRect, selectedTasks);
 
         for (int i = 0; i < lineRenderers.Length; i++)
         {
             Vector2[] points = new Vector2[drawingData[i].Count];
+
             for (int k = 0; k < drawingData[i].Count; k++)
                 points[k] = drawingData[i][k];
 
             lineRenderers[i].Points = points;
+            lineRenderers[i].gameObject.SetActive(points.Length > 0);
+
+            RectTransform rectTransform = lineRenderers[i].GetComponent<RectTransform>();
+
+            rectTransform.anchoredPosition += new Vector2(lineMove, 0);
         }
     }
 
@@ -185,8 +199,6 @@ public class LineChartScript : MonoBehaviour
                 float previousValue = (i <= 0) ? -1 : data[i - 1].GetTaskValue(currentTask);
                 float nextValue = (i >= data.Count - 1) ? -1 : data[i + 1].GetTaskValue(currentTask);
 
-                //Debug.Log($"{i} {previousValue} {nextValue}");
-
                 switch (AddNTimes(previousValue, data[i].GetTaskValue(currentTask), nextValue))
                 {
                     case (1):
@@ -199,6 +211,8 @@ public class LineChartScript : MonoBehaviour
                 }
             }
         }
+
+        //Debug.Log($"{result[0].Count} {result[1].Count} {result[2].Count} {result[3].Count}");
 
         return result;
     }
@@ -239,7 +253,7 @@ public class LineChartScript : MonoBehaviour
             {
                 Vector2 newPosition = new Vector2(xPosition, data.GetTaskValue(currentTask) * valueConverter);
                 dotRects[(int)currentTask].anchoredPosition = newPosition;
-                GameObject dot = Instantiate(dotObjects[i], dotsHolder.transform);
+                GameObject dot = Instantiate(dotObjects[(int)currentTask], dotsHolder.transform);
 
                 spawnedObjects.Add(dot);
             }
