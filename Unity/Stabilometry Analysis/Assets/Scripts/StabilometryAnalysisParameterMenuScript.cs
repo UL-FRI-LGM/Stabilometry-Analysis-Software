@@ -25,6 +25,8 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
 
     [SerializeField] private ScrollbarScript scrollbarScript = null;
 
+    [SerializeField] private GameObject measurementMenu = null;
+
     private List<GameObject> instantiatedCharts = null;
     private Vector2 lineChartSize = new Vector2(590, 300);
     private Vector2 firstPosition = new Vector2();
@@ -132,7 +134,12 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
             instanceTransfrom.sizeDelta = lineChartSize;
             instanceTransfrom.localPosition = GetNewPosition(i, firstPosition, lineChartSize);
 
-            instance.GetComponent<LineChartScript>().SetChartData(GetCurrentChartData(allParameters[i]), allParameters[i], selectedTasks);
+            LineChartScript chartScript = instance.GetComponent<LineChartScript>();
+
+            chartScript.SetChartData(GetCurrentChartData(allParameters[i]), allParameters[i], selectedTasks);
+
+            chartScript.SetParent(i, this);
+
             instantiatedCharts.Add(instance);
         }
     }
@@ -224,5 +231,10 @@ public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
     public void OpenMenu(GameObject menu)
     {
         mainScript.menuSwitching.OpenMenu(menu);
+    }
+
+    public void OpenAnalysisMenu(int index)
+    {
+        OpenMenu(measurementMenu);
     }
 }

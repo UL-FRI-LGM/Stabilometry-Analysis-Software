@@ -6148,6 +6148,7 @@ MonoBehaviour:
   chartHolder: {fileID: 0}
   chartMask: {fileID: 0}
   scrollbarScript: {fileID: 0}
+  measurementMenu: {fileID: 0}
 --- !u!222 &193817385
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -32886,6 +32887,7 @@ MonoBehaviour:
   chartHolder: {fileID: 1551561992}
   chartMask: {fileID: 221015650}
   scrollbarScript: {fileID: 254135721}
+  measurementMenu: {fileID: 5708563141827413997}
 --- !u!1 &957210647
 GameObject:
   m_ObjectHideFlags: 0

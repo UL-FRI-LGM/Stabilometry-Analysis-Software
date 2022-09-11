@@ -4,10 +4,15 @@ using UnityEngine;
 using UnityEngine.UI.Extensions;
 using TMPro;
 using static Parameter;
+using UnityEngine.UI;
 
 public class LineChartScript : MonoBehaviour
 {
     #region Variables
+    private StabilometryAnalysisParameterMenuScript parentScript = null;
+
+    private int index = -1;
+
     [SerializeField]
     private GameObject
         LineObject = null,
@@ -146,6 +151,8 @@ public class LineChartScript : MonoBehaviour
 
             GameObject slice = Instantiate(LineObject, drawingSpace.transform);
 
+            slice.GetComponent<Button>().onClick.AddListener(ButtonClicked);
+
             spawnedObjects.Add(slice);
 
             SpawnDots(data[i], xPosition, valueConverter, i);
@@ -170,6 +177,17 @@ public class LineChartScript : MonoBehaviour
 
             rectTransform.anchoredPosition += new Vector2(lineMove, 0);
         }
+    }
+
+    public void ButtonClicked()
+    {
+        parentScript.OpenAnalysisMenu(index);
+    }
+
+    public void SetParent(int index, StabilometryAnalysisParameterMenuScript parentScript)
+    {
+        this.parentScript = parentScript;
+        this.index = index;
     }
 
     /// <summary>
