@@ -5,19 +5,19 @@ using UnityEngine;
 public class StabilometryImagesMenuScript : MonoBehaviour
 {
     #region Variables
-    public MainScript mainScript = null;
+    public MainScript mainScript { get; set; } = null;
     [SerializeField] private GameObject stabilometryImagePrefab = null;
+
+    private string cmUnit = "cm";
+    private string cmSqUnit = "cm²";
+    private string cmOverSUnit = "cm/s";
+
     #endregion
 
-    // Start is called before the first frame update
-    void Start()
+    private string ConvertToString(float value, string unit)
     {
-        
+        return "";
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

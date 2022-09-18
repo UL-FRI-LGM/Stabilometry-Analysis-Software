@@ -42,22 +42,27 @@ public class StabilometryDataElementScript : MonoBehaviour
 
     private void SetData(StabilometryTask task)
     {
-        swayPathTotalValue.text = $"{task.swayPath} {normalUnit}";
-        swayPathAPValue.text = $"{task.swayPathAP} {normalUnit}";
-        swayPathMLValue.text = $"{task.swayPathML} {normalUnit}";
+        swayPathTotalValue.text = ConvertToString (task.swayPath ,normalUnit);
+        swayPathAPValue.text = ConvertToString(task.swayPathAP, normalUnit);
+        swayPathMLValue.text = ConvertToString(task.swayPathML, normalUnit);
 
-        meanSwayVelocityTotalValue.text = $"{task.meanSwayVelocity} {velocityUnit}";
-        meanSwayVelocityAPValue.text = $"{task.meanSwayVelocityAP} {velocityUnit}";
-        meanSwayVelocityMLValue.text = $"{task.meanSwayVelocityML} {velocityUnit}";
+        meanSwayVelocityTotalValue.text = ConvertToString(task.meanSwayVelocity, velocityUnit);
+        meanSwayVelocityAPValue.text = ConvertToString(task.meanSwayVelocityAP, velocityUnit);
+        meanSwayVelocityMLValue.text = ConvertToString(task.meanSwayVelocityML, velocityUnit);
 
-        swayAverageAmplitudeAPValue.text = $"{task.swayAverageAmplitudeAP} {normalUnit}";
-        swayAverageAmplitudeMLValue.text = $"{task.swayAverageAmplitudeML} {normalUnit}";
+        swayAverageAmplitudeAPValue.text = ConvertToString(task.swayAverageAmplitudeAP, normalUnit);
+        swayAverageAmplitudeMLValue.text = ConvertToString(task.swayAverageAmplitudeML, normalUnit);
 
-        swayMaximalAmplitudeAPValue.text = $"{task.swayMaximalAmplitudeAP} {normalUnit}";
-        swayMaximalAmplitudeMLValue.text = $"{task.swayMaximalAmplitudeML} {normalUnit}";
+        swayMaximalAmplitudeAPValue.text = ConvertToString(task.swayMaximalAmplitudeAP, normalUnit);
+        swayMaximalAmplitudeMLValue.text = ConvertToString(task.swayMaximalAmplitudeML, normalUnit);
 
-        meanDistanceValue.text = $"{task.meanDistance} {normalUnit}";
-        conf95EllipseAreaValue.text = $"{task.confidence95Ellipse.area} {areaUnit}";
+        meanDistanceValue.text = ConvertToString(task.meanDistance, normalUnit);
+        conf95EllipseAreaValue.text = ConvertToString(task.confidence95Ellipse.area, areaUnit);
+    }
+
+    private string ConvertToString(float value, string unit)
+    {
+        return $"{value} {unit}";
     }
 
     private void ClearData()

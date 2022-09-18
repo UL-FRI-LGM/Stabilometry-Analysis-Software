@@ -67352,7 +67352,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07e65241a04bb1e47931a99f966cf5b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainScript: {fileID: 780767368}
   stabilometryImagePrefab: {fileID: 4955002056944118085, guid: 0d8096ba51677b1438a747be8648db2f,
     type: 3}
 --- !u!222 &2070894345
@@ -71640,7 +71639,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07e65241a04bb1e47931a99f966cf5b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainScript: {fileID: 0}
   stabilometryImagePrefab: {fileID: 4955002056944118085, guid: 0d8096ba51677b1438a747be8648db2f,
     type: 3}
 --- !u!1 &5708563141827413997
