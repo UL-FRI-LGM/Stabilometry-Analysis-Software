@@ -5,98 +5,101 @@ using TMPro;
 using System.IO;
 using UnityEngine.UI;
 
-public class DataUploadMenuScript : MonoBehaviour
+namespace StabilometryAnalysis
 {
-    #region Variables
-    [SerializeField] private FileImporter[] fileImporters = null;
-    [SerializeField] private TMP_Dropdown positionDropdown = null;
-    [SerializeField] private Button saveButton = null;
-
-    public MainScript mainScript { get; set; } = null;
-
-    //[SerializeField] private StabilometryImageScript imageSciprt = null;
-    #endregion
-
-    private void Update()
+    public class DataUploadMenuScript : MonoBehaviour
     {
-        if (!saveButton.interactable)
-            saveButton.interactable = fileImporters[0].pathFound
-                || fileImporters[1].pathFound
-                || fileImporters[2].pathFound
-                || fileImporters[3].pathFound;
-    }
+        #region Variables
+        [SerializeField] private FileImporter[] fileImporters = null;
+        [SerializeField] private TMP_Dropdown positionDropdown = null;
+        [SerializeField] private Button saveButton = null;
 
-    public void CancelButton()
-    {
-        mainScript.menuSwitching.OpenInitialMenu();
-    }
+        public MainScript mainScript { get; set; } = null;
 
-    public void SaveButton()
-    {
-        List<DataPoint>[] data = GetData();
+        //[SerializeField] private StabilometryImageScript imageSciprt = null;
+        #endregion
 
-        bool dataPresent = false;
-        foreach (List<DataPoint> list in data)
+        private void Update()
         {
-            if (list != null)
-                dataPresent = true;
+            if (!saveButton.interactable)
+                saveButton.interactable = fileImporters[0].pathFound
+                    || fileImporters[1].pathFound
+                    || fileImporters[2].pathFound
+                    || fileImporters[3].pathFound;
         }
 
-        if (dataPresent)
+        public void CancelButton()
         {
-            int newID = mainScript.database.GetLastMeasurementID() + 1;
-            StabilometryMeasurement measurement = JSONHandler.SaveValues(newID, data, mainScript.currentPatient.ID, GetSelectedPose(), GetSelectedDateTime());
-
-            if (measurement != null)
-                mainScript.database.AddMeasurement(measurement);
-
             mainScript.menuSwitching.OpenInitialMenu();
         }
-    }
 
-    /// <summary>
-    /// Gets data from file importers
-    /// </summary>
-    /// <returns></returns>
-    private List<DataPoint>[] GetData()
-    {
-        List<DataPoint>[] result = new List<DataPoint>[4];
+        public void SaveButton()
+        {
+            List<DataPoint>[] data = GetData();
 
-        for (int i = 0; i < fileImporters.Length; i++)
-            result[i] = fileImporters[i].ReadData();
+            bool dataPresent = false;
+            foreach (List<DataPoint> list in data)
+            {
+                if (list != null)
+                    dataPresent = true;
+            }
 
-        return result;
-    }
+            if (dataPresent)
+            {
+                int newID = mainScript.database.GetLastMeasurementID() + 1;
+                StabilometryMeasurement measurement = JSONHandler.SaveValues(newID, data, mainScript.currentPatient.ID, GetSelectedPose(), GetSelectedDateTime());
 
-    private void OnDisable()
-    {
-        ClearAllInputFields();
-    }
+                if (measurement != null)
+                    mainScript.database.AddMeasurement(measurement);
 
-    /// <summary>
-    /// Clears all input fields.
-    /// </summary>
-    private void ClearAllInputFields()
-    {
-        foreach (FileImporter importer in fileImporters)
-            importer.Clear();
+                mainScript.menuSwitching.OpenInitialMenu();
+            }
+        }
 
-        saveButton.interactable = false;
+        /// <summary>
+        /// Gets data from file importers
+        /// </summary>
+        /// <returns></returns>
+        private List<DataPoint>[] GetData()
+        {
+            List<DataPoint>[] result = new List<DataPoint>[4];
 
-        positionDropdown.value = 0;
-        positionDropdown.RefreshShownValue();
-    }
+            for (int i = 0; i < fileImporters.Length; i++)
+                result[i] = fileImporters[i].ReadData();
 
-    private Pose GetSelectedPose()
-    {
-        Debug.LogWarning("Method GetSelectedPose not implemented.");
+            return result;
+        }
 
-        return Pose.BOTH_LEGS_JOINED_PARALLEL;
-    }
+        private void OnDisable()
+        {
+            ClearAllInputFields();
+        }
 
-    private MyDateTime GetSelectedDateTime()
-    {
-        Debug.LogWarning("Method GetSelectedDateTime not implemented.");
-        return new MyDateTime(0, 0, 0, 0, 0);
+        /// <summary>
+        /// Clears all input fields.
+        /// </summary>
+        private void ClearAllInputFields()
+        {
+            foreach (FileImporter importer in fileImporters)
+                importer.Clear();
+
+            saveButton.interactable = false;
+
+            positionDropdown.value = 0;
+            positionDropdown.RefreshShownValue();
+        }
+
+        private Pose GetSelectedPose()
+        {
+            Debug.LogWarning("Method GetSelectedPose not implemented.");
+
+            return Pose.BOTH_LEGS_JOINED_PARALLEL;
+        }
+
+        private MyDateTime GetSelectedDateTime()
+        {
+            Debug.LogWarning("Method GetSelectedDateTime not implemented.");
+            return new MyDateTime(0, 0, 0, 0, 0);
+        }
     }
 }

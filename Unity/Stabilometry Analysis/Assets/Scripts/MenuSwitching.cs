@@ -2,39 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MenuSwitching : MonoBehaviour
+namespace StabilometryAnalysis
 {
-    #region Variables
-
-    [SerializeField]
-    private GameObject initialMenu = null;
-
-    private GameObject currentMenu = null;
-
-    #endregion
-
-    private void Awake()
+    public class MenuSwitching : MonoBehaviour
     {
-        currentMenu = initialMenu;
-    }
+        #region Variables
 
-    private void Start()
-    {
-        
-    }
+        [SerializeField]
+        private GameObject initialMenu = null;
 
-    public void OpenMenu(GameObject newMenu)
-    {
-        currentMenu.SetActive(false);
-        currentMenu = newMenu;
-        newMenu.SetActive(true);
-    }
+        private GameObject currentMenu = null;
 
-    public void OpenInitialMenu()
-    {
-        currentMenu.SetActive(false);
-        currentMenu = initialMenu;
-        initialMenu.SetActive(true);
-        GetComponent<MainScript>().menuHeaderScript.EnableDropdown(true);
+        #endregion
+
+        private void Awake()
+        {
+            currentMenu = initialMenu;
+        }
+
+        private void Start()
+        {
+
+        }
+
+        public void OpenMenu(GameObject newMenu)
+        {
+            currentMenu.SetActive(false);
+            currentMenu = newMenu;
+            newMenu.SetActive(true);
+        }
+
+        public void OpenInitialMenu()
+        {
+            currentMenu.SetActive(false);
+            currentMenu = initialMenu;
+            initialMenu.SetActive(true);
+            GetComponent<MainScript>().menuHeaderScript.EnableDropdown(true);
+        }
     }
 }

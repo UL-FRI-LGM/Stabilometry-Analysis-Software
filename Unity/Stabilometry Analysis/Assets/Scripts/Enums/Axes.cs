@@ -1,6 +1,9 @@
-﻿public enum Axes
+﻿namespace StabilometryAnalysis
 {
-    BOTH,
-    AP,
-    ML
+    public enum Axes
+    {
+        BOTH,
+        AP,
+        ML
+    }
 }

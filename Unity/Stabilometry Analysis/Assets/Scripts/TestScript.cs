@@ -2,29 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestScript : MonoBehaviour
+namespace StabilometryAnalysis
 {
-    public GameObject stabilometryImage;
-    public GameObject canvas;
-
-    // Start is called before the first frame update
-    void Start()
+    public class TestScript : MonoBehaviour
     {
-        //List<DataPoint> testPoints = new List<DataPoint>();
-        //testPoints.Add(new DataPoint(0.0019984f, 0.1845152f, 1));
-        //testPoints.Add(new DataPoint(0.007996f, 0.1845535f, 2));
+        public GameObject stabilometryImage;
+        public GameObject canvas;
 
-        //EllipseValues testValues = new EllipseValues(testPoints);
+        // Start is called before the first frame update
+        void Start()
+        {
+            //List<DataPoint> testPoints = new List<DataPoint>();
+            //testPoints.Add(new DataPoint(0.0019984f, 0.1845152f, 1));
+            //testPoints.Add(new DataPoint(0.007996f, 0.1845535f, 2));
 
-        //GameObject instance = Instantiate(stabilometryImage, canvas.transform);
-        //instance.GetComponent<StabilometryImageScript>().TestEllipse(testValues.ellipsePoints);
+            //EllipseValues testValues = new EllipseValues(testPoints);
 
-        //StabilometryTask.TestFunctions();
-    }
+            //GameObject instance = Instantiate(stabilometryImage, canvas.transform);
+            //instance.GetComponent<StabilometryImageScript>().TestEllipse(testValues.ellipsePoints);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            //StabilometryTask.TestFunctions();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }

@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class DateLineScript : MonoBehaviour
+namespace StabilometryAnalysis
 {
-    #region Variables
-    [SerializeField] private TextMeshProUGUI dateText = null;
-
-    #endregion
-
-    public void SetText(MyDateTime date)
+    public class DateLineScript : MonoBehaviour
     {
-        dateText.text = date.ToStringShort();
+        #region Variables
+        [SerializeField] private TextMeshProUGUI dateText = null;
+
+        #endregion
+
+        public void SetText(MyDateTime date)
+        {
+            dateText.text = date.ToStringShort();
+        }
     }
 }

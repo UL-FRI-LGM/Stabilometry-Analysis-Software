@@ -4,95 +4,98 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AccordionHeaderComponent : MonoBehaviour
+namespace StabilometryAnalysis
 {
-    #region Variables
-    public RectTransform ElementTransform { get; set; } = null;
-
-    private float maxSize = -170;
-    private float minSize = 0;
-
-    public bool open { set; get; } = false;
-
-    [SerializeField]
-    private Image blocker = null;
-
-    private Image elementHolder = null;
-
-    private RectTransform buttonTransform = null;
-    private RectTransform contentTransform = null;
-    private MyAccordionScript parentScript = null;
-
-    private int index = -1;
-
-    private float duration = 0.5f;
-
-    public float GetSize
+    public class AccordionHeaderComponent : MonoBehaviour
     {
-        get
+        #region Variables
+        public RectTransform ElementTransform { get; set; } = null;
+
+        private float maxSize = -170;
+        private float minSize = 0;
+
+        public bool open { set; get; } = false;
+
+        [SerializeField]
+        private Image blocker = null;
+
+        private Image elementHolder = null;
+
+        private RectTransform buttonTransform = null;
+        private RectTransform contentTransform = null;
+        private MyAccordionScript parentScript = null;
+
+        private int index = -1;
+
+        private float duration = 0.5f;
+
+        public float GetSize
+        {
+            get
+            {
+                if (open)
+                    return 2 * buttonTransform.sizeDelta.y + contentTransform.sizeDelta.y;
+                else
+                    return buttonTransform.sizeDelta.y;
+
+            }
+        }
+
+        #endregion
+
+        private void Awake()
+        {
+            ElementTransform = GetComponent<RectTransform>();
+            buttonTransform = transform.GetChild(0).GetComponent<RectTransform>();
+            contentTransform = transform.GetChild(1).GetComponent<RectTransform>();
+
+            elementHolder = contentTransform.GetComponent<Image>();
+        }
+
+        public void SetParentScript(MyAccordionScript parentScript, int indeks)
+        {
+            this.parentScript = parentScript;
+            this.index = indeks;
+        }
+
+        public void HeaderClicked()
+        {
+            parentScript.ElementClicked(index);
+        }
+
+        public void OpenClose()
         {
             if (open)
-                return 2 * buttonTransform.sizeDelta.y + contentTransform.sizeDelta.y;
+                CollapseSpace();
             else
-                return buttonTransform.sizeDelta.y;
+                ExpandSpace();
 
+            open = !open;
         }
-    }
 
-    #endregion
-
-    private void Awake()
-    {
-        ElementTransform = GetComponent<RectTransform>();
-        buttonTransform = transform.GetChild(0).GetComponent<RectTransform>();
-        contentTransform = transform.GetChild(1).GetComponent<RectTransform>();
-
-        elementHolder = contentTransform.GetComponent<Image>();
-    }
-
-    public void SetParentScript(MyAccordionScript parentScript, int indeks)
-    {
-        this.parentScript = parentScript;
-        this.index = indeks;
-    }
-
-    public void HeaderClicked()
-    {
-        parentScript.ElementClicked(index);
-    }
-
-    public void OpenClose()
-    {
-        if (open)
+        public void Close()
+        {
             CollapseSpace();
-        else
-            ExpandSpace();
 
-        open = !open;
-    }
+            open = false;
+        }
 
-    public void Close()
-    {
-        CollapseSpace();
+        private void ExpandSpace()
+        {
+            blocker.gameObject.SetActive(false);
+            elementHolder.DOFillAmount(1, duration);
+        }
 
-        open = false;
-    }
+        private void CollapseSpace()
+        {
+            elementHolder.DOFillAmount(0, duration);
+            blocker.gameObject.SetActive(true);
+        }
 
-    private void ExpandSpace()
-    {
-        blocker.gameObject.SetActive(false);
-        elementHolder.DOFillAmount(1, duration);
-    }
-
-    private void CollapseSpace()
-    {
-        elementHolder.DOFillAmount(0, duration);
-        blocker.gameObject.SetActive(true);
-    }
-
-    public void SetNewPosition(float yPosition)
-    {
-        ElementTransform.DOAnchorPosY(yPosition, duration);
-        //transform.DOMoveY(yPosition, duration);
+        public void SetNewPosition(float yPosition)
+        {
+            ElementTransform.DOAnchorPosY(yPosition, duration);
+            //transform.DOMoveY(yPosition, duration);
+        }
     }
 }

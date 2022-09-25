@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StabilometryAnalysisMenuScript : MonoBehaviour
+namespace StabilometryAnalysis
 {
-    #region Variables
-    public MainScript mainScript { get; set; } = null;
-    #endregion
-
-    public void OpenMenu(GameObject menu)
+    public class StabilometryAnalysisMenuScript : MonoBehaviour
     {
-        mainScript.menuSwitching.OpenMenu(menu);
+        #region Variables
+        public MainScript mainScript { get; set; } = null;
+        #endregion
+
+        public void OpenMenu(GameObject menu)
+        {
+            mainScript.menuSwitching.OpenMenu(menu);
+        }
     }
 }

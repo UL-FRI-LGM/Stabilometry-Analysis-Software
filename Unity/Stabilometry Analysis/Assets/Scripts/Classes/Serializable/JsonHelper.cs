@@ -3,62 +3,65 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class JsonHelper
+namespace StabilometryAnalysis
 {
-    [Serializable]
-    private class RawDataWrapper
+    public class JsonHelper
     {
-        public List<DataPoint> eyesOpenSolidSurface;
-        public List<DataPoint> eyesClosedSolidSurface;
-        public List<DataPoint> eyesOpenSoftSurface;
-        public List<DataPoint> eyesClosedSoftSurface;
-    }
+        [Serializable]
+        private class RawDataWrapper
+        {
+            public List<DataPoint> eyesOpenSolidSurface;
+            public List<DataPoint> eyesClosedSolidSurface;
+            public List<DataPoint> eyesOpenSoftSurface;
+            public List<DataPoint> eyesClosedSoftSurface;
+        }
 
-    [Serializable]
-    private class DrawingDataWrapper
-    {
-        public DrawingTaskValues eyesOpenSolidSurface;
-        public DrawingTaskValues eyesClosedSolidSurface;
-        public DrawingTaskValues eyesOpenSoftSurface;
-        public DrawingTaskValues eyesClosedSoftSurface;
-    }
+        [Serializable]
+        private class DrawingDataWrapper
+        {
+            public DrawingTaskValues eyesOpenSolidSurface;
+            public DrawingTaskValues eyesClosedSolidSurface;
+            public DrawingTaskValues eyesOpenSoftSurface;
+            public DrawingTaskValues eyesClosedSoftSurface;
+        }
 
-    //public static T[] FromJson<T>(string json)
-    //{
-    //    Wrapper wrapper = JsonUtility.FromJson<Wrapper>(json);
+        //public static T[] FromJson<T>(string json)
+        //{
+        //    Wrapper wrapper = JsonUtility.FromJson<Wrapper>(json);
 
-    //    return wrapper.items;
-    //}
+        //    return wrapper.items;
+        //}
 
-    /// <summary>
-    /// Converts stabilometry data to json string.
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public static string ToJson(List<DataPoint>[] data)
-    {
-        RawDataWrapper wrapper = new RawDataWrapper();
-        wrapper.eyesOpenSolidSurface = data[0];
-        wrapper.eyesClosedSolidSurface = data[1];
-        wrapper.eyesOpenSoftSurface = data[2];
-        wrapper.eyesClosedSoftSurface = data[3];
-        
-        return JsonUtility.ToJson(wrapper);
-    }
+        /// <summary>
+        /// Converts stabilometry data to json string.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string ToJson(List<DataPoint>[] data)
+        {
+            RawDataWrapper wrapper = new RawDataWrapper();
+            wrapper.eyesOpenSolidSurface = data[0];
+            wrapper.eyesClosedSolidSurface = data[1];
+            wrapper.eyesOpenSoftSurface = data[2];
+            wrapper.eyesClosedSoftSurface = data[3];
 
-    /// <summary>
-    /// Converts stabilometry task to json string.
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    public static string ToJson(DrawingTaskValues[] data)
-    {
-        DrawingDataWrapper wrapper = new DrawingDataWrapper();
-        wrapper.eyesOpenSolidSurface = data[0];
-        wrapper.eyesClosedSolidSurface = data[1];
-        wrapper.eyesOpenSoftSurface = data[2];
-        wrapper.eyesClosedSoftSurface = data[3];
-        
-        return JsonUtility.ToJson(wrapper);
+            return JsonUtility.ToJson(wrapper);
+        }
+
+        /// <summary>
+        /// Converts stabilometry task to json string.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static string ToJson(DrawingTaskValues[] data)
+        {
+            DrawingDataWrapper wrapper = new DrawingDataWrapper();
+            wrapper.eyesOpenSolidSurface = data[0];
+            wrapper.eyesClosedSolidSurface = data[1];
+            wrapper.eyesOpenSoftSurface = data[2];
+            wrapper.eyesClosedSoftSurface = data[3];
+
+            return JsonUtility.ToJson(wrapper);
+        }
     }
 }

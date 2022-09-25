@@ -2,89 +2,92 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StabilometryChartScript : MonoBehaviour
+namespace StabilometryAnalysis
 {
-    #region Variables
-    private float filterAccuracyValue = 0.01f; 
-
-    #endregion
-
-    /// <summary>
-    /// Draws the Stabilometry data as a line.
-    /// </summary>
-    /// <param name="data"></param>
-    public void DrawChart(List<Vector2> data)
+    public class StabilometryChartScript : MonoBehaviour
     {
-        List<Vector2> filteredData = RemoveSimilarData(data);
+        #region Variables
+        private float filterAccuracyValue = 0.01f;
 
-        Debug.Log(data.Count);
-        Debug.Log(filteredData.Count);
-    }
+        #endregion
 
-    /// <summary>
-    /// First
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    private List<Vector2> RemoveSimilarData(List<Vector2> data)
-    {
-        List<Vector2> result = new List<Vector2>();
-
-        if (data.Count <= 0)
-            return result;
-
-        // else
-
-        Vector2 previousValue = data[0];
-        Vector2 previousCalcValue = CalculatePosition(previousValue);
-
-        result.Add(previousCalcValue);
-
-        for (int i = 1; i < data.Count; i++)
+        /// <summary>
+        /// Draws the Stabilometry data as a line.
+        /// </summary>
+        /// <param name="data"></param>
+        public void DrawChart(List<Vector2> data)
         {
-            Vector2 currentValue = data[i];
+            List<Vector2> filteredData = RemoveSimilarData(data);
 
-            if (currentValue == previousValue)
-                continue;
-
-            // else
-            Vector2 currentCalcValue = CalculatePosition(currentValue);
-
-            if (VectorsSimilar(previousCalcValue, currentCalcValue, filterAccuracyValue))
-                continue;
-
-            // else
-            result.Add(currentCalcValue);
-            
-            previousValue = currentValue;
-            previousCalcValue = currentCalcValue;
+            Debug.Log(data.Count);
+            Debug.Log(filteredData.Count);
         }
 
-        return result;
-    }
+        /// <summary>
+        /// First
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private List<Vector2> RemoveSimilarData(List<Vector2> data)
+        {
+            List<Vector2> result = new List<Vector2>();
 
-    /// <summary>
-    /// Calculates the value for displaying purposes
-    /// </summary>
-    /// <param name="value"></param>
-    /// <returns></returns>
-    private Vector2 CalculatePosition(Vector2 value)
-    {
-        //TODO implement this!
-        return value;
-    }
+            if (data.Count <= 0)
+                return result;
 
-    /// <summary>
-    /// Determines if the values are similar enough.
-    /// </summary>
-    /// <param name="firstVector"></param>
-    /// <param name="secondVector"></param>
-    /// <param name="accuracyValue"> [1,infiniy); 0 - similar only if the vectors are the same</param>
-    /// <returns></returns>
-    private bool VectorsSimilar(Vector2 firstVector, Vector2 secondVector, float accuracyValue)
-    {
-        Vector2 difference = firstVector - secondVector;
+            // else
 
-        return difference.sqrMagnitude <= accuracyValue;
+            Vector2 previousValue = data[0];
+            Vector2 previousCalcValue = CalculatePosition(previousValue);
+
+            result.Add(previousCalcValue);
+
+            for (int i = 1; i < data.Count; i++)
+            {
+                Vector2 currentValue = data[i];
+
+                if (currentValue == previousValue)
+                    continue;
+
+                // else
+                Vector2 currentCalcValue = CalculatePosition(currentValue);
+
+                if (VectorsSimilar(previousCalcValue, currentCalcValue, filterAccuracyValue))
+                    continue;
+
+                // else
+                result.Add(currentCalcValue);
+
+                previousValue = currentValue;
+                previousCalcValue = currentCalcValue;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calculates the value for displaying purposes
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private Vector2 CalculatePosition(Vector2 value)
+        {
+            //TODO implement this!
+            return value;
+        }
+
+        /// <summary>
+        /// Determines if the values are similar enough.
+        /// </summary>
+        /// <param name="firstVector"></param>
+        /// <param name="secondVector"></param>
+        /// <param name="accuracyValue"> [1,infiniy); 0 - similar only if the vectors are the same</param>
+        /// <returns></returns>
+        private bool VectorsSimilar(Vector2 firstVector, Vector2 secondVector, float accuracyValue)
+        {
+            Vector2 difference = firstVector - secondVector;
+
+            return difference.sqrMagnitude <= accuracyValue;
+        }
     }
 }

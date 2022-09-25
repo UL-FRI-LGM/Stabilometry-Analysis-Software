@@ -1,14 +1,16 @@
-﻿
-public class CMatrix
+﻿namespace StabilometryAnalysis
 {
-    public float Cxx = 0f;
-    public float Cxy = 0f;
-    public float Cyy = 0f;
-
-    public CMatrix(float Cxx, float Cxy, float Cyy)
+    public class CMatrix
     {
-        this.Cxx = Cxx;
-        this.Cxy = Cxy;
-        this.Cyy = Cyy;
+        public float Cxx = 0f;
+        public float Cxy = 0f;
+        public float Cyy = 0f;
+
+        public CMatrix(float Cxx, float Cxy, float Cyy)
+        {
+            this.Cxx = Cxx;
+            this.Cxy = Cxy;
+            this.Cyy = Cyy;
+        }
     }
 }

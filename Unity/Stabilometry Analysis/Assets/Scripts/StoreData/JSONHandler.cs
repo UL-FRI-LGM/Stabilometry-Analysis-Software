@@ -3,100 +3,103 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public static class JSONHandler
+namespace StabilometryAnalysis
 {
-    #region Variables
-    private static string rawFolder = "RawData",
-        dataFolder = "Data",
-        JSONFolder = "JSON";
-
-    #endregion
-
-    /// <summary>
-    /// Calculates and saves the values into the database
-    /// </summary>
-    /// <param name="data"></param>
-    public static StabilometryMeasurement SaveValues(int newID, List<DataPoint>[] data, int patientID, Pose selectedPose, MyDateTime dateTime)
+    public static class JSONHandler
     {
-        StabilometryMeasurement measurement = new StabilometryMeasurement();
-        measurement.ID = newID;
-        measurement.patientID = patientID;
-        measurement.pose = selectedPose;
-        measurement.dateTime = dateTime;
+        #region Variables
+        private static string rawFolder = "RawData",
+            dataFolder = "Data",
+            JSONFolder = "JSON";
 
-        measurement.eyesOpenSolidSurface = (data[0] != null) ? new StabilometryTask(data[0]) : null;
-        measurement.eyesClosedSolidSurface = (data[1] != null) ? new StabilometryTask(data[1]) : null;
-        measurement.eyesOpenSoftSurface = (data[2] != null) ? new StabilometryTask(data[2]) : null;
-        measurement.eyesClosedSoftSurface = (data[3] != null) ? new StabilometryTask(data[3]) : null;
+        #endregion
 
-        string fileName = $"{dataFolder}{measurement.ID}.json";
-        SaveDrawingJson(measurement.GetDrawingData(), fileName);
+        /// <summary>
+        /// Calculates and saves the values into the database
+        /// </summary>
+        /// <param name="data"></param>
+        public static StabilometryMeasurement SaveValues(int newID, List<DataPoint>[] data, int patientID, Pose selectedPose, MyDateTime dateTime)
+        {
+            StabilometryMeasurement measurement = new StabilometryMeasurement();
+            measurement.ID = newID;
+            measurement.patientID = patientID;
+            measurement.pose = selectedPose;
+            measurement.dateTime = dateTime;
 
-        string rawFileName = $"{rawFolder}{measurement.ID}.json";
-        SaveRawJSON(data, rawFileName);
+            measurement.eyesOpenSolidSurface = (data[0] != null) ? new StabilometryTask(data[0]) : null;
+            measurement.eyesClosedSolidSurface = (data[1] != null) ? new StabilometryTask(data[1]) : null;
+            measurement.eyesOpenSoftSurface = (data[2] != null) ? new StabilometryTask(data[2]) : null;
+            measurement.eyesClosedSoftSurface = (data[3] != null) ? new StabilometryTask(data[3]) : null;
 
-        return measurement;
-    }
+            string fileName = $"{dataFolder}{measurement.ID}.json";
+            SaveDrawingJson(measurement.GetDrawingData(), fileName);
 
-    /// <summary>
-    /// Saves Raw data as a JSON document, used for future expansions.
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="fileName"></param>
-    private static void SaveRawJSON(List<DataPoint>[] data, string fileName)
-    {
-        string json = JsonHelper.ToJson(data);
+            string rawFileName = $"{rawFolder}{measurement.ID}.json";
+            SaveRawJSON(data, rawFileName);
 
-        string jsonDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{rawFolder}";
+            return measurement;
+        }
 
-        if (!Directory.Exists(jsonDirectory))
-            Directory.CreateDirectory(jsonDirectory);
+        /// <summary>
+        /// Saves Raw data as a JSON document, used for future expansions.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="fileName"></param>
+        private static void SaveRawJSON(List<DataPoint>[] data, string fileName)
+        {
+            string json = JsonHelper.ToJson(data);
 
-        string newFilePath = $@"{jsonDirectory}\{fileName}";
+            string jsonDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{rawFolder}";
 
-        File.WriteAllText(newFilePath, json);
-    }
+            if (!Directory.Exists(jsonDirectory))
+                Directory.CreateDirectory(jsonDirectory);
 
-    /// <summary>
-    /// Saves data as a JSON document, this data will be used for drawing
-    /// </summary>
-    /// <param name="data"></param>
-    private static void SaveDrawingJson(DrawingTaskValues[] data, string fileName)
-    {
-        string json = JsonHelper.ToJson(data);
+            string newFilePath = $@"{jsonDirectory}\{fileName}";
 
-        string jsonDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{dataFolder}";
+            File.WriteAllText(newFilePath, json);
+        }
 
-        if (!Directory.Exists(jsonDirectory))
-            Directory.CreateDirectory(jsonDirectory);
+        /// <summary>
+        /// Saves data as a JSON document, this data will be used for drawing
+        /// </summary>
+        /// <param name="data"></param>
+        private static void SaveDrawingJson(DrawingTaskValues[] data, string fileName)
+        {
+            string json = JsonHelper.ToJson(data);
 
-        string newFilePath = $@"{jsonDirectory}\{fileName}";
+            string jsonDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{dataFolder}";
 
-        File.WriteAllText(newFilePath, json);
-    }
+            if (!Directory.Exists(jsonDirectory))
+                Directory.CreateDirectory(jsonDirectory);
 
-    public static StabilometryMeasurement GetJSONFile(int fileID)
-    {
-        StabilometryMeasurement result = new StabilometryMeasurement();
+            string newFilePath = $@"{jsonDirectory}\{fileName}";
 
-        return result;
-    }
+            File.WriteAllText(newFilePath, json);
+        }
 
-    /// <summary>
-    /// Used when deleting a measurement
-    /// </summary>
-    /// <param name="fileID"></param>
-    public static void DeleteJSONFile(int fileID)
-    {
+        public static StabilometryMeasurement GetJSONFile(int fileID)
+        {
+            StabilometryMeasurement result = new StabilometryMeasurement();
 
-    }
+            return result;
+        }
 
-    /// <summary>
-    /// Used when deleting a patient.
-    /// </summary>
-    /// <param name="fileIDs"></param>
-    public static void DeleteJSONFiles(List<int> fileIDs)
-    {
+        /// <summary>
+        /// Used when deleting a measurement
+        /// </summary>
+        /// <param name="fileID"></param>
+        public static void DeleteJSONFile(int fileID)
+        {
 
+        }
+
+        /// <summary>
+        /// Used when deleting a patient.
+        /// </summary>
+        /// <param name="fileIDs"></param>
+        public static void DeleteJSONFiles(List<int> fileIDs)
+        {
+
+        }
     }
 }

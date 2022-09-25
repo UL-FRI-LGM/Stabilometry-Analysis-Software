@@ -1,6 +1,9 @@
-﻿public enum WarningType
+﻿namespace StabilometryAnalysis
 {
-    DELETE_PATIENT,
-    DELETE_DATABASE,
-    DELETE_STABILOMETRY
+    public enum WarningType
+    {
+        DELETE_PATIENT,
+        DELETE_DATABASE,
+        DELETE_STABILOMETRY
+    }
 }

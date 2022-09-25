@@ -3,25 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScrollbarScript : MonoBehaviour
+namespace StabilometryAnalysis
 {
-    #region Variables
-    private Scrollbar scrollbar = null;
-    #endregion
-
-    private void Awake()
+    public class ScrollbarScript : MonoBehaviour
     {
-        scrollbar = GetComponent<Scrollbar>();
-    }
+        #region Variables
+        private Scrollbar scrollbar = null;
+        #endregion
 
-    public void SetSize(float fullSize, float shownSize)
-    {
-        if (scrollbar == null)
+        private void Awake()
+        {
             scrollbar = GetComponent<Scrollbar>();
+        }
 
-        if (fullSize <= shownSize)
-            scrollbar.size = 1;
-        else
-            scrollbar.size = shownSize / fullSize;
+        public void SetSize(float fullSize, float shownSize)
+        {
+            if (scrollbar == null)
+                scrollbar = GetComponent<Scrollbar>();
+
+            if (fullSize <= shownSize)
+                scrollbar.size = 1;
+            else
+                scrollbar.size = shownSize / fullSize;
+        }
     }
 }
