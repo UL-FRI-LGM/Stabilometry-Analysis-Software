@@ -50,13 +50,11 @@ namespace StabilometryAnalysis
         public void StartAddingPatient()
         {
             mainScript.menuHeaderScript.SelectPatient(null);
-            mainScript.menuHeaderScript.EnableDropdown(false);
             addingPatient = true;
         }
 
         public void StartEditingPatient()
         {
-            mainScript.menuHeaderScript.EnableDropdown(false);
             addingPatient = false;
             FillPatientData(mainScript.currentPatient);
 
@@ -96,8 +94,7 @@ namespace StabilometryAnalysis
 
             ClearAllFields();
             mainScript.menuHeaderScript.SelectPatient(patient);
-            mainScript.menuHeaderScript.EnableDropdown(true);
-            mainScript.menuSwitching.OpenInitialMenu();
+            mainScript.menuSwitching.OpenPreviousMenu();
         }
 
         public void NameInputChanged()
@@ -108,8 +105,7 @@ namespace StabilometryAnalysis
         public void CancelButton()
         {
             ClearAllFields();
-            mainScript.menuHeaderScript.EnableDropdown(true);
-            mainScript.menuSwitching.OpenInitialMenu();
+            mainScript.menuSwitching.OpenPreviousMenu();
 
         }
 

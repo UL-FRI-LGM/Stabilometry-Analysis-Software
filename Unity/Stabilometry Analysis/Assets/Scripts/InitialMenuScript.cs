@@ -17,8 +17,9 @@ namespace StabilometryAnalysis
 
         [SerializeField]
         private NotesComponent notesComponent = null;
-
-        public MainScript mainScript { get; set; } = null;
+        
+        [SerializeField]
+        private MainScript mainScript = null;
         #endregion
 
         /// <summary>
@@ -58,6 +59,16 @@ namespace StabilometryAnalysis
         public void OnInputFieldChange()
         {
             Debug.LogWarning("Function not implemented.");
+        }
+
+        private void OnEnable()
+        {
+            mainScript.menuHeaderScript.EnableDropdown(true);
+        }
+
+        private void OnDisable()
+        {
+            mainScript.menuHeaderScript.EnableDropdown(false);
         }
 
         #region Button functions
@@ -122,6 +133,7 @@ namespace StabilometryAnalysis
         // TODO make this work
         private void ShowDataDeletionWarning()
         {
+            Debug.LogWarning("make this work");
             DeleteAllData();
         }
         #endregion

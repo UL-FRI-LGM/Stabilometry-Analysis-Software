@@ -12,6 +12,13 @@ namespace StabilometryAnalysis
         // Start is called before the first frame update
         void Start()
         {
+
+            //Debug.Log(Rounder.RoundFloat(0.000421f));
+            //Debug.Log(Rounder.RoundFloat(100f));
+            //Debug.Log(Rounder.RoundFloat(0.001f));
+            //Debug.Log(Rounder.RoundFloat(231.025231f));
+
+            
             //List<DataPoint> testPoints = new List<DataPoint>();
             //testPoints.Add(new DataPoint(0.0019984f, 0.1845152f, 1));
             //testPoints.Add(new DataPoint(0.007996f, 0.1845535f, 2));

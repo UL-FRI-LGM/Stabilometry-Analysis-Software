@@ -153,7 +153,7 @@ namespace StabilometryAnalysis
 
                 GameObject slice = Instantiate(LineObject, drawingSpace.transform);
 
-                slice.GetComponent<Button>().onClick.AddListener(ButtonClicked);
+                slice.GetComponent<LineObjectScript>().SetParentScript(i, this);
 
                 spawnedObjects.Add(slice);
 
@@ -181,15 +181,15 @@ namespace StabilometryAnalysis
             }
         }
 
-        public void ButtonClicked()
+        public void ButtonClicked(int index)
         {
             parentScript.OpenAnalysisMenu(parentScript.GetMeasurement(index));
         }
 
-        public void SetParent(int index, StabilometryAnalysisParameterMenuScript parentScript)
+        public void SetParent(int lineChartIndex, StabilometryAnalysisParameterMenuScript parentScript)
         {
             this.parentScript = parentScript;
-            this.index = index;
+            this.index = lineChartIndex;
         }
 
         /// <summary>

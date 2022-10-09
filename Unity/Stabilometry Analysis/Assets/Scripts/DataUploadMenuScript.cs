@@ -30,7 +30,7 @@ namespace StabilometryAnalysis
 
         public void CancelButton()
         {
-            mainScript.menuSwitching.OpenInitialMenu();
+            mainScript.menuSwitching.OpenPreviousMenu();
         }
 
         public void SaveButton()
@@ -52,7 +52,7 @@ namespace StabilometryAnalysis
                 if (measurement != null)
                     mainScript.database.AddMeasurement(measurement);
 
-                mainScript.menuSwitching.OpenInitialMenu();
+                mainScript.menuSwitching.OpenPreviousMenu();
             }
         }
 

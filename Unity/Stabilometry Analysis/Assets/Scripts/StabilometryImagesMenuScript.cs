@@ -14,5 +14,10 @@ namespace StabilometryAnalysis
         #endregion
 
         //public void 
+
+        public void BackButtonClick()
+        {
+            mainScript.menuSwitching.OpenPreviousMenu();
+        }
     }
 }

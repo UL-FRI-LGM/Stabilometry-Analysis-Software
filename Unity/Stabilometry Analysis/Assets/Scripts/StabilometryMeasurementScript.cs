@@ -27,7 +27,6 @@ namespace StabilometryAnalysis
 
         private StabilometryMeasurement currentMeasurement = null;
 
-
         #endregion
 
         public void SetData(StabilometryMeasurement measurement)
@@ -61,5 +60,12 @@ namespace StabilometryAnalysis
         {
             Debug.LogWarning("Delete current measurement from the database");
         }
+
+        public void BackButtonClick()
+        {
+            mainScript.menuSwitching.OpenPreviousMenu();
+        }
+
+
     }
 }

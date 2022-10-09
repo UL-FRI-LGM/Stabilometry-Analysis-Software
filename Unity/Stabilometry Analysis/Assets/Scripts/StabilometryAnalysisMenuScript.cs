@@ -14,5 +14,10 @@ namespace StabilometryAnalysis
         {
             mainScript.menuSwitching.OpenMenu(menu);
         }
+
+        public void BackButtonClick()
+        {
+            mainScript.menuSwitching.OpenPreviousMenu();
+        }
     }
 }

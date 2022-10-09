@@ -64,7 +64,9 @@ namespace StabilometryAnalysis
 
         private string ConvertToString(float value, string unit)
         {
-            return $"{value} {unit}";
+            string valueWithDecimals =  string.Format("{0:0.00######}", Rounder.RoundFloat(value));
+
+            return $"{valueWithDecimals} {unit}";
         }
 
         private void ClearData()

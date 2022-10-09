@@ -8,7 +8,7 @@ namespace StabilometryAnalysis
     // Note about spawning charts. Start with spawning only one chart (because of speed).
     // This one chart should be stretched trhough the entire space.
     // When clicking on a chart toggler change sizes.
-    // When clicking on any chart it opens the meni with data.
+    // When clicking on any chart it opens the menu with data.
     public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
     {
         #region Variables
@@ -244,6 +244,11 @@ namespace StabilometryAnalysis
         public StabilometryMeasurement GetMeasurement(int index)
         {
             return patientData[index];
+        }
+
+        public void BackButtonClick()
+        {
+            mainScript.menuSwitching.OpenPreviousMenu();
         }
     }
 }

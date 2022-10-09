@@ -12,21 +12,28 @@ namespace StabilometryAnalysis
         private GameObject initialMenu = null;
 
         private GameObject currentMenu = null;
+        private List<GameObject> previousMenus = null;
 
         #endregion
 
         private void Awake()
         {
+            ClearHistory();
             currentMenu = initialMenu;
         }
 
-        private void Start()
+        private void ClearHistory()
         {
-
+            previousMenus = new List<GameObject>();
         }
 
         public void OpenMenu(GameObject newMenu)
         {
+            if (newMenu == initialMenu)
+                ClearHistory();
+            else
+                previousMenus.Add(currentMenu);
+
             currentMenu.SetActive(false);
             currentMenu = newMenu;
             newMenu.SetActive(true);
@@ -34,10 +41,22 @@ namespace StabilometryAnalysis
 
         public void OpenInitialMenu()
         {
+            ClearHistory();
+
             currentMenu.SetActive(false);
-            currentMenu = initialMenu;
             initialMenu.SetActive(true);
-            GetComponent<MainScript>().menuHeaderScript.EnableDropdown(true);
+            
+            currentMenu = initialMenu;
+        }
+
+        public void OpenPreviousMenu()
+        {
+            currentMenu.SetActive(false);
+            int lastIndex = previousMenus.Count - 1;
+            currentMenu = previousMenus[lastIndex];
+            previousMenus.RemoveAt(lastIndex);
+
+            currentMenu.SetActive(true);
         }
     }
 }

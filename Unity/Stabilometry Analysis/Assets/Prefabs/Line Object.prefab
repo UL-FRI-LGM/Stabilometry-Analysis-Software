@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 595725197680273744}
   - component: {fileID: 2439378022888045727}
   - component: {fileID: 926932226992109955}
+  - component: {fileID: 5535544050045212194}
   m_Layer: 5
   m_Name: Line Object
   m_TagString: Untagged
@@ -35,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 179.36247, y: 0}
-  m_SizeDelta: {x: 119.57498, y: 199.5}
+  m_AnchoredPosition: {x: 222.06781, y: 0}
+  m_SizeDelta: {x: 34.16428, y: 199.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &595725197680273744
 CanvasRenderer:
@@ -113,4 +114,27 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2439378022888045727}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5535544050045212194}
+        m_MethodName: ButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5535544050045212194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994757921248465065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19ea716498b4f834a821021585ec567e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

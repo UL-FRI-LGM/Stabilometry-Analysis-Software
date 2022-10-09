@@ -33,8 +33,6 @@ namespace StabilometryAnalysis
 
         private void SetAllReferences()
         {
-
-            initialMenu.mainScript = this;
             addEditPatientMenu.mainScript = this;
             menuHeaderScript.mainScript = this;
             dataUploadMenuScript.mainScript = this;
