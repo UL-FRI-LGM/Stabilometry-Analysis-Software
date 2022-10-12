@@ -15,7 +15,7 @@ namespace StabilometryAnalysis
         private UILineRenderer pathLine = null,
             ellipseLine = null;
 
-        private float multiplicator = 2500f;
+        private float multiplicator = 70f;
         #endregion
 
         // To be removed 
@@ -47,6 +47,8 @@ namespace StabilometryAnalysis
         ///// <param name="stabilometryData"></param>
         private void DrawStabilometryPath(List<Vector2> stabilometryData)
         {
+            Debug.LogWarning("Determine Multiplicator.");
+
             Vector2[] points = new Vector2[stabilometryData.Count];
 
             for (int i = 0; i < stabilometryData.Count; i++)

@@ -25,12 +25,32 @@ namespace StabilometryAnalysis
             public DrawingTaskValues eyesClosedSoftSurface;
         }
 
-        //public static T[] FromJson<T>(string json)
-        //{
-        //    Wrapper wrapper = JsonUtility.FromJson<Wrapper>(json);
+        public static StabilometryMeasurement DataFromJson(string json, StabilometryMeasurement measurement)
+        {
+            DrawingDataWrapper wrapper = JsonUtility.FromJson<DrawingDataWrapper>(json);
 
-        //    return wrapper.items;
-        //}
+            measurement.eyesOpenSolidSurface = GetTaskValues(measurement.eyesOpenSolidSurface, wrapper.eyesOpenSolidSurface);
+            measurement.eyesClosedSolidSurface = GetTaskValues(measurement.eyesClosedSolidSurface, wrapper.eyesClosedSolidSurface);
+            measurement.eyesOpenSoftSurface = GetTaskValues(measurement.eyesOpenSoftSurface, wrapper.eyesOpenSoftSurface);
+            measurement.eyesClosedSoftSurface = GetTaskValues(measurement.eyesClosedSoftSurface, wrapper.eyesClosedSoftSurface);
+
+            return measurement;
+        }
+
+        private static StabilometryTask GetTaskValues(StabilometryTask result, DrawingTaskValues values)
+        {
+            if (result == null)
+                return null;
+            //else
+
+            result.stabilometryDrawData = values.linePoints;
+            result.confidence95Ellipse.area = values.ellipseValues.area;
+            result.confidence95Ellipse.eigenVectors = values.ellipseValues.eigenVectors;
+            result.confidence95Ellipse.semiMajorAxis = values.ellipseValues.semiMajorAxis;
+            result.confidence95Ellipse.semiMinorAxis = values.ellipseValues.semiMinorAxis;
+
+            return result;
+        }
 
         /// <summary>
         /// Converts stabilometry data to json string.

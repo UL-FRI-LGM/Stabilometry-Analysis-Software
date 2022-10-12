@@ -241,9 +241,15 @@ namespace StabilometryAnalysis
             mainScript.stabilometryMeasurementScript.SetData(measurement);
         }
 
+        /// <summary>
+        /// Gets the measurement and adds the values stored in the jason.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public StabilometryMeasurement GetMeasurement(int index)
         {
-            return patientData[index];
+            StabilometryMeasurement result = JSONHandler.GetJSONFile(patientData[index]);
+            return result;
         }
 
         public void BackButtonClick()

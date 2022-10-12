@@ -77,9 +77,13 @@ namespace StabilometryAnalysis
             File.WriteAllText(newFilePath, json);
         }
 
-        public static StabilometryMeasurement GetJSONFile(int fileID)
+        public static StabilometryMeasurement GetJSONFile(StabilometryMeasurement measurement)
         {
-            StabilometryMeasurement result = new StabilometryMeasurement();
+            string fileName = $"{dataFolder}{measurement.ID}.json";
+            string filePath = $@"{Application.persistentDataPath}\{JSONFolder}\{dataFolder}\{fileName}";
+
+            string json = File.ReadAllText(filePath);
+            StabilometryMeasurement result = JsonHelper.DataFromJson(json, measurement);
 
             return result;
         }
@@ -90,7 +94,7 @@ namespace StabilometryAnalysis
         /// <param name="fileID"></param>
         public static void DeleteJSONFile(int fileID)
         {
-
+            Debug.LogWarning("DeleteJSON File Not implemented");
         }
 
         /// <summary>
@@ -99,7 +103,7 @@ namespace StabilometryAnalysis
         /// <param name="fileIDs"></param>
         public static void DeleteJSONFiles(List<int> fileIDs)
         {
-
+            Debug.LogWarning("DeleteJSON File Not implemented");
         }
     }
 }

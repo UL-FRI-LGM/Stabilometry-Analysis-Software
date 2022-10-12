@@ -13,6 +13,8 @@ namespace StabilometryAnalysis
         private Vector2 localPosition = new Vector2(0, 0);
         private Vector2 localSize = new Vector2(253, 253);
 
+        private GameObject instance = null;
+
         public void SetData(StabilometryTask task)
         {
             if (task != null)
@@ -25,16 +27,20 @@ namespace StabilometryAnalysis
 
         private void HandleImage(StabilometryTask task)
         {
-            GameObject instance = Instantiate(stabilometryImagePrefab, this.transform);
+            instance = Instantiate(stabilometryImagePrefab, this.transform);
 
             RectTransform rect = instance.GetComponent<RectTransform>();
 
             rect.sizeDelta = localSize;
             rect.localPosition = localPosition;
 
-            //if (task != null)
-            //    instance.transform.GetChild(0).GetComponent<StabilometryImageScript>().DrawImage(task);
+            if (task != null)
+            instance.transform.GetChild(0).GetComponent<StabilometryImageScript>().DrawImage(task);
         }
 
+        private void OnDisable()
+        {
+            Destroy(instance);
+        }
     }
 }
