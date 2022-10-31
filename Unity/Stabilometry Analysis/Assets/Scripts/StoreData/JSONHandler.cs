@@ -89,6 +89,22 @@ namespace StabilometryAnalysis
         }
 
         /// <summary>
+        /// Used when deleting the whole database.
+        /// </summary>
+        public static void DeleteAllData()
+        {
+            string path = $@"{Application.persistentDataPath}\{JSONFolder}";
+
+            if (!Directory.Exists(path))
+                return;
+            
+            //else
+
+            DirectoryInfo dir = new DirectoryInfo(path);
+            dir.Delete(true);
+        }
+
+        /// <summary>
         /// Used when deleting a measurement
         /// </summary>
         /// <param name="fileID"></param>

@@ -67,6 +67,7 @@ namespace StabilometryAnalysis
             {
                 Debug.Log(e.ToString());
             }
+
         }
 
         /// <summary>
@@ -101,9 +102,29 @@ namespace StabilometryAnalysis
         {
             if (connection != null)
             {
+                //connection.Dispose();
                 connection.Close();
+                connection = null;
                 Debug.Log("Connection closed.");
             }
+        }
+
+        public void DeleteDatabase()
+        {
+            CloseDatabase();
+            string filePath = $@"{Application.persistentDataPath}/{DatabaseName}";
+
+            StartCoroutine(DeleteDatabase(filePath));
+        }
+
+        IEnumerator DeleteDatabase(string filePath)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            yield return new WaitForSeconds(2);
+
+            System.IO.File.Delete(filePath);
         }
 
         private void OnDestroy()

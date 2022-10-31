@@ -20,6 +20,11 @@ namespace StabilometryAnalysis
         
         [SerializeField]
         private MainScript mainScript = null;
+
+        [SerializeField]
+        private GameObject databaseDeletionWindow = null,
+            patientDeletionWindow = null;
+
         #endregion
 
         /// <summary>
@@ -34,7 +39,6 @@ namespace StabilometryAnalysis
                 notesComponent.SetText("");
             else
                 notesComponent.SetText(patient.Notes);
-
         }
 
         /// <summary>
@@ -106,35 +110,70 @@ namespace StabilometryAnalysis
             mainScript.DeleteCurrentPatient();
         }
 
-        public void StartDeletionOfAllData()
+        //public void DeleteAllData()
+        //{
+        //    mainScript.database.CloseDatabase();
+
+        //    DirectoryInfo directory = new DirectoryInfo(Application.persistentDataPath);
+
+        //    foreach (FileInfo file in directory.GetFiles())
+        //    {
+        //        file.Delete();
+        //    }
+
+        //    foreach (DirectoryInfo dir in directory.GetDirectories())
+        //    {
+        //        dir.Delete(true);
+        //    }
+
+        //    mainScript.ExitApplication();
+        //}
+
+        //public void ClickDeleteDatabase()
+        //{
+        //    Debug.LogWarning("make this work");
+        //    DeleteAllData();
+        //}
+
+        public void ClickStartDatabaseDeletion()
         {
-            ShowDataDeletionWarning();
+            // Show Deletion Window
+            databaseDeletionWindow.SetActive(true);
         }
 
-        public void DeleteAllData()
+        public void ClickConfirmDatabaseDeletion()
         {
-            mainScript.database.CloseDatabase();
+            // Delete database file
+            mainScript.database.DeleteDatabase();
 
-            DirectoryInfo directory = new DirectoryInfo(Application.persistentDataPath);
+            // Delete all items in data folder
+            JSONHandler.DeleteAllData();
 
-            foreach (FileInfo file in directory.GetFiles())
-            {
-                file.Delete();
-            }
+            // Clear registry
+            PlayerPrefs.DeleteAll();
 
-            foreach (DirectoryInfo dir in directory.GetDirectories())
-            {
-                dir.Delete(true);
-            }
+            //exit application
+            StartCoroutine(WaitForAllClear());
+        }
+
+        IEnumerator WaitForAllClear()
+        {
+            while (!AppDataEmptry())
+                 yield return new WaitForEndOfFrame();
 
             mainScript.ExitApplication();
         }
 
-        // TODO make this work
-        private void ShowDataDeletionWarning()
+        private bool AppDataEmptry()
         {
-            Debug.LogWarning("make this work");
-            DeleteAllData();
+            int fileNumber = Directory.GetFiles(Application.dataPath).Length;
+            int directoriesNumber = Directory.GetDirectories(Application.dataPath).Length;
+            return fileNumber == 0 && directoriesNumber == 0;
+        }
+
+        public void ClickCancelDatabaseDeletion()
+        {
+            databaseDeletionWindow.SetActive(false);
         }
         #endregion
     }
