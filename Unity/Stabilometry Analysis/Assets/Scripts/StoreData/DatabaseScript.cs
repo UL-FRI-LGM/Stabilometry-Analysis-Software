@@ -122,8 +122,6 @@ namespace StabilometryAnalysis
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            yield return new WaitForSeconds(2);
-
             System.IO.File.Delete(filePath);
         }
 

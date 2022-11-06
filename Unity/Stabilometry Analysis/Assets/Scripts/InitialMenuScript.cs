@@ -153,7 +153,7 @@ namespace StabilometryAnalysis
             PlayerPrefs.DeleteAll();
 
             //exit application
-            StartCoroutine(WaitForAllClear());
+            //StartCoroutine(WaitForAllClear());
         }
 
         IEnumerator WaitForAllClear()
