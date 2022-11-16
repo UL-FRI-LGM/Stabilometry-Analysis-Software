@@ -119,6 +119,8 @@ namespace StabilometryAnalysis
 
         IEnumerator DeleteDatabase(string filePath)
         {
+            yield return new WaitForEndOfFrame();
+
             GC.Collect();
             GC.WaitForPendingFinalizers();
 

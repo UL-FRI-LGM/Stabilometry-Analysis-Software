@@ -45,7 +45,7 @@ namespace StabilometryAnalysis
 
             currentMenu.SetActive(false);
             initialMenu.SetActive(true);
-            
+
             currentMenu = initialMenu;
         }
 
@@ -53,6 +53,17 @@ namespace StabilometryAnalysis
         {
             currentMenu.SetActive(false);
             int lastIndex = previousMenus.Count - 1;
+
+
+            if (lastIndex < 0)
+            {
+                Debug.LogWarning("last index was below 0");
+                OpenInitialMenu();
+                return;
+            }
+
+            //else
+
             currentMenu = previousMenus[lastIndex];
             previousMenus.RemoveAt(lastIndex);
 
