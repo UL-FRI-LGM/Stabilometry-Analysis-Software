@@ -13,6 +13,7 @@ namespace StabilometryAnalysis
         [SerializeField] private FileImporter[] fileImporters = null;
         [SerializeField] private TMP_Dropdown positionDropdown = null;
         [SerializeField] private Button saveButton = null;
+        [SerializeField] private TimeSelectorScript timeSelector = null;
 
         public MainScript mainScript { get; set; } = null;
 
@@ -47,7 +48,13 @@ namespace StabilometryAnalysis
             if (dataPresent)
             {
                 int newID = mainScript.database.GetLastMeasurementID() + 1;
-                StabilometryMeasurement measurement = JSONHandler.SaveValues(newID, data, mainScript.currentPatient.ID, GetSelectedPose(), GetSelectedDateTime());
+                StabilometryMeasurement measurement = 
+                    JSONHandler.SaveValues(
+                        newID, 
+                        data, 
+                        mainScript.currentPatient.ID, 
+                        GetSelectedPose(), 
+                        timeSelector.GetDate());
 
                 if (measurement != null)
                     mainScript.database.AddMeasurement(measurement);
@@ -94,12 +101,6 @@ namespace StabilometryAnalysis
             Debug.LogWarning("Method GetSelectedPose not implemented.");
 
             return Pose.BOTH_LEGS_JOINED_PARALLEL;
-        }
-
-        private MyDateTime GetSelectedDateTime()
-        {
-            Debug.LogWarning("Method GetSelectedDateTime not implemented.");
-            return new MyDateTime(0, 0, 0, 0, 0);
         }
     }
 }
