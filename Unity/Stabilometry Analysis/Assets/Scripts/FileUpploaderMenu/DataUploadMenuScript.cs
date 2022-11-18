@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.IO;
 using UnityEngine.UI;
 
 namespace StabilometryAnalysis
@@ -98,9 +96,7 @@ namespace StabilometryAnalysis
 
         private Pose GetSelectedPose()
         {
-            Debug.LogWarning("Method GetSelectedPose not implemented.");
-
-            return Pose.BOTH_LEGS_JOINED_PARALLEL;
+            return (Pose)positionDropdown.value;
         }
     }
 }
