@@ -69,7 +69,7 @@ namespace StabilometryAnalysis
             float eyesClosedSoftSurfaceValue = GetValue(parameter, eyesClosedSoftSurface);
 
             return new ChartData(eyesOpenSolidSurfaceValue, eyesClosedSolidSurfaceValue,
-                eyesOpenSoftSurfaceValue, eyesClosedSoftSurfaceValue, dateTime);
+                eyesOpenSoftSurfaceValue, eyesClosedSoftSurfaceValue, dateTime, Units.GetUnit(parameter));
         }
 
         private float GetValue(Parameter parameter, StabilometryTask task)
@@ -109,6 +109,5 @@ namespace StabilometryAnalysis
             Debug.LogError($"Parameter {parameter} was not defined.");
             return -1;
         }
-
     }
 }

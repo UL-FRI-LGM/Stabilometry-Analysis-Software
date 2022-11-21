@@ -68,6 +68,7 @@ namespace StabilometryAnalysis
         private void OnEnable()
         {
             mainScript.menuHeaderScript.EnableDropdown(true);
+            SetButtonsInteractable(mainScript.currentPatient);
         }
 
         private void OnDisable()

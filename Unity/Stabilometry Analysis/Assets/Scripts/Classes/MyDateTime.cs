@@ -104,6 +104,16 @@ namespace StabilometryAnalysis
             return $"{time}, {date}";
         }
 
+        public string GetDateString()
+        {
+            return $"{year} {GetMonthWord(month)} {day}";
+        }
+
+        public string GetTimeString()
+        {
+            return $"{hour:00}:{minutes:00}";
+        }
+
         private string GetMonthWord(int month)
         {
             switch(month){

@@ -27,11 +27,6 @@ namespace StabilometryAnalysis
             meanDistanceValue = null,
             conf95EllipseAreaValue = null;
 
-        private string
-            normalUnit = "cm",
-            velocityUnit = "cm/s",
-            areaUnit = "cm²";
-
         #endregion
 
         public void UpdateData(StabilometryTask task)
@@ -44,22 +39,22 @@ namespace StabilometryAnalysis
 
         private void SetData(StabilometryTask task)
         {
-            swayPathTotalValue.text = ConvertToString(task.swayPath, normalUnit);
-            swayPathAPValue.text = ConvertToString(task.swayPathAP, normalUnit);
-            swayPathMLValue.text = ConvertToString(task.swayPathML, normalUnit);
+            swayPathTotalValue.text = ConvertToString(task.swayPath, Units.NORMAL_UNIT);
+            swayPathAPValue.text = ConvertToString(task.swayPathAP, Units.NORMAL_UNIT);
+            swayPathMLValue.text = ConvertToString(task.swayPathML, Units.NORMAL_UNIT);
 
-            meanSwayVelocityTotalValue.text = ConvertToString(task.meanSwayVelocity, velocityUnit);
-            meanSwayVelocityAPValue.text = ConvertToString(task.meanSwayVelocityAP, velocityUnit);
-            meanSwayVelocityMLValue.text = ConvertToString(task.meanSwayVelocityML, velocityUnit);
+            meanSwayVelocityTotalValue.text = ConvertToString(task.meanSwayVelocity, Units.VELOCITY_UNIT);
+            meanSwayVelocityAPValue.text = ConvertToString(task.meanSwayVelocityAP, Units.VELOCITY_UNIT);
+            meanSwayVelocityMLValue.text = ConvertToString(task.meanSwayVelocityML, Units.VELOCITY_UNIT);
 
-            swayAverageAmplitudeAPValue.text = ConvertToString(task.swayAverageAmplitudeAP, normalUnit);
-            swayAverageAmplitudeMLValue.text = ConvertToString(task.swayAverageAmplitudeML, normalUnit);
+            swayAverageAmplitudeAPValue.text = ConvertToString(task.swayAverageAmplitudeAP, Units.NORMAL_UNIT);
+            swayAverageAmplitudeMLValue.text = ConvertToString(task.swayAverageAmplitudeML, Units.NORMAL_UNIT);
 
-            swayMaximalAmplitudeAPValue.text = ConvertToString(task.swayMaximalAmplitudeAP, normalUnit);
-            swayMaximalAmplitudeMLValue.text = ConvertToString(task.swayMaximalAmplitudeML, normalUnit);
+            swayMaximalAmplitudeAPValue.text = ConvertToString(task.swayMaximalAmplitudeAP, Units.NORMAL_UNIT);
+            swayMaximalAmplitudeMLValue.text = ConvertToString(task.swayMaximalAmplitudeML, Units.NORMAL_UNIT);
 
-            meanDistanceValue.text = ConvertToString(task.meanDistance, normalUnit);
-            conf95EllipseAreaValue.text = ConvertToString(task.confidence95Ellipse.area, areaUnit);
+            meanDistanceValue.text = ConvertToString(task.meanDistance, Units.NORMAL_UNIT);
+            conf95EllipseAreaValue.text = ConvertToString(task.confidence95Ellipse.area, Units.AREA_UNIT);
         }
 
         private string ConvertToString(float value, string unit)

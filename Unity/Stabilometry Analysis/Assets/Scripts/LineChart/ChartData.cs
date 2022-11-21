@@ -13,15 +13,17 @@ namespace StabilometryAnalysis
             eyesOpenSoftSurfaceValue = -1,
             eyesClosedSoftSurfaceValue = -1;
         public MyDateTime time;
+        public string unit = "";
 
         public ChartData(float eyesOpenSolidSurfaceValue, float eyesClosedSolidSurfaceValue,
-            float eyesOpenSoftSurfaceValue, float eyesClosedSoftSurfaceValue, MyDateTime time)
+            float eyesOpenSoftSurfaceValue, float eyesClosedSoftSurfaceValue, MyDateTime time, string unit)
         {
             this.eyesOpenSolidSurfaceValue = eyesOpenSolidSurfaceValue;
             this.eyesClosedSolidSurfaceValue = eyesClosedSolidSurfaceValue;
             this.eyesOpenSoftSurfaceValue = eyesOpenSoftSurfaceValue;
             this.eyesClosedSoftSurfaceValue = eyesClosedSoftSurfaceValue;
             this.time = time;
+            this.unit = unit;
         }
 
         public float GetLargestValue()
