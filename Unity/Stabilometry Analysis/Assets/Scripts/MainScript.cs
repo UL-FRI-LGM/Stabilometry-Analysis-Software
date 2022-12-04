@@ -21,14 +21,19 @@ namespace StabilometryAnalysis
         public DatabaseScript database { get; private set; } = null;
         public MenuSwitching menuSwitching { get; private set; } = null;
 
+        [SerializeField] private GameObject DataDisplayerObject = null;
+        public DataDisplayerScript dataDisplayerScript { get; set; } = null;
+
         #endregion
 
         private void Awake()
         {
+            LocationPointer.mainScript = this;
+
             database = GetComponent<DatabaseScript>();
             menuSwitching = GetComponent<MenuSwitching>();
+            dataDisplayerScript = DataDisplayerObject.GetComponent<DataDisplayerScript>();
             SetAllReferences();
-
         }
 
         private void SetAllReferences()

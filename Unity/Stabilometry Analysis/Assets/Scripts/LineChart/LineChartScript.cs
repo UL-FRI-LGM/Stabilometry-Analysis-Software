@@ -153,7 +153,7 @@ namespace StabilometryAnalysis
 
                 GameObject slice = Instantiate(LineObject, drawingSpace.transform);
 
-                slice.GetComponent<LineObjectScript>().SetParentScript(i, this);
+                slice.GetComponent<LineObjectScript>().SetParentScript(i, data[i], this);
 
                 spawnedObjects.Add(slice);
 

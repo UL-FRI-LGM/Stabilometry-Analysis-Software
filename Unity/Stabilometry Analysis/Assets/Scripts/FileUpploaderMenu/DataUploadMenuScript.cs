@@ -12,6 +12,7 @@ namespace StabilometryAnalysis
         [SerializeField] private TMP_Dropdown positionDropdown = null;
         [SerializeField] private Button saveButton = null;
         [SerializeField] private TimeSelectorScript timeSelector = null;
+        [SerializeField] private TMP_InputField lineSeparatorInputFiled = null;
 
         public MainScript mainScript { get; set; } = null;
 
@@ -34,7 +35,11 @@ namespace StabilometryAnalysis
 
         public void SaveButton()
         {
-            List<DataPoint>[] data = GetData();
+            string dataSeparator = lineSeparatorInputFiled.text;
+            if (dataSeparator == "")
+                dataSeparator = ";";
+
+            List<DataPoint>[] data = GetData(dataSeparator);
 
             bool dataPresent = false;
             foreach (List<DataPoint> list in data)
@@ -65,12 +70,12 @@ namespace StabilometryAnalysis
         /// Gets data from file importers
         /// </summary>
         /// <returns></returns>
-        private List<DataPoint>[] GetData()
+        private List<DataPoint>[] GetData(string dataSeparator)
         {
             List<DataPoint>[] result = new List<DataPoint>[4];
 
             for (int i = 0; i < fileImporters.Length; i++)
-                result[i] = fileImporters[i].ReadData();
+                result[i] = fileImporters[i].ReadData(dataSeparator);
 
             return result;
         }

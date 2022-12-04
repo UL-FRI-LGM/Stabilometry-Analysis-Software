@@ -8,27 +8,26 @@ namespace StabilometryAnalysis
     public class DataDisplayerScript : MonoBehaviour
     {
         #region Variables
-        [SerializeField] private TextMeshProUGUI 
+        [SerializeField]
+        private TextMeshProUGUI
             dateText = null,
             timeText = null;
 
-        [SerializeField] private TextMeshProUGUI solidSurfaceEyesOpenText = null,
+        [SerializeField]
+        private TextMeshProUGUI solidSurfaceEyesOpenText = null,
             solidSurfaceEyesClosedText = null,
             softSurfaceEyesOpenText = null,
             softSurfaceEyesClosedText = null;
+
+        private RectTransform rect = null;
         #endregion
 
-        public void ActivateDataDisplayer(ChartData dataPoint)
+        private void Awake()
         {
-
+            rect = GetComponent<RectTransform>();
         }
 
-        private void SetPosition()
-        {
-
-        }
-
-        private void SetValues(ChartData dataPoint)
+        public void SetValues(ChartData dataPoint)
         {
             dateText.text = dataPoint.time.GetDateString();
             timeText.text = dataPoint.time.GetTimeString();
@@ -42,10 +41,22 @@ namespace StabilometryAnalysis
         private string CheckIfNull(float value, string unit)
         {
             if (value < 0)
-                return "";
+                return "N/A";
             //else
 
-            return $"{value} {unit}";
+            string displayValue = string.Format("{0:0.00######}", Rounder.RoundFloat(value));
+
+            return $"{displayValue} {unit}";
+        }
+
+        public void EnableObject(bool enable)
+        {
+            this.gameObject.SetActive(enable);
+        }
+
+        public void SetPosition(Vector3 mousePosition)
+        {
+            rect.position = new Vector2(mousePosition.x, mousePosition.y);
         }
     }
 }

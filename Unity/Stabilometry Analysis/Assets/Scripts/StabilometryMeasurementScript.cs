@@ -53,7 +53,7 @@ namespace StabilometryAnalysis
 
         private void SetTime(MyDateTime dateTime)
         {
-            dateTimeText.text = dateTime.GetDisplayDateTime();
+            dateTimeText.text = dateTime.ToString();
         }
 
         public void DeleteCurrentMeasurement()

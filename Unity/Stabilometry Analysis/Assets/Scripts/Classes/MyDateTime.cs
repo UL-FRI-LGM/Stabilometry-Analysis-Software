@@ -8,13 +8,6 @@ namespace StabilometryAnalysis
     {
         #region Variables
 
-        private const float
-            minuteMult = 0.0001f,
-            hourMult = 0.01f,
-            dayMult = 1,
-            monthMult = 100,
-            yearMult = 10000;
-
         public int
             year = 0,
             month = 0,
@@ -33,33 +26,26 @@ namespace StabilometryAnalysis
             this.minutes = minutes;
         }
 
-        /// <summary>
-        /// Takes in myDateTime format and fills the correct values.
-        /// </summary>
-        /// <param name="myDateTime"></param>
-        public MyDateTime(float myDateTime)
+        
+
+        public MyDateTime(string myDateTime)
         {
-            year = (int)(myDateTime / yearMult);
-            myDateTime -= year * yearMult;
+            string[] values = myDateTime.Split('.');
 
-            month = (int)(myDateTime / monthMult);
-            myDateTime -= month * monthMult;
-
-            day = (int)(myDateTime / dayMult);
-            myDateTime -= day * dayMult;
-
-            hour = (int)(myDateTime / hourMult);
-
-            minutes = (int)((myDateTime - hour * hourMult) / minuteMult);
+            year = int.Parse(values[0]);
+            month = int.Parse(values[1]);
+            day = int.Parse(values[2]);
+            hour = int.Parse(values[3]);
+            minutes = int.Parse(values[4]);
         }
 
         /// <summary>
         /// Returns the string version of the myDateFormat.
         /// </summary>
         /// <returns></returns>
-        override public string ToString()
+        public string ToDatabaseString()
         {
-            return GetFloat().ToString();
+            return $"{year}.{month}.{day}.{hour}.{minutes}";
         }
 
         public string ToStringShort()
@@ -76,23 +62,7 @@ namespace StabilometryAnalysis
             return $"{hourString}:{minuteString}\n{dayString}.{monthString}.{yearString}";
         }
 
-        /// <summary>
-        /// Returns the date in format YYYYMMDDhhmm.
-        /// </summary>
-        /// <returns></returns>
-        public float GetFloat()
-        {
-            float result = 0;
-            result += minutes * minuteMult;
-            result += hour * hourMult;
-            result += day * dayMult;
-            result += month * monthMult;
-            result += year * yearMult;
-
-            return result;
-        }
-
-        public string GetDisplayDateTime()
+        public override string ToString()
         {
             string hourString = (hour >= 10) ? hour.ToString() : $"0{hour}";
             string minutesString = (minutes >= 10) ? minutes.ToString() : $"0{minutes}";

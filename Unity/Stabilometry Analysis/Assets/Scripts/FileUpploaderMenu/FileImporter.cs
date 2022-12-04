@@ -4,6 +4,7 @@ using TMPro;
 using SimpleFileBrowser;
 using System.IO;
 using System.Collections.Generic;
+using System;
 
 namespace StabilometryAnalysis
 {
@@ -61,7 +62,7 @@ namespace StabilometryAnalysis
         /// Reads the data from the CSV file if the path is found.
         /// </summary>
         /// <returns></returns>
-        public List<DataPoint> ReadData()
+        public List<DataPoint> ReadData(string dataSeparator)
         {
             if (!pathFound)
                 return null;
@@ -84,7 +85,7 @@ namespace StabilometryAnalysis
                 }
 
                 // else
-                string[] row = line.Split(',');
+                string[] row = line.Split(new[] { dataSeparator }, StringSplitOptions.RemoveEmptyEntries);
                 result.Add(new DataPoint(row[0], row[1], row[2]));
             }
 

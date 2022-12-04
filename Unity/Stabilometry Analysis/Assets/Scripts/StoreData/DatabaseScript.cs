@@ -41,7 +41,7 @@ namespace StabilometryAnalysis
     };
         private static readonly string[] MeasurementTableColumnValues =
         {
-        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "REAL", "TEXT",
+        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "INTEGER", "TEXT", "TEXT",
         "INTEGER", "INTEGER", "INTEGER", "INTEGER"};
 
         private SqliteConnection connection = null;
@@ -225,7 +225,7 @@ namespace StabilometryAnalysis
             {
             measurement.ID.ToString(),
             measurement.patientID.ToString(),
-            measurement.dateTime.ToString(),
+            measurement.dateTime.ToDatabaseString(),
             PoseConverter.PoseToString(measurement.pose),
             eyesOpenSolidSurfaceID.ToString(),
             eyesClosedSolidSurfaceID.ToString(),
@@ -452,7 +452,7 @@ namespace StabilometryAnalysis
 
                 entry.ID = (int)reader.GetInt64(0);
                 entry.patientID = (int)reader.GetInt64(1);
-                entry.dateTime = new MyDateTime(reader.GetFloat(2));
+                entry.dateTime = new MyDateTime(reader.GetString(2));
                 entry.pose = PoseConverter.StringToPose((string)reader.GetValue(3));
 
                 entry.eyesOpenSolidSurface = GetTask((int)reader.GetInt64(4));
