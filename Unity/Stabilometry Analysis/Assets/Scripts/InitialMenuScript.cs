@@ -144,6 +144,12 @@ namespace StabilometryAnalysis
 
         public void ClickConfirmDatabaseDeletion()
         {
+            StartCoroutine(DeleteAllData());
+        }
+
+        IEnumerator DeleteAllData()
+        {
+            yield return new WaitForSecondsRealtime(1);
             // Delete database file
             mainScript.database.DeleteDatabase();
 
@@ -153,12 +159,6 @@ namespace StabilometryAnalysis
             // Clear registry
             PlayerPrefs.DeleteAll();
 
-            //exit application
-            //StartCoroutine(WaitForAllClear());
-        }
-
-        IEnumerator WaitForAllClear()
-        {
             while (!AppDataEmptry())
                  yield return new WaitForEndOfFrame();
 

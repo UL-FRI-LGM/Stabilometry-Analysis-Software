@@ -53,7 +53,10 @@ namespace StabilometryAnalysis
 
             if (currentPatient != null)
             {
+                List<StabilometryMeasurement> allMeasurements = database.GetAllMeasurements(currentPatient);
+                JSONHandler.DeleteJSONFiles(allMeasurements);
                 database.DeletePatient(currentPatient);
+                
                 menuHeaderScript.SetPatientDropdown();
                 menuHeaderScript.SelectPatient(null);
             }

@@ -108,18 +108,27 @@ namespace StabilometryAnalysis
         /// Used when deleting a measurement
         /// </summary>
         /// <param name="fileID"></param>
-        public static void DeleteJSONFile(int fileID)
+        public static void DeleteJSONFile(StabilometryMeasurement measurement)
         {
-            Debug.LogWarning("DeleteJSON File Not implemented");
+            string fileName = $"{dataFolder}{measurement.ID}.json";
+            string jsonDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{rawFolder}";
+            File.Delete($@"{jsonDirectory}\{fileName}");
+
+            string rawFileName = $"{rawFolder}{measurement.ID}.json";
+            string jsonRawDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{dataFolder}";
+            File.Delete($@"{jsonRawDirectory}\{rawFileName}");
+
         }
 
         /// <summary>
         /// Used when deleting a patient.
         /// </summary>
         /// <param name="fileIDs"></param>
-        public static void DeleteJSONFiles(List<int> fileIDs)
+        public static void DeleteJSONFiles(List<StabilometryMeasurement> measurements)
         {
-            Debug.LogWarning("DeleteJSON File Not implemented");
+            foreach (StabilometryMeasurement element in measurements)
+                DeleteJSONFile(element);
+
         }
     }
 }

@@ -100,31 +100,57 @@ namespace StabilometryAnalysis
         /// </summary>
         public void CloseDatabase()
         {
+
             if (connection != null)
             {
                 //connection.Dispose();
                 connection.Close();
                 connection = null;
+
                 Debug.Log("Connection closed.");
             }
         }
 
         public void DeleteDatabase()
         {
-            CloseDatabase();
-            string filePath = $@"{Application.persistentDataPath}/{DatabaseName}";
+            if (connection != null)
+            {
+                connection.Dispose();
+                connection = null;
 
-            StartCoroutine(DeleteDatabase(filePath));
-        }
-
-        IEnumerator DeleteDatabase(string filePath)
-        {
-            yield return new WaitForEndOfFrame();
+                Debug.Log("Connection closed.");
+            }
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
-            System.IO.File.Delete(filePath);
+            //System.IO.File.Delete(filePath);
+            StartCoroutine(DeleteDatabaseCoroutine());
+        }
+
+        IEnumerator DeleteDatabaseCoroutine()
+        {
+            string filePath = $@"{Application.persistentDataPath}/{DatabaseName}";
+
+            bool isFileLocked = true;
+
+            while (isFileLocked)
+            {
+                try
+                {
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    System.IO.File.Delete(filePath);
+                    isFileLocked = false;
+                }
+                catch
+                {
+                    Debug.Log("Nope");
+                }
+                yield return new WaitForEndOfFrame();
+            }
+
         }
 
         private void OnDestroy()
@@ -468,6 +494,50 @@ namespace StabilometryAnalysis
             return result;
         }
 
+        public List<StabilometryMeasurement> GetAllMeasurements(Patient patient)
+        {
+            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+
+            string entryIDText = MeasurementTableColumnNames[0];
+            string patientIDText = MeasurementTableColumnNames[1];
+            string dateTimeText = MeasurementTableColumnNames[2];
+            string poseText = MeasurementTableColumnNames[3];
+
+            string querry = $"SELECT * FROM  {MeasurementTableName} WHERE {patientIDText} == {patient.ID} ORDER BY {dateTimeText} ASC, {entryIDText} ASC;";
+
+            Debug.Log(querry);
+
+            IDataReader reader = ExecuteQuery(querry);
+
+            if (reader == null)
+            {
+                Debug.LogError("Reader was null.");
+                return null;
+            }
+
+            // else
+            while (reader.Read())
+            {
+                StabilometryMeasurement entry = new StabilometryMeasurement();
+
+                entry.ID = (int)reader.GetInt64(0);
+                entry.patientID = (int)reader.GetInt64(1);
+                entry.dateTime = new MyDateTime(reader.GetString(2));
+                entry.pose = PoseConverter.StringToPose((string)reader.GetValue(3));
+
+                entry.eyesOpenSolidSurface = GetTask((int)reader.GetInt64(4));
+                entry.eyesClosedSolidSurface = GetTask((int)reader.GetInt64(5));
+                entry.eyesOpenSoftSurface = GetTask((int)reader.GetInt64(6));
+                entry.eyesClosedSoftSurface = GetTask((int)reader.GetInt64(7));
+
+                result.Add(entry);
+            }
+
+            reader.Close();
+
+            return result;
+        }
+
         private StabilometryTask GetTask(int taskID)
         {
             if (taskID < 0)
@@ -508,6 +578,9 @@ namespace StabilometryAnalysis
 
                 EllipseValues ellipseValues = new EllipseValues(reader.GetFloat(14));
                 result.confidence95Ellipse = ellipseValues;
+
+                reader.Close();
+
                 return result;
             }
 
@@ -546,6 +619,8 @@ namespace StabilometryAnalysis
         /// <param name="patientID"></param>
         public void DeletePatient(Patient patient)
         {
+            DeleteMeasurements(patient);
+
             string query = $"DELETE FROM {PatientTableName} WHERE {PatientTableColumnNames[0]} = {patient.ID}";
 
             IDataReader reader = ExecuteQuery(query);
@@ -575,6 +650,13 @@ namespace StabilometryAnalysis
             if (reader != null)
                 reader.Close();
 
+        }
+
+        private void DeleteMeasurements(Patient patient)
+        {
+            List<StabilometryMeasurement> measurements = GetAllMeasurements(patient);
+            foreach (StabilometryMeasurement element in measurements)
+                DeleteMeasurement(element);
         }
 
         /// <summary>

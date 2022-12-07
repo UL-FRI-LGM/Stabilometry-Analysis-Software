@@ -70101,7 +70101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02a79c8c1d528cd429ccd5ac48fad674, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialMenu: {fileID: 0}
+  initialMenu: {fileID: 157548475}
 --- !u!1001 &2066353465
 PrefabInstance:
   m_ObjectHideFlags: 0
