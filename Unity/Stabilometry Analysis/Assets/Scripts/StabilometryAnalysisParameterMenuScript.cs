@@ -29,6 +29,8 @@ namespace StabilometryAnalysis
 
         [SerializeField] private GameObject measurementMenu = null;
 
+        private RectTransform chartHolderRect = null;
+
         private List<GameObject> instantiatedCharts = null;
         private Vector2 lineChartSize = new Vector2(590, 300);
         private Vector2 firstPosition = new Vector2();
@@ -38,10 +40,19 @@ namespace StabilometryAnalysis
         private Pose currentPose = Pose.BOTH_LEGS_JOINED_PARALLEL;
         private bool hasData = false;
         private bool chartsSpawned = false;
+
+        private float initialChartYposition = 0;
+        private float previousChartAreaSize = 0;
+        private float chartAreaSize = 0;
+        private float previousScrollbarValue = 0;
+        private bool scrollbarSet = false;
         #endregion
 
         private void Awake()
         {
+            chartHolderRect = chartHolder.GetComponent<RectTransform>();
+
+            initialChartYposition = chartHolderRect.localPosition.y;
             SetToggleDependencies();
 
             instantiatedCharts = new List<GameObject>();
@@ -71,9 +82,33 @@ namespace StabilometryAnalysis
         private void Update()
         {
             if (HasAnyToggleChanged())
-            {
                 UpdateCharts();
-            }
+
+            if (scrollbarSet && scrollbarScript.valuePositon != previousScrollbarValue)
+                UpdatePosition(scrollbarScript.valuePositon);
+
+        }
+
+        private void UpdatePosition(float newValue)
+        {
+            previousScrollbarValue = newValue;
+
+            chartHolderRect.localPosition =
+                new Vector3(
+                    chartHolderRect.localPosition.x,
+                    ConvertToPosition(newValue, chartAreaSize, ((RectTransform)chartMask.transform).rect.size.y, initialChartYposition),
+                    chartHolderRect.localPosition.z);
+
+        }
+
+        private float ConvertToPosition(float newValue, float chartAreaSize, float maskSize, float initialAreaPosition)
+        {
+            // 0 mmeans at the top, 1 means at the bottom.
+
+            float maxChartPosition = initialAreaPosition + chartAreaSize - maskSize * 0.8f;
+
+            float result = newValue * (maxChartPosition - initialChartYposition) + initialChartYposition;
+            return result;
         }
 
         /// <summary>
@@ -114,7 +149,18 @@ namespace StabilometryAnalysis
 
             // Update Scrollbar size.
             float maskSize = ((RectTransform)chartMask.transform).rect.size.y;
-            scrollbarScript.SetSize(GetCurrentChartAreaSize(instantiatedCharts, maskSize), maskSize);
+            chartAreaSize = GetCurrentChartAreaSize(instantiatedCharts, maskSize);
+
+            scrollbarScript.SetSize(chartAreaSize, maskSize);
+
+            scrollbarSet = true;
+
+            if (previousChartAreaSize != chartAreaSize)
+            {
+                previousChartAreaSize = chartAreaSize;
+                scrollbarScript.valuePositon = 0;
+            }
+
         }
 
         /// <summary>

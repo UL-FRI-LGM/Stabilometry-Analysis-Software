@@ -8,6 +8,9 @@ namespace StabilometryAnalysis
     public class ScrollbarScript : MonoBehaviour
     {
         #region Variables
+        public float valuePositon { 
+            get { return scrollbar.value; } 
+            set { scrollbar.value = value; } }
         private Scrollbar scrollbar = null;
         #endregion
 
