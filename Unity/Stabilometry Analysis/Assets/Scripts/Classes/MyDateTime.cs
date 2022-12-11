@@ -59,7 +59,7 @@ namespace StabilometryAnalysis
             int shortYear = year % 100;
             string yearString = (shortYear < 10) ? $"0{shortYear}" : shortYear.ToString();
 
-            return $"{hourString}:{minuteString}\n{dayString}.{monthString}.{yearString}";
+            return $"{yearString}.{dayString}.{monthString}\n{hourString}:{minuteString}";
         }
 
         public override string ToString()

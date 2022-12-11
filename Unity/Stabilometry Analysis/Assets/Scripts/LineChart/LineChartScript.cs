@@ -18,7 +18,7 @@ namespace StabilometryAnalysis
         [SerializeField]
         private GameObject
             LineObject = null,
-            DataLine = null;
+            DateLine = null;
 
         [SerializeField]
         private GameObject[]
@@ -127,43 +127,56 @@ namespace StabilometryAnalysis
 
             float valueConverter = valueSpaceSize.y / largestValue;
 
-            RectTransform lineRect = LineObject.GetComponent<RectTransform>();
-
-            lineRect.sizeDelta = new Vector2(valueSpaceSize.x, drawingSpace.rect.height);
-
-            SpawnElements(data, drawingSpace, startingPosition, valueConverter, lineRect);
+            SpawnElements(data, drawingSpace, startingPosition, valueConverter, valueSpaceSize.x);
         }
 
-        private void SpawnElements(List<ChartData> data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, RectTransform lineRect)
+        private void SpawnElements(List<ChartData> data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, float xSpaceSize)
         {
+
             bool oddNumber = data.Count % 2 != 0;
 
-            float lineMove = (oddNumber) ? lineRect.rect.width * 0.5f : 0;
+            float lineMove = (oddNumber) ? xSpaceSize * 0.5f : 0;
 
-            FillLineRenderers(data, startingPosition.x, valueConverter, lineRect, lineMove);
+            FillLineRenderers(data, startingPosition.x, valueConverter, xSpaceSize, lineMove);
 
             for (int i = 0; i < data.Count; i++)
             {
-                // Spawn slice objects
-                float xPosition = startingPosition.x + i * lineRect.rect.width;
+                float xPosition = startingPosition.x + i * xSpaceSize;
                 if (oddNumber)
-                    xPosition += lineRect.rect.width * 0.5f;
+                    xPosition += xSpaceSize * 0.5f;
 
-                lineRect.anchoredPosition = new Vector2(xPosition, startingPosition.y);
-
-                GameObject slice = Instantiate(LineObject, drawingSpace.transform);
-
-                slice.GetComponent<LineObjectScript>().SetParentScript(i, data[i], this);
-
-                spawnedObjects.Add(slice);
-
-                SpawnDots(data[i], xPosition, valueConverter, i);
+                SpawnSliceObject(data[i], drawingSpace, startingPosition, valueConverter, xSpaceSize, i, xPosition);
             }
         }
 
-        private void FillLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect, float lineMove)
+        private void SpawnSliceObject(ChartData data,RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, float xSpaceSize, int i, float xPosition)
         {
-            List<Vector2>[] drawingData = PrepareDataForLineRenderers(data, leftmostPosition, valueConverter, lineRect, selectedTasks);
+            GameObject slice = Instantiate(LineObject, drawingSpace.transform);
+            RectTransform sliceRect = slice.GetComponent<RectTransform>();
+
+            sliceRect.sizeDelta = new Vector2(xSpaceSize, drawingSpace.rect.height);
+
+            sliceRect.anchoredPosition = new Vector2(xPosition, startingPosition.y);
+
+            slice.GetComponent<LineObjectScript>().SetParentScript(i, data, this);
+
+            spawnedObjects.Add(slice);
+
+            SpawnDots(data, xPosition, valueConverter, i);
+
+            SpawnLineObject(sliceRect, data.time);
+        }
+
+        private void SpawnLineObject(RectTransform drawingSpace, MyDateTime date)
+        {
+            GameObject line = Instantiate(DateLine, drawingSpace.transform);
+            line.GetComponent<DateLineScript>().SetText(date);
+
+        }
+
+        private void FillLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, float lineRectWidth, float lineMove)
+        {
+            List<Vector2>[] drawingData = PrepareDataForLineRenderers(data, leftmostPosition, valueConverter, lineRectWidth, selectedTasks);
 
             for (int i = 0; i < lineRenderers.Length; i++)
             {
@@ -180,6 +193,8 @@ namespace StabilometryAnalysis
                 rectTransform.anchoredPosition += new Vector2(lineMove, 0);
             }
         }
+
+
 
         public void ButtonClicked(int index)
         {
@@ -200,7 +215,7 @@ namespace StabilometryAnalysis
         /// <param name="valueConverter"></param>
         /// <param name="lineRect"></param>
         /// <returns></returns>
-        private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, RectTransform lineRect, List<Task> selectedTasks)
+        private List<Vector2>[] PrepareDataForLineRenderers(List<ChartData> data, float leftmostPosition, float valueConverter, float lineRectWidth, List<Task> selectedTasks)
         {
             List<Vector2>[] result = new List<Vector2>[4];
 
@@ -213,7 +228,7 @@ namespace StabilometryAnalysis
                 {
                     Task currentTask = selectedTasks[k];
 
-                    float xPosition = leftmostPosition + i * lineRect.rect.width;
+                    float xPosition = leftmostPosition + i * lineRectWidth;
                     float yPositon = data[i].GetTaskValue(currentTask) * valueConverter;
 
                     float previousValue = (i <= 0) ? -1 : data[i - 1].GetTaskValue(currentTask);
