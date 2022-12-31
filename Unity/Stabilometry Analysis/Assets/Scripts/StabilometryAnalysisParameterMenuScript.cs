@@ -203,7 +203,7 @@ namespace StabilometryAnalysis
         }
 
         /// <summary>
-        /// Checks parameters to see which charts to spanw.
+        /// Checks parameters to see which charts to spawn.
         /// </summary>
         /// <param name="parameterTogglers"></param>
         /// <returns></returns>

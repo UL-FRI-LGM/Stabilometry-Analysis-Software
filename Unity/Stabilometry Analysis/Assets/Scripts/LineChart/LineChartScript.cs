@@ -94,15 +94,41 @@ namespace StabilometryAnalysis
         /// </summary>
         public void UpdateChart()
         {
+            List<ChartData> relevantData = GetRelevantData(this.chartData, this.selectedTasks);
+
             RectTransform drawingSpace = lineRenderers[0].GetComponent<RectTransform>();
 
-            Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / (float)(this.chartData.Count), drawingSpace.rect.height);
+            Vector2 valueSpaceSize = new Vector2(drawingSpace.rect.width / (float)(relevantData.Count), drawingSpace.rect.height);
 
-            float maxValue = GetLargestValue(this.chartData);
+            float maxValue = GetLargestValue(relevantData);
             float modifiedMaxValue = ModifyMaxValue(maxValue);
 
             SetYAxis(modifiedMaxValue, drawingSpace);
-            DrawData(this.chartData, valueSpaceSize, this.chartRect, modifiedMaxValue);
+            DrawData(relevantData, valueSpaceSize, this.chartRect, modifiedMaxValue);
+        }
+
+        private static List<ChartData> GetRelevantData(List<ChartData> allData, List<Task> selectedTasks)
+        {
+            List<ChartData> result = new List<ChartData>();
+
+            foreach(ChartData element in allData)
+            {
+                bool addELement = false;
+
+                foreach (Task task in selectedTasks)
+                {
+                    if (element.GetTaskValue(task) >= 0)
+                    {
+                        addELement = true;
+                        break;
+                    }
+                }
+
+                if (addELement)
+                    result.Add(element);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -130,9 +156,16 @@ namespace StabilometryAnalysis
             SpawnElements(data, drawingSpace, startingPosition, valueConverter, valueSpaceSize.x);
         }
 
+        /// <summary>
+        /// Spawns all data.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="drawingSpace"></param>
+        /// <param name="startingPosition"></param>
+        /// <param name="valueConverter"></param>
+        /// <param name="xSpaceSize"></param>
         private void SpawnElements(List<ChartData> data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, float xSpaceSize)
         {
-
             bool oddNumber = data.Count % 2 != 0;
 
             float lineMove = (oddNumber) ? xSpaceSize * 0.5f : 0;
@@ -193,8 +226,6 @@ namespace StabilometryAnalysis
                 rectTransform.anchoredPosition += new Vector2(lineMove, 0);
             }
         }
-
-
 
         public void ButtonClicked(int index)
         {
