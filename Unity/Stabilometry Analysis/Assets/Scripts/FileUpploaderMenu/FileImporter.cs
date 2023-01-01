@@ -62,10 +62,12 @@ namespace StabilometryAnalysis
         /// Reads the data from the CSV file if the path is found.
         /// </summary>
         /// <returns></returns>
-        public List<DataPoint> ReadData(string dataSeparator)
+        public List<DataPoint> ReadData(string dataSeparator, DataUnits unit)
         {
             if (!pathFound)
                 return null;
+
+            float multiplicator = GetMultiplicator(unit);
 
             //else
 
@@ -86,11 +88,29 @@ namespace StabilometryAnalysis
 
                 // else
                 string[] row = line.Split(new[] { dataSeparator }, StringSplitOptions.RemoveEmptyEntries);
-                result.Add(new DataPoint(row[0], row[1], row[2]));
+                result.Add(new DataPoint(row[0], row[1], row[2], multiplicator));
             }
 
             reader.Close();
             return result;
+        }
+
+        private float GetMultiplicator(DataUnits unit)
+        {            
+            switch (unit)
+            {
+                case (DataUnits.mm):
+                    return 0.1f;
+                case (DataUnits.cm):
+                    return 1f;
+                case (DataUnits.dm):
+                    return 10f;
+                case (DataUnits.m):
+                    return 100f;
+            }
+
+            // By default it is cm
+            return 1f;
         }
 
         /// <summary>

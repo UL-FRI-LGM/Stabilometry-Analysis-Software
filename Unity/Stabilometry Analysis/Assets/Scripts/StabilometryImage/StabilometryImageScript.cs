@@ -15,40 +15,31 @@ namespace StabilometryAnalysis
         private UILineRenderer pathLine = null,
             ellipseLine = null;
 
-        private float multiplicator = 70f;
+        // In cm.
+        private const float realSize = 10f;
         #endregion
-
-        // To be removed 
-        private void Awake()
-        {
-            //List<DataPoint> dataPoints = new List<DataPoint>();
-
-            //dataPoints.Add(new DataPoint(0, 0.005f, 0.005f));
-            //dataPoints.Add(new DataPoint(0, 0.01f, 0.01f));
-            //dataPoints.Add(new DataPoint(0, 0.019f, 0.015f));
-            //dataPoints.Add(new DataPoint(0, 0.019f, 0.015f));
-            //dataPoints.Add(new DataPoint(0, 0.019f, -0.01f));
-            //dataPoints.Add(new DataPoint(0, -0.019f, -0.01f));
-
-            //StabilometryTask task = new StabilometryTask(dataPoints);
-            //DrawImage(task);
-        }
 
         public void DrawImage(StabilometryTask stabilometryTask)
         {
-            DrawStabilometryPath(stabilometryTask.stabilometryDrawData);
+            float multiplicator = DetermineMultiplicator();
 
-            DrawEllipsPath(stabilometryTask.confidence95Ellipse.GetEllipsePoints(40));
+            DrawStabilometryPath(stabilometryTask.stabilometryDrawData, multiplicator);
+            DrawEllipsPath(stabilometryTask.confidence95Ellipse.GetEllipsePoints(40), multiplicator);
+        }
+
+        private float DetermineMultiplicator()
+        {
+            float imageXSize = GetComponent<RectTransform>().rect.width;
+
+            return imageXSize / realSize;
         }
 
         ///// <summary>
         ///// Draws a stabilometry path. The data should be centered in fist data point.
         ///// </summary>
         ///// <param name="stabilometryData"></param>
-        private void DrawStabilometryPath(List<Vector2> stabilometryData)
+        private void DrawStabilometryPath(List<Vector2> stabilometryData, float multiplicator)
         {
-            Debug.LogWarning("Determine Multiplicator.");
-
             Vector2[] points = new Vector2[stabilometryData.Count];
 
             for (int i = 0; i < stabilometryData.Count; i++)
@@ -61,7 +52,7 @@ namespace StabilometryAnalysis
         ///// Draws an elipsis
         ///// </summary>
         ///// <param name="ellipseData"></param>
-        private void DrawEllipsPath(List<Vector2> ellipseData)
+        private void DrawEllipsPath(List<Vector2> ellipseData, float multiplicator)
         {
             Vector2[] points = new Vector2[ellipseData.Count + 1];
 

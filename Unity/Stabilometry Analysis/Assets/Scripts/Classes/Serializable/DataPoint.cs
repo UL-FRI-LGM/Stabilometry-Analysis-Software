@@ -20,11 +20,11 @@ namespace StabilometryAnalysis
             this.y = y;
         }
 
-        public DataPoint(string time, string x, string y)
+        public DataPoint(string time, string x, string y, float multiplicator)
         {
             this.time = float.Parse(time);
-            this.x = float.Parse(x);
-            this.y = float.Parse(y);
+            this.x = float.Parse(x) * multiplicator;
+            this.y = float.Parse(y) * multiplicator;
         }
 
         public Vector2 GetVecotor2(Axes axes)

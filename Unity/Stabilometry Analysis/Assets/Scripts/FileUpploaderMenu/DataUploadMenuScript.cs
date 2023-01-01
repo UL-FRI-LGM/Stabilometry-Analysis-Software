@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace StabilometryAnalysis
 {
+    using static Units;
     public class DataUploadMenuScript : MonoBehaviour
     {
         #region Variables
@@ -13,6 +14,7 @@ namespace StabilometryAnalysis
         [SerializeField] private Button saveButton = null;
         [SerializeField] private TimeSelectorScript timeSelector = null;
         [SerializeField] private TMP_InputField lineSeparatorInputFiled = null;
+        [SerializeField] private TMP_Dropdown unitDropdown = null;
 
         public MainScript mainScript { get; set; } = null;
 
@@ -39,7 +41,7 @@ namespace StabilometryAnalysis
             if (dataSeparator == "")
                 dataSeparator = ";";
 
-            List<DataPoint>[] data = GetData(dataSeparator);
+            List<DataPoint>[] data = GetData(dataSeparator, (DataUnits) unitDropdown.value);
 
             bool dataPresent = false;
             foreach (List<DataPoint> list in data)
@@ -70,12 +72,12 @@ namespace StabilometryAnalysis
         /// Gets data from file importers
         /// </summary>
         /// <returns></returns>
-        private List<DataPoint>[] GetData(string dataSeparator)
+        private List<DataPoint>[] GetData(string dataSeparator, DataUnits unit)
         {
             List<DataPoint>[] result = new List<DataPoint>[4];
 
             for (int i = 0; i < fileImporters.Length; i++)
-                result[i] = fileImporters[i].ReadData(dataSeparator);
+                result[i] = fileImporters[i].ReadData(dataSeparator, unit);
 
             return result;
         }
