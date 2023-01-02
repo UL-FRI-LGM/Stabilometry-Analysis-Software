@@ -17,6 +17,7 @@ namespace StabilometryAnalysis
         /// <param name="data"></param>
         public void DrawChart(List<Vector2> data)
         {
+            Debug.LogError("I was called");
             List<Vector2> filteredData = RemoveSimilarData(data);
 
             Debug.Log(data.Count);
@@ -30,6 +31,7 @@ namespace StabilometryAnalysis
         /// <returns></returns>
         private List<Vector2> RemoveSimilarData(List<Vector2> data)
         {
+            Debug.LogError("I was called");
             List<Vector2> result = new List<Vector2>();
 
             if (data.Count <= 0)
@@ -72,6 +74,7 @@ namespace StabilometryAnalysis
         /// <returns></returns>
         private Vector2 CalculatePosition(Vector2 value)
         {
+            Debug.LogError("I was called");
             //TODO implement this!
             return value;
         }
@@ -85,6 +88,7 @@ namespace StabilometryAnalysis
         /// <returns></returns>
         private bool VectorsSimilar(Vector2 firstVector, Vector2 secondVector, float accuracyValue)
         {
+            Debug.LogError("I was called");
             Vector2 difference = firstVector - secondVector;
 
             return difference.sqrMagnitude <= accuracyValue;
