@@ -111,7 +111,7 @@ namespace StabilometryAnalysis
         {
             List<ChartData> result = new List<ChartData>();
 
-            foreach(ChartData element in allData)
+            foreach (ChartData element in allData)
             {
                 bool addELement = false;
 
@@ -182,7 +182,7 @@ namespace StabilometryAnalysis
             }
         }
 
-        private void SpawnSliceObject(ChartData data,RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, float xSpaceSize, int i, float xPosition)
+        private void SpawnSliceObject(ChartData data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, float xSpaceSize, int i, float xPosition)
         {
             GameObject slice = Instantiate(LineObject, drawingSpace.transform);
             RectTransform sliceRect = slice.GetComponent<RectTransform>();
@@ -253,12 +253,12 @@ namespace StabilometryAnalysis
             for (int i = 0; i < result.Length; i++)
                 result[i] = new List<Vector2>();
 
-            for (int i = 0; i < data.Count; i++)
+            for (int k = 0; k < selectedTasks.Count; k++)
             {
-                for (int k = 0; k < selectedTasks.Count; k++)
-                {
-                    Task currentTask = selectedTasks[k];
+                Task currentTask = selectedTasks[k];
 
+                for (int i = 0; i < data.Count; i++)
+                {
                     float xPosition = leftmostPosition + i * lineRectWidth;
                     float yPositon = data[i].GetTaskValue(currentTask) * valueConverter;
 
@@ -292,14 +292,13 @@ namespace StabilometryAnalysis
         /// <returns></returns>
         private int AddNTimes(float previous, float current, float next)
         {
-            if (current < 0)
+            if (current < 0 || (previous < 0 && next < 0))
                 return 0;
 
             else if (previous >= 0 && next >= 0)
                 return 2;
 
             // else
-
             return 1;
         }
 

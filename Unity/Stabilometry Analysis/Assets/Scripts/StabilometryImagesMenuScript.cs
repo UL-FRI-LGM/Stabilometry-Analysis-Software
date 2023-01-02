@@ -10,7 +10,6 @@ namespace StabilometryAnalysis
         public MainScript mainScript { get; set; } = null;
         [SerializeField] private GameObject stabilometryImagePrefab = null;
 
-
         #endregion
 
         //public void 

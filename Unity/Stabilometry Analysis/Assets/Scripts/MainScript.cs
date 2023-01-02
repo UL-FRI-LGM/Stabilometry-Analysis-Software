@@ -44,8 +44,7 @@ namespace StabilometryAnalysis
             stabilometryAnalysisMenuScript.mainScript = this;
             stabilometryAnalysisParameterMenuScript.mainScript = this;
             stabilometryMeasurementScript.mainScript = this;
-
-            //stabilometryImagesMenuScript.mainScript = this;
+            stabilometryImagesMenuScript.mainScript = this;
         }
 
         public void DeleteCurrentPatient()

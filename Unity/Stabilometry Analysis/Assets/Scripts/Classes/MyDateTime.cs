@@ -64,14 +64,15 @@ namespace StabilometryAnalysis
 
         public override string ToString()
         {
+
+            string dayString = (day >= 10) ? day.ToString() : $"0{day}";
+            string date = $"{year} {GetMonthWord(month)} {day}";
+
             string hourString = (hour >= 10) ? hour.ToString() : $"0{hour}";
             string minutesString = (minutes >= 10) ? minutes.ToString() : $"0{minutes}";
             string time = $"{hourString}:{minutesString}";
 
-            string dayString = (day >= 10) ? day.ToString() : $"0{day}";
-            string date = $"{day}.{GetMonthWord(month)}.{year}";
-
-            return $"{time}, {date}";
+            return $"{date}, {time}";
         }
 
         public string GetDateString()

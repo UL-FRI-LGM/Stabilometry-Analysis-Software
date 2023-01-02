@@ -28,6 +28,7 @@ namespace StabilometryAnalysis
         [SerializeField] private ScrollbarScript scrollbarScript = null;
 
         [SerializeField] private GameObject measurementMenu = null;
+        [SerializeField] private AccordionRadioHandler poseRadioHandler = null;
 
         private RectTransform chartHolderRect = null;
 
@@ -36,8 +37,9 @@ namespace StabilometryAnalysis
         private Vector2 firstPosition = new Vector2();
 
         private List<StabilometryMeasurement> patientData = null;
+        // Smaller data size based on pose.
+        private List<StabilometryMeasurement> relevantData = null;
 
-        private Pose currentPose = Pose.BOTH_LEGS_JOINED_PARALLEL;
         private bool hasData = false;
         private bool chartsSpawned = false;
 
@@ -72,21 +74,39 @@ namespace StabilometryAnalysis
         {
             hasData = false;
             chartsSpawned = false;
-            currentPose = Pose.BOTH_LEGS_JOINED_PARALLEL;
 
-            patientData = mainScript.database.GetAllMeasurements(mainScript.currentPatient, currentPose);
+            patientData = mainScript.database.GetAllMeasurements(mainScript.currentPatient);
+            relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
             hasData = true;
             UpdateCharts();
         }
 
         private void Update()
         {
+            if (poseRadioHandler.valueChanged)
+            {
+                poseRadioHandler.valueChanged = false;
+                relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
+
+                UpdateCharts();
+            }
+
             if (HasAnyToggleChanged())
                 UpdateCharts();
 
             if (scrollbarSet && scrollbarScript.valuePositon != previousScrollbarValue)
                 UpdatePosition(scrollbarScript.valuePositon);
+        }
 
+        private List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose)
+        {
+            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+
+            foreach (StabilometryMeasurement data in allData)
+                if (data.pose == currentPose)
+                    result.Add(data);
+
+            return result;
         }
 
         private void UpdatePosition(float newValue)
@@ -98,7 +118,6 @@ namespace StabilometryAnalysis
                     chartHolderRect.localPosition.x,
                     ConvertToPosition(newValue, chartAreaSize, ((RectTransform)chartMask.transform).rect.size.y, initialChartYposition),
                     chartHolderRect.localPosition.z);
-
         }
 
         private float ConvertToPosition(float newValue, float chartAreaSize, float maskSize, float initialAreaPosition)
@@ -160,7 +179,6 @@ namespace StabilometryAnalysis
                 previousChartAreaSize = chartAreaSize;
                 scrollbarScript.valuePositon = 0;
             }
-
         }
 
         /// <summary>
@@ -196,7 +214,7 @@ namespace StabilometryAnalysis
         {
             List<ChartData> result = new List<ChartData>();
 
-            foreach (StabilometryMeasurement measurement in patientData)
+            foreach (StabilometryMeasurement measurement in relevantData)
                 result.Add(measurement.GetData(currentParameter));
 
             return result;
@@ -294,7 +312,7 @@ namespace StabilometryAnalysis
         /// <returns></returns>
         public StabilometryMeasurement GetMeasurement(int index)
         {
-            StabilometryMeasurement result = JSONHandler.GetJSONFile(patientData[index]);
+            StabilometryMeasurement result = JSONHandler.GetJSONFile(relevantData[index]);
             return result;
         }
 

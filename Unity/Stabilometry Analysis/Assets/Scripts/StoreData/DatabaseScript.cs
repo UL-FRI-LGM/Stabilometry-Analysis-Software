@@ -372,7 +372,6 @@ namespace StabilometryAnalysis
                 if (reader != null && reader.Read())
                 {
                     result = (int)reader.GetInt64(0);
-                    Debug.Log(result);
                 }
             }
 
