@@ -28,7 +28,6 @@ namespace StabilometryAnalysis
                 dataDisplayer.SetPosition(Input.mousePosition);
         }
 
-
         public void ButtonClick()
         {
             parentScript.ButtonClicked(index);
