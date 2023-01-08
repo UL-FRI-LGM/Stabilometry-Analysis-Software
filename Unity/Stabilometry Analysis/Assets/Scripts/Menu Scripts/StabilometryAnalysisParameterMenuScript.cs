@@ -290,18 +290,9 @@ namespace StabilometryAnalysis
             return new Vector2(x, y);
         }
 
-        /// <summary>
-        /// Used to open other menus.
-        /// </summary>
-        /// <param name="menu"></param>
-        public void OpenMenu(GameObject menu)
-        {
-            mainScript.menuSwitching.OpenMenu(menu);
-        }
-
         public void OpenAnalysisMenu(StabilometryMeasurement measurement)
         {
-            OpenMenu(measurementMenu);
+            mainScript.menuSwitching.OpenMenu(measurementMenu);
             mainScript.stabilometryMeasurementScript.SetData(measurement);
         }
 

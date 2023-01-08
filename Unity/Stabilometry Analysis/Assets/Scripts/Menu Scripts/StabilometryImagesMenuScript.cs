@@ -12,11 +12,12 @@ namespace StabilometryAnalysis
         [SerializeField] private ScrollbarScript scrollbarScript = null;
         [SerializeField] private AccordionRadioHandler poseRadioHandler = null;
         [SerializeField] private GameObject imageElementObjectHolder = null;
+        [SerializeField] private GameObject measurementMenu = null;
 
         private RectTransform imageElementObjectRect = null;
         private float prefabElementWidth = 0;
 
-        private List<GameObject> imageElements = null;
+        private List<StabilometryImageElementScript> imageElementScripts = null;
         private List<StabilometryMeasurement> patientData = null;
         private List<StabilometryMeasurement> relevantData = null;
 
@@ -33,7 +34,7 @@ namespace StabilometryAnalysis
         private void Awake()
         {
             prefabElementWidth = stabilometryImageElementPrefab.GetComponent<RectTransform>().rect.width;
-            imageElements = new List<GameObject>();
+            imageElementScripts = new List<StabilometryImageElementScript>();
             imageElementObjectRect = imageElementObjectHolder.GetComponent<RectTransform>();
             initialElementObjectXPosition = imageElementObjectRect.localPosition.x;
         }
@@ -66,12 +67,10 @@ namespace StabilometryAnalysis
 
         private void UpdateImages()
         {
-            int testNumber = 3;
-
-            SetScrollbar(testNumber);
+            SetScrollbar(relevantData.Count);
             scrollbarSet = true;
 
-            SpawnElements(testNumber);
+            SpawnElements(relevantData);
         }
 
         private List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose)
@@ -110,31 +109,38 @@ namespace StabilometryAnalysis
             scrollbarScript.SetSize(elementNumber, startDisplayNumber);
         }
 
-        private void SpawnElements(int elementNumber)
+        private void SpawnElements(List<StabilometryMeasurement> dataToSpawn)
         {
 
-            foreach (GameObject element in imageElements)
-            {
-                Destroy(element);
-            }
+            foreach (StabilometryImageElementScript element in imageElementScripts)
+                Destroy(element.gameObject);
 
-            imageElements = new List<GameObject>();
+            imageElementScripts = new List<StabilometryImageElementScript>();
 
-            for (int i = 0; i < elementNumber; i++)
+            for (int i = 0; i < dataToSpawn.Count; i++)
             {
                 GameObject instance = Instantiate(stabilometryImageElementPrefab, imageElementObjectHolder.transform);
                 RectTransform rect = instance.GetComponent<RectTransform>();
+
+                StabilometryImageElementScript element = instance.GetComponent<StabilometryImageElementScript>();
                 rect.anchoredPosition += new Vector2(i * rect.rect.width, 0);
 
-                imageElements.Add(instance);
-            }
+                element.SetData(i, dataToSpawn[i], this);
+                element.SetVisible(isElementVisible());
 
+                imageElementScripts.Add(element);
+            }
+        }
+
+        private bool isElementVisible()
+        {
+            return true;
         }
 
         public void OpenAnalysisMenu(StabilometryMeasurement measurement)
         {
-            //OpenMenu(measurementMenu);
-            //mainScript.stabilometryMeasurementScript.SetData(measurement);
+            mainScript.menuSwitching.OpenMenu(measurementMenu);
+            mainScript.stabilometryMeasurementScript.SetData(measurement);
         }
 
         public void BackButtonClick()
