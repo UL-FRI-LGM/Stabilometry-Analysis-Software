@@ -69323,7 +69323,7 @@ MonoBehaviour:
   scrollbarScript: {fileID: 684578199}
   poseRadioHandler: {fileID: 1186994000}
   imageElementObjectHolder: {fileID: 767797767}
-  measurementMenu: {fileID: 0}
+  measurementMenu: {fileID: 5708563141827413997}
 --- !u!222 &2070894345
 CanvasRenderer:
   m_ObjectHideFlags: 0

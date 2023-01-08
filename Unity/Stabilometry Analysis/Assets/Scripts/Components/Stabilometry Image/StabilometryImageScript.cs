@@ -17,13 +17,16 @@ namespace StabilometryAnalysis
 
         // In cm.
         private const float realSize = 10f;
+
+        private float lowerPrecisionDrawingErrorValue = 5f;
+        private float higherPrecisionDrawingErrorValue = 1f;
         #endregion
 
-        public void DrawImage(StabilometryTask stabilometryTask)
+        public void DrawImage(StabilometryTask stabilometryTask, bool highPrecision)
         {
             float multiplicator = DetermineMultiplicator();
 
-            DrawStabilometryPath(stabilometryTask.stabilometryDrawData, multiplicator);
+            DrawStabilometryPath(stabilometryTask.stabilometryDrawData, multiplicator, highPrecision);
             DrawEllipsPath(stabilometryTask.confidence95Ellipse.GetEllipsePoints(40), multiplicator);
         }
 
@@ -38,14 +41,45 @@ namespace StabilometryAnalysis
         ///// Draws a stabilometry path. The data should be centered in fist data point.
         ///// </summary>
         ///// <param name="stabilometryData"></param>
-        private void DrawStabilometryPath(List<Vector2> stabilometryData, float multiplicator)
+        private void DrawStabilometryPath(List<Vector2> stabilometryData, float multiplicator, bool highPrecision)
         {
-            Vector2[] points = new Vector2[stabilometryData.Count];
+            List<Vector2> filteredData = PrepareDataForDrawing(stabilometryData, multiplicator, highPrecision);
 
-            for (int i = 0; i < stabilometryData.Count; i++)
-                points[i] = stabilometryData[i] * multiplicator;
+            Vector2[] points = new Vector2[filteredData.Count];
+
+            for (int i = 0; i < filteredData.Count; i++)
+                points[i] = filteredData[i];
 
             pathLine.Points = points;
+        }
+
+        private List<Vector2> PrepareDataForDrawing(List<Vector2> stabilometryData, float multiplicator, bool highPrecision)
+        {
+            List<Vector2> result = new List<Vector2>();
+            result.Add(stabilometryData[0] * multiplicator);
+
+            for (int i = 1; i < stabilometryData.Count; i++)
+            {
+                Vector2 newData = stabilometryData[i] * multiplicator;
+
+                Vector2 lastData = result[result.Count - 1];
+
+                if (!DataTooSimilar(lastData, newData, highPrecision))
+                    result.Add(newData);
+            }
+
+            return result;
+        }
+
+        private bool DataTooSimilar(Vector2 previousData, Vector2 newData, bool highPrecision)
+        {
+            //return false;
+
+            float drawingErrorValue = (highPrecision) ? higherPrecisionDrawingErrorValue : lowerPrecisionDrawingErrorValue;
+
+            Vector2 difference = newData - previousData;
+
+            return difference.magnitude <= drawingErrorValue;
         }
 
         ///// <summary>

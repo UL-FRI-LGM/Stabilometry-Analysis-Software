@@ -50,38 +50,25 @@ namespace StabilometryAnalysis
             duration = CalculateDuration(stabilometryData);
             sampleTime = CalculateSampleTime(stabilometryData);
 
-            List<DataPoint> filteredData = FilterData(stabilometryData);
+            confidence95Ellipse = new EllipseValues(stabilometryData);
 
-            confidence95Ellipse = new EllipseValues(filteredData);
+            stabilometryDrawData = PrepareDataForDrawing(stabilometryData, confidence95Ellipse.mean);
 
-            stabilometryDrawData = PrepareDataForDrawing(filteredData, confidence95Ellipse.mean);
+            swayPath = CalculateSwayPath(stabilometryData, BOTH);
+            swayPathAP = CalculateSwayPath(stabilometryData, AP);
+            swayPathML = CalculateSwayPath(stabilometryData, ML);
+            meanDistance = CalculateMeanDistance(stabilometryData);
 
-            swayPath = CalculateSwayPath(filteredData, BOTH);
-            swayPathAP = CalculateSwayPath(filteredData, AP);
-            swayPathML = CalculateSwayPath(filteredData, ML);
-            meanDistance = CalculateMeanDistance(filteredData);
+            meanSwayVelocity = CalculateMeanSwayVelocity(stabilometryData, BOTH);
+            meanSwayVelocityAP = CalculateMeanSwayVelocity(stabilometryData, AP);
+            meanSwayVelocityML = CalculateMeanSwayVelocity(stabilometryData, ML);
 
-            meanSwayVelocity = CalculateMeanSwayVelocity(filteredData, BOTH);
-            meanSwayVelocityAP = CalculateMeanSwayVelocity(filteredData, AP);
-            meanSwayVelocityML = CalculateMeanSwayVelocity(filteredData, ML);
+            swayAverageAmplitudeAP = CalculateAverageAmplitude(stabilometryData, AP, swayPathAP);
+            swayAverageAmplitudeML = CalculateAverageAmplitude(stabilometryData, ML, swayPathML);
 
-            swayAverageAmplitudeAP = CalculateAverageAmplitude(filteredData, AP, swayPathAP);
-            swayAverageAmplitudeML = CalculateAverageAmplitude(filteredData, ML, swayPathML);
+            swayMaximalAmplitudeAP = CalculateMaximalAmplitude(stabilometryData, AP);
+            swayMaximalAmplitudeML = CalculateMaximalAmplitude(stabilometryData, ML);
 
-            swayMaximalAmplitudeAP = CalculateMaximalAmplitude(filteredData, AP);
-            swayMaximalAmplitudeML = CalculateMaximalAmplitude(filteredData, ML);
-
-        }
-
-        /// <summary>
-        /// Filters the data to remove noise.
-        /// </summary>
-        /// <param name="unfilteredData"></param>
-        /// <returns></returns>
-        private List<DataPoint> FilterData(List<DataPoint> unfilteredData)
-        {
-            // TODO: add filters
-            return unfilteredData;
         }
 
         private List<Vector2> PrepareDataForDrawing(List<DataPoint> unfilteredData, Vector2 mean)

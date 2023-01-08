@@ -99,6 +99,7 @@ MonoBehaviour:
   - {fileID: 1132499809345459265}
   - {fileID: 7060730489773002387}
   - {fileID: 984395891419456189}
+  dateText: {fileID: 1275585862482390739}
 --- !u!1 &828716170222981559
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,7 +216,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1864060479906072055}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2495171446035784024}
+        m_MethodName: buttonclicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2775956002081240909
 GameObject:
   m_ObjectHideFlags: 0

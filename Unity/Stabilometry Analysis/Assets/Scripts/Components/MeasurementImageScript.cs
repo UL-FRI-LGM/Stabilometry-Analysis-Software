@@ -34,8 +34,10 @@ namespace StabilometryAnalysis
             rect.sizeDelta = localSize;
             rect.localPosition = localPosition;
 
+            bool highPrecision = true;
+
             if (task != null)
-            instance.transform.GetChild(0).GetComponent<StabilometryImageScript>().DrawImage(task);
+                instance.transform.GetChild(0).GetComponent<StabilometryImageScript>().DrawImage(task, highPrecision);
         }
 
         private void OnDisable()

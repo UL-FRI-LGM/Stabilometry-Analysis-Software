@@ -58,7 +58,8 @@ namespace StabilometryAnalysis
 
         public void DeleteCurrentMeasurement()
         {
-            Debug.LogWarning("Delete current measurement from the database");
+            mainScript.DeleteMeasurement(currentMeasurement);
+            BackButtonClick();
         }
 
         public void BackButtonClick()

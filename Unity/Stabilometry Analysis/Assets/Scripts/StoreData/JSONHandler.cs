@@ -49,12 +49,12 @@ namespace StabilometryAnalysis
         {
             string json = JsonHelper.ToJson(data);
 
-            string jsonDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{rawFolder}";
+            string jsonDirectory = $@"{Application.persistentDataPath}/{JSONFolder}/{rawFolder}";
 
             if (!Directory.Exists(jsonDirectory))
                 Directory.CreateDirectory(jsonDirectory);
 
-            string newFilePath = $@"{jsonDirectory}\{fileName}";
+            string newFilePath = $@"{jsonDirectory}/{fileName}";
 
             File.WriteAllText(newFilePath, json);
         }
@@ -67,12 +67,12 @@ namespace StabilometryAnalysis
         {
             string json = JsonHelper.ToJson(data);
 
-            string jsonDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{dataFolder}";
+            string jsonDirectory = $@"{Application.persistentDataPath}/{JSONFolder}/{dataFolder}";
 
             if (!Directory.Exists(jsonDirectory))
                 Directory.CreateDirectory(jsonDirectory);
 
-            string newFilePath = $@"{jsonDirectory}\{fileName}";
+            string newFilePath = $@"{jsonDirectory}/{fileName}";
 
             File.WriteAllText(newFilePath, json);
         }
@@ -80,7 +80,7 @@ namespace StabilometryAnalysis
         public static StabilometryMeasurement GetJSONFile(StabilometryMeasurement measurement)
         {
             string fileName = $"{dataFolder}{measurement.ID}.json";
-            string filePath = $@"{Application.persistentDataPath}\{JSONFolder}\{dataFolder}\{fileName}";
+            string filePath = $@"{Application.persistentDataPath}/{JSONFolder}/{dataFolder}/{fileName}";
 
             string json = File.ReadAllText(filePath);
             StabilometryMeasurement result = JsonHelper.DataFromJson(json, measurement);
@@ -93,7 +93,7 @@ namespace StabilometryAnalysis
         /// </summary>
         public static void DeleteAllData()
         {
-            string path = $@"{Application.persistentDataPath}\{JSONFolder}";
+            string path = $@"{Application.persistentDataPath}/{JSONFolder}";
 
             if (!Directory.Exists(path))
                 return;
@@ -111,12 +111,13 @@ namespace StabilometryAnalysis
         public static void DeleteJSONFile(StabilometryMeasurement measurement)
         {
             string fileName = $"{dataFolder}{measurement.ID}.json";
-            string jsonDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{rawFolder}";
-            File.Delete($@"{jsonDirectory}\{fileName}");
+            string jsonDirectory = $@"{Application.persistentDataPath}/{JSONFolder}/{dataFolder}";
+            Debug.Log($@"{jsonDirectory}/{fileName}");
+            File.Delete($@"{jsonDirectory}/{fileName}");
 
             string rawFileName = $"{rawFolder}{measurement.ID}.json";
-            string jsonRawDirectory = $@"{Application.persistentDataPath}\{JSONFolder}\{dataFolder}";
-            File.Delete($@"{jsonRawDirectory}\{rawFileName}");
+            string jsonRawDirectory = $@"{Application.persistentDataPath}/{JSONFolder}/{rawFolder}";
+            File.Delete($@"{jsonRawDirectory}/{rawFileName}");
 
         }
 

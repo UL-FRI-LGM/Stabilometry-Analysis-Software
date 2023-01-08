@@ -63,6 +63,12 @@ namespace StabilometryAnalysis
                 Debug.LogError($"Patient does not exist.");
         }
 
+        public void DeleteMeasurement(StabilometryMeasurement measurement)
+        {
+            JSONHandler.DeleteJSONFile(measurement);
+            database.DeleteMeasurement(measurement);
+        }
+
         /// <summary>
         /// Adds a new patient and selects the patient.
         /// </summary>

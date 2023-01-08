@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace StabilometryAnalysis
 {
@@ -9,16 +10,15 @@ namespace StabilometryAnalysis
         #region Variables
         [SerializeField] private GameObject imagePrefab = null;
         [SerializeField] private RectTransform[] imageHolders = null;
+        [SerializeField] private TextMeshProUGUI dateText = null;
 
         private List<GameObject> images = null;
         private StabilometryImagesMenuScript parentScript = null;
 
-        // Todo: Probably remove this
-        private int index = -1;
-
         private StabilometryMeasurement data = null;
 
         private Vector2 newPosition = new Vector2();
+        private bool imagesCreated = false;
 
         #endregion
 
@@ -28,26 +28,19 @@ namespace StabilometryAnalysis
             newPosition = new Vector2(-halfSize, halfSize);
         }
 
-        public void SetData(int index, StabilometryMeasurement data, StabilometryImagesMenuScript parentScript)
+        public void SetData(StabilometryMeasurement data, StabilometryImagesMenuScript parentScript)
         {
-            this.index = index;
             this.data = data;
             this.parentScript = parentScript;
+            dateText.text = data.dateTime.ToStringShort();
         }
 
         public void SetVisible(bool isVisible)
         {
-            bool chartsSpawned = AreImagesCreated();
-
-            if (!isVisible && chartsSpawned)
+            if (!isVisible && imagesCreated)
                 DestroyImages();
-            else if (isVisible && !chartsSpawned)
+            else if (isVisible && !imagesCreated)
                 CreateImages();
-        }
-
-        private bool AreImagesCreated()
-        {
-            return false;
         }
 
         private void DestroyImages()
@@ -56,6 +49,8 @@ namespace StabilometryAnalysis
                 Destroy(image);
 
             images = null;
+
+            imagesCreated = false;
         }
 
         private void CreateImages()
@@ -69,6 +64,8 @@ namespace StabilometryAnalysis
             images.Add(InstantiatePrefab(data.eyesClosedSolidSurface, imageHolders[1]));
             images.Add(InstantiatePrefab(data.eyesOpenSoftSurface, imageHolders[2]));
             images.Add(InstantiatePrefab(data.eyesClosedSoftSurface, imageHolders[3]));
+
+            imagesCreated = true;
         }
 
         private GameObject InstantiatePrefab(StabilometryTask task, RectTransform parent)
@@ -77,6 +74,11 @@ namespace StabilometryAnalysis
             RectTransform rect = instance.GetComponent<RectTransform>();
             rect.sizeDelta = parent.sizeDelta;
             rect.localPosition = newPosition;
+
+            bool lowPrecision = false;
+
+            if (task != null)
+                instance.transform.GetChild(0).GetComponent<StabilometryImageScript>().DrawImage(task, lowPrecision);
 
             return instance;
         }

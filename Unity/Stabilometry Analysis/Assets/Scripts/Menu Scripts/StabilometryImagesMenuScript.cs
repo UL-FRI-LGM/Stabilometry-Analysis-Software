@@ -24,7 +24,6 @@ namespace StabilometryAnalysis
         private int startDisplayNumber = 5;
 
         private float previousScrollbarValue = 0;
-        private float imageElementObjectSize = 0;
         private float initialElementObjectXPosition = 0;
 
         private bool scrollbarSet = false;
@@ -43,13 +42,14 @@ namespace StabilometryAnalysis
         {
             GetPatientData();
             UpdateImages();
+            poseRadioHandler.valueChanged = false;
         }
 
         private void Update()
         {
             if (poseRadioHandler.valueChanged)
             {
-                GetRelevantData(patientData, poseRadioHandler.selectedPose);
+                relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
                 poseRadioHandler.valueChanged = false;
 
                 UpdateImages();
@@ -62,11 +62,21 @@ namespace StabilometryAnalysis
         private void GetPatientData()
         {
             patientData = mainScript.database.GetAllMeasurements(mainScript.currentPatient);
+            for (int i = 0; i < patientData.Count; i++)
+                patientData[i] = JSONHandler.GetJSONFile(patientData[i]);
+
             relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
         }
 
+
         private void UpdateImages()
         {
+            // Reset position
+            imageElementObjectRect.localPosition = new Vector3(
+                initialElementObjectXPosition,
+                imageElementObjectRect.localPosition.y,
+                imageElementObjectRect.localPosition.z);
+
             SetScrollbar(relevantData.Count);
             scrollbarSet = true;
 
@@ -88,17 +98,22 @@ namespace StabilometryAnalysis
         {
             previousScrollbarValue = newValue;
 
+            float newXPosition = ConvertToPosition(newValue, totalElementNumber, initialElementObjectXPosition);
+
             imageElementObjectRect.localPosition =
                 new Vector3(
-                    ConvertToPosition(newValue, totalElementNumber, initialElementObjectXPosition),
+                    newXPosition,
                     imageElementObjectRect.localPosition.y,
                     imageElementObjectRect.localPosition.z);
+
+            SetElementVisibilities(newXPosition);
+
         }
 
         private float ConvertToPosition(float newValue, float totalElementNumber, float initialElementObjectXPosition)
         {
-            // 0 mmeans at the left, 1 means right.
-            float maxChartPosition = initialElementObjectXPosition - (totalElementNumber - 1) * prefabElementWidth;
+            // 0 mmeans scrollbar at the left, 1 means scrollbar at the right.
+            float maxChartPosition = initialElementObjectXPosition - (totalElementNumber - startDisplayNumber) * prefabElementWidth;
 
             float result = newValue * (maxChartPosition - initialElementObjectXPosition) + initialElementObjectXPosition;
             return result;
@@ -111,7 +126,6 @@ namespace StabilometryAnalysis
 
         private void SpawnElements(List<StabilometryMeasurement> dataToSpawn)
         {
-
             foreach (StabilometryImageElementScript element in imageElementScripts)
                 Destroy(element.gameObject);
 
@@ -125,16 +139,23 @@ namespace StabilometryAnalysis
                 StabilometryImageElementScript element = instance.GetComponent<StabilometryImageElementScript>();
                 rect.anchoredPosition += new Vector2(i * rect.rect.width, 0);
 
-                element.SetData(i, dataToSpawn[i], this);
-                element.SetVisible(isElementVisible());
+                element.SetData(dataToSpawn[i], this);
+                element.SetVisible(i <= 4);
 
                 imageElementScripts.Add(element);
             }
         }
 
-        private bool isElementVisible()
+        private void SetElementVisibilities(float newXPosition)
         {
-            return true;
+            int firstVisibleIndex = (int)((initialElementObjectXPosition - newXPosition) / prefabElementWidth);
+            int lastVisibleIndex = firstVisibleIndex + startDisplayNumber;
+
+            for (int i = 0; i < imageElementScripts.Count; i++)
+            {
+                bool isVisible = (i >= firstVisibleIndex && i <= lastVisibleIndex);
+                imageElementScripts[i].SetVisible(isVisible);
+            }
         }
 
         public void OpenAnalysisMenu(StabilometryMeasurement measurement)
