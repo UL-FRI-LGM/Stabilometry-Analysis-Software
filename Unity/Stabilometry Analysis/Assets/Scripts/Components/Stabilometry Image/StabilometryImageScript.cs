@@ -58,7 +58,7 @@ namespace StabilometryAnalysis
             List<Vector2> result = new List<Vector2>();
             result.Add(stabilometryData[0] * multiplicator);
 
-            for (int i = 1; i < stabilometryData.Count; i++)
+            for (int i = 1; i < stabilometryData.Count - 1; i++)
             {
                 Vector2 newData = stabilometryData[i] * multiplicator;
 
@@ -67,6 +67,8 @@ namespace StabilometryAnalysis
                 if (!DataTooSimilar(lastData, newData, highPrecision))
                     result.Add(newData);
             }
+
+            result.Add(stabilometryData[stabilometryData.Count - 1] * multiplicator);
 
             return result;
         }

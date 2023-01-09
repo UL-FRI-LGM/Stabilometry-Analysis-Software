@@ -78,7 +78,7 @@ namespace StabilometryAnalysis
             Vector2 previousValue = unfilteredData[0].GetVecotor2(BOTH);
             result.Add(previousValue - mean);
 
-            for (int i = 1; i < unfilteredData.Count; i++)
+            for (int i = 1; i < unfilteredData.Count - 1; i++)
             {
                 Vector2 currentValue = unfilteredData[i].GetVecotor2(BOTH);
                 Vector2 difference = currentValue - previousValue;
@@ -89,6 +89,8 @@ namespace StabilometryAnalysis
                     result.Add(currentValue - mean);
                 }
             }
+
+            result.Add(unfilteredData[unfilteredData.Count - 1].GetVecotor2(BOTH) - mean);
 
             return result;
         }
