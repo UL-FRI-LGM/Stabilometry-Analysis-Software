@@ -116,13 +116,13 @@ namespace StabilometryAnalysis
         {
             //Debug.LogError("Move these things to a static class");
             List<MyDateTime> dateList = new List<MyDateTime>();
-            List<float> durationList = new List<float>();
+            List<int> durationList = new List<int>();
 
-            foreach(StabilometryMeasurement element in data)
+            foreach (StabilometryMeasurement element in data)
             {
                 if (!ListHasDate(dateList, element.dateTime))
                     dateList.Add(element.dateTime);
-                
+
                 durationList.AddRange(GetDurations(durationList, element));
             }
 
@@ -139,17 +139,17 @@ namespace StabilometryAnalysis
 
         }
 
-        private List<float> OrderList(List<float> list)
+        private List<int> OrderList(List<int> list)
         {
             for (int i = 0; i < list.Count; i++)
             {
-                for (int k = i-1; 0 <= k; k--)
+                for (int k = i - 1; 0 <= k; k--)
                 {
-                    if (list[k+1] > list[k])
+                    if (list[k + 1] > list[k])
                         break;
                     //else
 
-                    float temp = list[k];
+                    int temp = list[k];
                     list[k] = list[k + 1];
                     list[k + 1] = temp;
                 }
@@ -158,7 +158,7 @@ namespace StabilometryAnalysis
             return list;
         }
 
-        private bool ListHasDate(List<MyDateTime> list, MyDateTime date) 
+        private bool ListHasDate(List<MyDateTime> list, MyDateTime date)
         {
             foreach (MyDateTime element in list)
             {
@@ -169,21 +169,32 @@ namespace StabilometryAnalysis
             return false;
         }
 
-        private List<float> GetDurations(List<float> durationList, StabilometryMeasurement data)
+        private List<int> GetDurations(List<int> durationList, StabilometryMeasurement data)
         {
-            List<float> result = new List<float>();
+            List<int> result = new List<int>();
 
-            if (data.eyesOpenSolidSurface != null && !durationList.Contains(data.eyesOpenSolidSurface.duration))
-                result.Add(data.eyesOpenSolidSurface.duration);
+            int eyesOpenSolidSurfaceDuration = data.eyesOpenSolidSurface.GetDuration();
 
-            if (data.eyesClosedSolidSurface != null && !durationList.Contains(data.eyesClosedSolidSurface.duration))
-                result.Add(data.eyesClosedSolidSurface.duration);
+            if (data.eyesOpenSolidSurface != null && !durationList.Contains(eyesOpenSolidSurfaceDuration))
+                result.Add(eyesOpenSolidSurfaceDuration);
 
-            if (data.eyesOpenSoftSurface != null && !durationList.Contains(data.eyesOpenSoftSurface.duration))
-                result.Add(data.eyesOpenSoftSurface.duration);
+            int eyesClosedSolidSurfaceDuration = data.eyesClosedSolidSurface.GetDuration();
 
-            if (data.eyesClosedSoftSurface != null && !durationList.Contains(data.eyesClosedSoftSurface.duration))
-                result.Add(data.eyesClosedSoftSurface.duration);
+            if (data.eyesClosedSolidSurface != null && !durationList.Contains(eyesClosedSolidSurfaceDuration))
+                if (!result.Contains(eyesClosedSolidSurfaceDuration))
+                    result.Add(eyesClosedSolidSurfaceDuration);
+
+            int eyesOpenSoftSurfaceDuration = data.eyesOpenSoftSurface.GetDuration();
+
+            if (data.eyesOpenSoftSurface != null && !durationList.Contains(eyesOpenSoftSurfaceDuration))
+                if (!result.Contains(eyesOpenSoftSurfaceDuration))
+                    result.Add(eyesOpenSoftSurfaceDuration);
+
+            int eyesClosedSoftSurfaceDuration = data.eyesClosedSoftSurface.GetDuration();
+
+            if (data.eyesClosedSoftSurface != null && !durationList.Contains(eyesClosedSoftSurfaceDuration))
+                if (!result.Contains(eyesClosedSoftSurfaceDuration))
+                    result.Add(eyesClosedSoftSurfaceDuration);
 
             return result;
         }
@@ -204,6 +215,11 @@ namespace StabilometryAnalysis
 
         private StabilometryMeasurement ModifyData(StabilometryMeasurement element)
         {
+            if (firstDate.dateValue == null)
+                return element;
+
+            Debug.Log(element.dateTime.IsSmaller(firstDate.dateValue));
+
             if (element.dateTime.IsSmaller(firstDate.dateValue) || element.dateTime.IsGreater(lastDate.dateValue))
                 return null;
             // else
@@ -214,11 +230,11 @@ namespace StabilometryAnalysis
             result.eyesOpenSoftSurface = CheckDuration(result.eyesOpenSoftSurface);
             result.eyesClosedSoftSurface = CheckDuration(result.eyesClosedSoftSurface);
 
-            if (result.eyesOpenSolidSurface == null && result.eyesClosedSolidSurface == null 
+            if (result.eyesOpenSolidSurface == null && result.eyesClosedSolidSurface == null
                 && result.eyesOpenSoftSurface == null && result.eyesClosedSoftSurface == null)
                 return null;
 
-                return result;
+            return result;
         }
 
         private StabilometryTask CheckDuration(StabilometryTask task)
@@ -243,13 +259,13 @@ namespace StabilometryAnalysis
 
         private List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose)
         {
-            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+            List<StabilometryMeasurement> temp = new List<StabilometryMeasurement>();
 
             foreach (StabilometryMeasurement data in allData)
                 if (data.pose == currentPose)
-                    result.Add(data);
+                    temp.Add(data);
 
-            return result;
+            return TrimData(temp);
         }
 
         private void UpdatePosition(float newValue)

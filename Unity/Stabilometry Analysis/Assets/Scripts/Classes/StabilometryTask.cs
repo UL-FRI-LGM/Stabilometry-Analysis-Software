@@ -265,11 +265,10 @@ namespace StabilometryAnalysis
             return maxValue - minValue;
         }
 
-        public string GetDuration()
+        public int GetDuration()
         {
-            return $"{System.Math.Ceiling(duration)}";
+            return (int)System.Math.Ceiling(duration);
         }
-
         #region Testing
 
         public static void TestFunctions()

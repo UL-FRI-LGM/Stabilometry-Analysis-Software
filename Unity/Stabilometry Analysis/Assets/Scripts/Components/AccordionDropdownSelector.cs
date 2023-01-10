@@ -12,13 +12,13 @@ namespace StabilometryAnalysis
         public MyDateTime dateValue { get; set; } = null;
         [SerializeField] private TMP_Dropdown dropdown = null;
 
-        private List<float> durations = null;
+        private List<int> durations = null;
         private List<MyDateTime> dates = null;
 
         private bool isDateLimiter = false;
         private bool fillingData = false;
 
-        public void SetDurations(List<float> durations, bool isLower)
+        public void SetDurations(List<int> durations, bool isLower)
         {
             isDateLimiter = false;
             this.durations = durations;
@@ -45,10 +45,10 @@ namespace StabilometryAnalysis
             valueChanged = true;
         }
 
-        private List<string> DurationsToString(List<float> durations)
+        private List<string> DurationsToString(List<int> durations)
         {
             List<string> result = new List<string>();
-            foreach (float element in durations)
+            foreach (int element in durations)
                 result.Add(element.ToString());
 
             return result;

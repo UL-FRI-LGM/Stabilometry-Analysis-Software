@@ -172,7 +172,7 @@ namespace StabilometryAnalysis
 
         public bool IsTheSame(MyDateTime otherDate)
         {
-            bool dateSame = year == otherDate.year && month == otherDate.month && day == otherDate.month;
+            bool dateSame = year == otherDate.year && month == otherDate.month && day == otherDate.day;
             bool timeSame = hour == otherDate.hour && minutes == otherDate.minutes;
 
             return dateSame && timeSame;
