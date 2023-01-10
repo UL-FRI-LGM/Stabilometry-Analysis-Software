@@ -32,7 +32,7 @@ namespace StabilometryAnalysis
         {
             this.data = data;
             this.parentScript = parentScript;
-            dateText.text = data.dateTime.ToStringShort();
+            dateText.text = data.dateTime.ToStringShortNewLine();
         }
 
         public void SetVisible(bool isVisible)

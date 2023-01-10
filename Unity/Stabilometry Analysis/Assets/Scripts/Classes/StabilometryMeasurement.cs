@@ -28,8 +28,8 @@ namespace StabilometryAnalysis
         {
             this.ID = -1;
             this.patientID = -1;
-            this.pose = Pose.BOTH_LEGS_JOINED_PARALLEL;
             this.dateTime = null;
+            this.pose = Pose.BOTH_LEGS_JOINED_PARALLEL;
             this.eyesOpenSolidSurface = null;
             this.eyesClosedSolidSurface = null;
             this.eyesOpenSoftSurface = null;
@@ -42,13 +42,27 @@ namespace StabilometryAnalysis
         {
             this.ID = ID;
             this.patientID = patientID;
-            this.pose = pose;
             this.dateTime = dateTime;
+            this.pose = pose;
             this.eyesOpenSolidSurface = eyesOpenSolidSurface;
             this.eyesClosedSolidSurface = eyesClosedSolidSurface;
             this.eyesOpenSoftSurface = eyesOpenSoftSurface;
             this.eyesClosedSoftSurface = eyesClosedSoftSurface;
         }
+
+        public StabilometryMeasurement Duplicate()
+        {
+            return new StabilometryMeasurement(
+                this.ID,
+                this.patientID,
+                this.dateTime,
+                this.pose,
+                this.eyesOpenSolidSurface,
+                this.eyesClosedSolidSurface,
+                this.eyesOpenSoftSurface,
+                this.eyesClosedSoftSurface);
+        }
+
 
         public DrawingTaskValues[] GetDrawingData()
         {

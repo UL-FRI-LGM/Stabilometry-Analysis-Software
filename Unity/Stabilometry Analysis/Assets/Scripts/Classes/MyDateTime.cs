@@ -26,8 +26,6 @@ namespace StabilometryAnalysis
             this.minutes = minutes;
         }
 
-        
-
         public MyDateTime(string myDateTime)
         {
             string[] values = myDateTime.Split('.');
@@ -48,7 +46,7 @@ namespace StabilometryAnalysis
             return $"{year}.{month}.{day}.{hour}.{minutes}";
         }
 
-        public string ToStringShort()
+        public string ToStringShortNewLine()
         {
             string hourString = (hour < 10) ? $"0{hour}" : hour.ToString();
             string minuteString = (minutes < 10) ? $"0{minutes}" : minutes.ToString();
@@ -60,6 +58,20 @@ namespace StabilometryAnalysis
             string yearString = (shortYear < 10) ? $"0{shortYear}" : shortYear.ToString();
 
             return $"{yearString}.{dayString}.{monthString}\n{hourString}:{minuteString}";
+        }
+
+        public string ToStringShort()
+        {
+            string hourString = (hour < 10) ? $"0{hour}" : hour.ToString();
+            string minuteString = (minutes < 10) ? $"0{minutes}" : minutes.ToString();
+
+            string dayString = (day < 10) ? $"0{day}" : day.ToString();
+            string monthString = (month < 10) ? $"0{month}" : month.ToString();
+
+            int shortYear = year % 100;
+            string yearString = (shortYear < 10) ? $"0{shortYear}" : shortYear.ToString();
+
+            return $"{yearString}.{dayString}.{monthString} {hourString}:{minuteString}";
         }
 
         public override string ToString()
@@ -87,7 +99,8 @@ namespace StabilometryAnalysis
 
         private string GetMonthWord(int month)
         {
-            switch(month){
+            switch (month)
+            {
                 case (1):
                     return "January";
                 case (2):
@@ -116,5 +129,54 @@ namespace StabilometryAnalysis
 
             return $"unknown month {month}";
         }
+
+        public bool IsGreater(MyDateTime otherDate)
+        {
+            if (year > otherDate.year)
+                return true;
+            else if (year < otherDate.year)
+                return false;
+            //else
+
+            if (month > otherDate.month)
+                return true;
+            else if (month < otherDate.month)
+                return false;
+
+            //else
+            if (day > otherDate.day)
+                return true;
+            else if (day < otherDate.day)
+                return false;
+
+            //else
+            if (hour > otherDate.hour)
+                return true;
+            else if (hour < otherDate.hour)
+                return false;
+
+            //else 
+            if (minutes > otherDate.minutes)
+                return true;
+            else if (minutes < otherDate.minutes)
+                return false;
+
+            //else
+            return false;
+        }
+
+        public bool IsSmaller(MyDateTime otherDate)
+        {
+            return !IsGreater(otherDate);
+        }
+
+        public bool IsTheSame(MyDateTime otherDate)
+        {
+            bool dateSame = year == otherDate.year && month == otherDate.month && day == otherDate.month;
+            bool timeSame = hour == otherDate.hour && minutes == otherDate.minutes;
+
+            return dateSame && timeSame;
+        }
+
     }
 }

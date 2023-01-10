@@ -14,7 +14,7 @@ namespace StabilometryAnalysis
 
         public void SetText(MyDateTime date)
         {
-            dateText.text = date.ToStringShort();
+            dateText.text = date.ToStringShortNewLine();
         }
     }
 }

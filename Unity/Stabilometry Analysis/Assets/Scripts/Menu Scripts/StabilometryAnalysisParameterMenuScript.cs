@@ -30,6 +30,13 @@ namespace StabilometryAnalysis
         [SerializeField] private GameObject measurementMenu = null;
         [SerializeField] private AccordionRadioHandler poseRadioHandler = null;
 
+        [SerializeField]
+        private AccordionDropdownSelector
+            minimumDuration = null,
+            maximumDuration = null,
+            firstDate = null,
+            lastDate = null;
+
         private RectTransform chartHolderRect = null;
 
         private List<GameObject> instantiatedCharts = null;
@@ -76,6 +83,8 @@ namespace StabilometryAnalysis
             chartsSpawned = false;
 
             patientData = mainScript.database.GetAllMeasurements(mainScript.currentPatient);
+            SetDataLimiters(patientData);
+
             relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
             hasData = true;
             UpdateCharts();
@@ -91,11 +100,145 @@ namespace StabilometryAnalysis
                 UpdateCharts();
             }
 
-            if (HasAnyToggleChanged())
+            if (DataLimiterChanged())
+            {
+                relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
+                UpdateCharts();
+            }
+            else if (HasAnyToggleChanged())
                 UpdateCharts();
 
             if (scrollbarSet && scrollbarScript.valuePositon != previousScrollbarValue)
                 UpdatePosition(scrollbarScript.valuePositon);
+        }
+
+        private void SetDataLimiters(List<StabilometryMeasurement> data)
+        {
+            //Debug.LogError("Move these things to a static class");
+            List<MyDateTime> dateList = new List<MyDateTime>();
+            List<float> durationList = new List<float>();
+
+            foreach(StabilometryMeasurement element in data)
+            {
+                if (!ListHasDate(dateList, element.dateTime))
+                    dateList.Add(element.dateTime);
+                
+                durationList.AddRange(GetDurations(durationList, element));
+            }
+
+            bool isLover = true;
+
+            // Date List should be already sorted.
+            firstDate.SetDates(dateList, isLover);
+            lastDate.SetDates(dateList, !isLover);
+
+            durationList = OrderList(durationList);
+
+            minimumDuration.SetDurations(durationList, isLover);
+            maximumDuration.SetDurations(durationList, !isLover);
+
+        }
+
+        private List<float> OrderList(List<float> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                for (int k = i-1; 0 <= k; k--)
+                {
+                    if (list[k+1] > list[k])
+                        break;
+                    //else
+
+                    float temp = list[k];
+                    list[k] = list[k + 1];
+                    list[k + 1] = temp;
+                }
+            }
+
+            return list;
+        }
+
+        private bool ListHasDate(List<MyDateTime> list, MyDateTime date) 
+        {
+            foreach (MyDateTime element in list)
+            {
+                if (date.IsTheSame(element))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private List<float> GetDurations(List<float> durationList, StabilometryMeasurement data)
+        {
+            List<float> result = new List<float>();
+
+            if (data.eyesOpenSolidSurface != null && !durationList.Contains(data.eyesOpenSolidSurface.duration))
+                result.Add(data.eyesOpenSolidSurface.duration);
+
+            if (data.eyesClosedSolidSurface != null && !durationList.Contains(data.eyesClosedSolidSurface.duration))
+                result.Add(data.eyesClosedSolidSurface.duration);
+
+            if (data.eyesOpenSoftSurface != null && !durationList.Contains(data.eyesOpenSoftSurface.duration))
+                result.Add(data.eyesOpenSoftSurface.duration);
+
+            if (data.eyesClosedSoftSurface != null && !durationList.Contains(data.eyesClosedSoftSurface.duration))
+                result.Add(data.eyesClosedSoftSurface.duration);
+
+            return result;
+        }
+
+        private List<StabilometryMeasurement> TrimData(List<StabilometryMeasurement> inputData)
+        {
+            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+
+            foreach (StabilometryMeasurement element in inputData)
+            {
+                StabilometryMeasurement modifiedValue = ModifyData(element);
+                if (modifiedValue != null)
+                    result.Add(modifiedValue);
+            }
+
+            return result;
+        }
+
+        private StabilometryMeasurement ModifyData(StabilometryMeasurement element)
+        {
+            if (element.dateTime.IsSmaller(firstDate.dateValue) || element.dateTime.IsGreater(lastDate.dateValue))
+                return null;
+            // else
+
+            StabilometryMeasurement result = element.Duplicate();
+            result.eyesOpenSolidSurface = CheckDuration(result.eyesOpenSolidSurface);
+            result.eyesClosedSolidSurface = CheckDuration(result.eyesClosedSolidSurface);
+            result.eyesOpenSoftSurface = CheckDuration(result.eyesOpenSoftSurface);
+            result.eyesClosedSoftSurface = CheckDuration(result.eyesClosedSoftSurface);
+
+            if (result.eyesOpenSolidSurface == null && result.eyesClosedSolidSurface == null 
+                && result.eyesOpenSoftSurface == null && result.eyesClosedSoftSurface == null)
+                return null;
+
+                return result;
+        }
+
+        private StabilometryTask CheckDuration(StabilometryTask task)
+        {
+            if (task.duration < minimumDuration.durationValue || task.duration > maximumDuration.durationValue)
+                return null;
+
+            return task;
+        }
+
+        private bool DataLimiterChanged()
+        {
+            bool result = minimumDuration.valueChanged || maximumDuration.valueChanged || firstDate.valueChanged || lastDate.valueChanged;
+
+            minimumDuration.valueChanged = false;
+            maximumDuration.valueChanged = false;
+            firstDate.valueChanged = false;
+            lastDate.valueChanged = false;
+
+            return result;
         }
 
         private List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose)
@@ -292,8 +435,15 @@ namespace StabilometryAnalysis
 
         public void OpenAnalysisMenu(StabilometryMeasurement measurement)
         {
-            mainScript.menuSwitching.OpenMenu(measurementMenu);
-            mainScript.stabilometryMeasurementScript.SetData(measurement);
+            foreach (StabilometryMeasurement element in patientData)
+            {
+                if (element.ID == measurement.ID)
+                {
+                    mainScript.menuSwitching.OpenMenu(measurementMenu);
+                    mainScript.stabilometryMeasurementScript.SetData(measurement);
+                    break;
+                }
+            }
         }
 
         /// <summary>
