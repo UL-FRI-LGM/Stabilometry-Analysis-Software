@@ -132,6 +132,9 @@ namespace StabilometryAnalysis
 
         public bool IsGreater(MyDateTime otherDate)
         {
+            if (IsTheSame(otherDate))
+                return false;
+
             if (year > otherDate.year)
                 return true;
             else if (year < otherDate.year)
@@ -158,15 +161,15 @@ namespace StabilometryAnalysis
             //else 
             if (minutes > otherDate.minutes)
                 return true;
-            else if (minutes < otherDate.minutes)
-                return false;
-
-            //else
+            //else if (minutes < otherDate.minutes)
             return false;
         }
 
         public bool IsSmaller(MyDateTime otherDate)
         {
+            if (IsTheSame(otherDate))
+                return false;
+
             return !IsGreater(otherDate);
         }
 

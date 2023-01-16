@@ -58,10 +58,6 @@ namespace StabilometryAnalysis
 
         private void Update()
         {
-            //if (Input.GetKeyDown(KeyCode.R))
-            //{
-            //    RespawnChart();
-            //}
         }
 
         private void RespawnChart()

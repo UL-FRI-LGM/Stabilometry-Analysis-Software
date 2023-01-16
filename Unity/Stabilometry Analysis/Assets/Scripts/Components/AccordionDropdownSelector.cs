@@ -23,6 +23,7 @@ namespace StabilometryAnalysis
             isDateLimiter = false;
             this.durations = durations;
             SetDropdown(DurationsToString(durations), isLower);
+            ChangeValue();
         }
 
         public void SetDates(List<MyDateTime> dates, bool isLower)
@@ -30,6 +31,8 @@ namespace StabilometryAnalysis
             isDateLimiter = true;
             this.dates = dates;
             SetDropdown(DatesToString(dates), isLower);
+
+            ChangeValue();
         }
 
         public void ChangeValue()
