@@ -1,7 +1,10 @@
-﻿public enum DataUnits
+﻿namespace StabilometryAnalysis
 {
-    mm,
-    cm,
-    dm,
-    m
+    public enum DataUnits
+    {
+        mm,
+        cm,
+        dm,
+        m
+    }
 }

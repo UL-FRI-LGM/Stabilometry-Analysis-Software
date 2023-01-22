@@ -22,8 +22,7 @@ namespace StabilometryAnalysis
         private MainScript mainScript = null;
 
         [SerializeField]
-        private GameObject databaseDeletionWindow = null,
-            patientDeletionWindow = null;
+        private BackgroundBlockerScript backgroundBlocker = null;
 
         #endregion
 
@@ -106,40 +105,20 @@ namespace StabilometryAnalysis
             mainScript.menuSwitching.OpenMenu(reportMenu);
         }
 
-        public void DeletePatientButton()
+        public void ClickStartPatientDeletion()
+        {
+            backgroundBlocker.StartPatientDeletion(mainScript.currentPatient, this);
+        }
+
+        public void DeletePatient()
         {
             mainScript.DeleteCurrentPatient();
         }
 
-        //public void DeleteAllData()
-        //{
-        //    mainScript.database.CloseDatabase();
-
-        //    DirectoryInfo directory = new DirectoryInfo(Application.persistentDataPath);
-
-        //    foreach (FileInfo file in directory.GetFiles())
-        //    {
-        //        file.Delete();
-        //    }
-
-        //    foreach (DirectoryInfo dir in directory.GetDirectories())
-        //    {
-        //        dir.Delete(true);
-        //    }
-
-        //    mainScript.ExitApplication();
-        //}
-
-        //public void ClickDeleteDatabase()
-        //{
-        //    Debug.LogWarning("make this work");
-        //    DeleteAllData();
-        //}
-
         public void ClickStartDatabaseDeletion()
         {
             // Show Deletion Window
-            databaseDeletionWindow.SetActive(true);
+            backgroundBlocker.StartDatabaseDeletion(this);
         }
 
         public void ClickConfirmDatabaseDeletion()
@@ -170,11 +149,6 @@ namespace StabilometryAnalysis
             int fileNumber = Directory.GetFiles(Application.dataPath).Length;
             int directoriesNumber = Directory.GetDirectories(Application.dataPath).Length;
             return fileNumber == 0 && directoriesNumber == 0;
-        }
-
-        public void ClickCancelDatabaseDeletion()
-        {
-            databaseDeletionWindow.SetActive(false);
         }
         #endregion
     }

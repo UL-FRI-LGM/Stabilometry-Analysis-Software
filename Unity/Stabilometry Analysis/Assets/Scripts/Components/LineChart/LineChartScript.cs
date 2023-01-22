@@ -69,12 +69,6 @@ namespace StabilometryAnalysis
 
         }
 
-        public void SetChartTitle(Parameter chosenParameter)
-        {
-            this.chosenParameter = chosenParameter;
-            SetTitle(chosenParameter);
-        }
-
         public void SetChartData(List<ChartData> chartData, Parameter chosenParameter, List<Task> allTasks)
         {
             this.chartData = chartData;

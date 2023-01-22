@@ -85,6 +85,13 @@ namespace StabilometryAnalysis
             chartsSpawned = false;
 
             patientData = SortMeasurements(mainScript.database.GetAllMeasurements(mainScript.currentPatient));
+
+            if(patientData.Count <= 0)
+            {
+                mainScript.menuSwitching.OpenInitialMenu();
+                return;
+            }
+
             SetDataLimiters(patientData);
 
             relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,

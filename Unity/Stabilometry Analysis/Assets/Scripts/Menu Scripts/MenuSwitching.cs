@@ -53,8 +53,7 @@ namespace StabilometryAnalysis
         {
             currentMenu.SetActive(false);
             int lastIndex = previousMenus.Count - 1;
-
-
+            
             if (lastIndex < 0)
             {
                 Debug.LogWarning("last index was below 0");

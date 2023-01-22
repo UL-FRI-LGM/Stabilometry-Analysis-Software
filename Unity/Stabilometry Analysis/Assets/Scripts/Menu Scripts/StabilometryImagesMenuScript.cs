@@ -65,6 +65,12 @@ namespace StabilometryAnalysis
             for (int i = 0; i < patientData.Count; i++)
                 patientData[i] = JSONHandler.GetJSONFile(patientData[i]);
 
+            if (patientData.Count <= 0)
+            {
+                mainScript.menuSwitching.OpenInitialMenu();
+                return;
+            }
+
             relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
         }
 

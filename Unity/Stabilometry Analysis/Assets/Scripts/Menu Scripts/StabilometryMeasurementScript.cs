@@ -23,7 +23,9 @@ namespace StabilometryAnalysis
             eyesOpenSoftSurfaceMeasurementImage = null,
             eyesClosedSoftSurfaceMeasurementImage = null;
 
-        [SerializeField] private TextMeshProUGUI dateTimeText;
+        [SerializeField] private TextMeshProUGUI dateTimeText = null;
+
+        [SerializeField] private BackgroundBlockerScript backgroundBlocker = null;
 
         private StabilometryMeasurement currentMeasurement = null;
 
@@ -54,6 +56,11 @@ namespace StabilometryAnalysis
         private void SetTime(MyDateTime dateTime)
         {
             dateTimeText.text = dateTime.ToString();
+        }
+
+        public void StartDeletingCurrentMeasurement()
+        {
+            backgroundBlocker.StartMeasurmentDeletion(this);
         }
 
         public void DeleteCurrentMeasurement()

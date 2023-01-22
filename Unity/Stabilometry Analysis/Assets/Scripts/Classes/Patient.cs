@@ -26,5 +26,14 @@ namespace StabilometryAnalysis
             this.Surname = Surname;
             this.Notes = Notes;
         }
+
+        public string FullName()
+        {
+            if (Surname != null && Surname != "")
+                return $"{Name} {Surname}";
+
+            //else;
+            return Name;
+        }
     }
 }
