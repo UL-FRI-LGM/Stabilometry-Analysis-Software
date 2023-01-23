@@ -12,9 +12,10 @@ namespace StabilometryAnalysis
 
         #endregion
 
-        public void SetText(MyDateTime date)
+        public void SetText(MyDateTime date, bool show)
         {
             dateText.text = date.ToStringShortNewLine();
+            dateText.gameObject.SetActive(show);
         }
     }
 }

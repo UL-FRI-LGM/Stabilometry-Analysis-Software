@@ -56,10 +56,6 @@ namespace StabilometryAnalysis
                 this.dotRects[i] = this.dotObjects[i].GetComponent<RectTransform>();
         }
 
-        private void Update()
-        {
-        }
-
         private void RespawnChart()
         {
             foreach (GameObject spawnedObject in spawnedObjects)
@@ -168,11 +164,28 @@ namespace StabilometryAnalysis
                 if (oddNumber)
                     xPosition += xSpaceSize * 0.5f;
 
-                SpawnSliceObject(data[i], drawingSpace, startingPosition, valueConverter, xSpaceSize, i, xPosition);
+                SpawnSliceObject(data[i], drawingSpace, startingPosition, valueConverter, xSpaceSize, i, xPosition, ToShow(data.Count, i));
             }
         }
 
-        private void SpawnSliceObject(ChartData data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter, float xSpaceSize, int i, float xPosition)
+        private static bool ToShow(int dataCount, int index)
+        {
+            if (dataCount <= 8)
+                return true;
+
+            if (index % GetMod(dataCount) == 0)
+                return true;
+
+            return false;
+        }
+
+        private static int GetMod(int dataCount)
+        {
+            return (dataCount / 8) + 1;
+        }
+
+        private void SpawnSliceObject(ChartData data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter,
+            float xSpaceSize, int i, float xPosition, bool show)
         {
             GameObject slice = Instantiate(LineObject, drawingSpace.transform);
             RectTransform sliceRect = slice.GetComponent<RectTransform>();
@@ -187,13 +200,13 @@ namespace StabilometryAnalysis
 
             SpawnDots(data, xPosition, valueConverter, i);
 
-            SpawnLineObject(sliceRect, data.time);
+            SpawnLineObject(sliceRect, data.time, show);
         }
 
-        private void SpawnLineObject(RectTransform drawingSpace, MyDateTime date)
+        private void SpawnLineObject(RectTransform drawingSpace, MyDateTime date, bool show)
         {
             GameObject line = Instantiate(DateLine, drawingSpace.transform);
-            line.GetComponent<DateLineScript>().SetText(date);
+            line.GetComponent<DateLineScript>().SetText(date, show);
 
         }
 
