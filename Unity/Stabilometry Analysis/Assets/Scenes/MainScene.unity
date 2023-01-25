@@ -16980,6 +16980,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 18.42102
       objectReference: {fileID: 0}
+    - target: {fileID: 5200761780662281594, guid: 4182a40541426e6439253bbaf2dfe7b9,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 24.900024
+      objectReference: {fileID: 0}
     - target: {fileID: 5733591541769293144, guid: 4182a40541426e6439253bbaf2dfe7b9,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -30650,6 +30655,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   warningWidnowPrefab: {fileID: 326483910032154225, guid: 325cbeee4247cb642861e864144424d9,
     type: 3}
+  lineChartPrefab: {fileID: 1490131767510722866, guid: 4182a40541426e6439253bbaf2dfe7b9,
+    type: 3}
   screenBlocker: {fileID: 947310319}
 --- !u!114 &947310324
 MonoBehaviour:
@@ -30828,6 +30835,7 @@ MonoBehaviour:
   scrollbarScript: {fileID: 254135721}
   measurementMenu: {fileID: 5708563141827413997}
   poseRadioHandler: {fileID: 951803605}
+  backgroundBlocker: {fileID: 0}
   minimumDuration: {fileID: 1281339699}
   maximumDuration: {fileID: 1847075744}
   firstDate: {fileID: 786188061}

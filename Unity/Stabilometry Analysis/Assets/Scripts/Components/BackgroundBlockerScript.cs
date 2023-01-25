@@ -9,9 +9,12 @@ namespace StabilometryAnalysis
     {
         [SerializeField]
         private GameObject warningWidnowPrefab = null,
+            lineChartPrefab = null,
             screenBlocker = null;
 
-        private GameObject warningWidnowInstance = null;
+        private GameObject 
+            warningWidnowInstance = null,
+            lineChartInstance = null;
 
 
         private const string DELETE = "Delete";
@@ -50,10 +53,22 @@ namespace StabilometryAnalysis
             result.message.text = message;
         }
 
+        public void CreateChart(int lineChartIndex, StabilometryAnalysisParameterMenuScript parentScript)
+        {
+            lineChartInstance = Instantiate(lineChartPrefab, screenBlocker.transform);
+            LineChartScript chartScript = lineChartInstance.GetComponent<LineChartScript>();
+            chartScript.SetParent(lineChartIndex, parentScript);
+
+
+        }
+
         public void Cancel()
         {
             if (warningWidnowInstance != null)
                 Destroy(warningWidnowInstance);
+
+            if (lineChartInstance != null)
+                Destroy(lineChartInstance);
 
             screenBlocker.SetActive(false);
 

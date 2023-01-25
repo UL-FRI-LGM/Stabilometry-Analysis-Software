@@ -31,6 +31,7 @@ namespace StabilometryAnalysis
 
         [SerializeField] private GameObject measurementMenu = null;
         [SerializeField] private AccordionRadioHandler poseRadioHandler = null;
+        [SerializeField] private BackgroundBlockerScript backgroundBlocker = null;
 
         [SerializeField]
         private AccordionDropdownSelector
@@ -42,7 +43,7 @@ namespace StabilometryAnalysis
         private RectTransform chartHolderRect = null;
 
         private List<GameObject> instantiatedCharts = null;
-        private Vector2 lineChartSize = new Vector2(590, 300);
+        
         private Vector2 firstPosition = new Vector2();
 
         private List<StabilometryMeasurement> patientData = null;
@@ -67,7 +68,6 @@ namespace StabilometryAnalysis
             SetToggleDependencies();
 
             instantiatedCharts = new List<GameObject>();
-            firstPosition = lineChartSize / 2f - chartHolder.GetComponent<RectTransform>().rect.size / 2f;
         }
 
         private void SetToggleDependencies()
@@ -261,16 +261,14 @@ namespace StabilometryAnalysis
             for (int i = 0; i < allParameters.Count; i++)
             {
                 GameObject instance = Instantiate(lineChartPrefab, chartHolder.transform);
-                RectTransform instanceTransfrom = (RectTransform)instance.transform;
-                instanceTransfrom.sizeDelta = lineChartSize;
-                instanceTransfrom.localPosition = GetNewPosition(i, firstPosition, lineChartSize);
-
                 LineChartScript chartScript = instance.GetComponent<LineChartScript>();
 
+                bool smallChart = true;
+
+                chartScript.SetSize(i, chartHolder.GetComponent<RectTransform>().rect.size, smallChart);
                 chartScript.SetChartData(GetCurrentChartData(allParameters[i]), allParameters[i], selectedTasks);
 
                 chartScript.SetParent(i, this);
-
                 instantiatedCharts.Add(instance);
             }
         }
@@ -332,6 +330,16 @@ namespace StabilometryAnalysis
         public void BackButtonClick()
         {
             mainScript.menuSwitching.OpenPreviousMenu();
+        }
+
+        public void ClosePopupLineChart()
+        {
+            backgroundBlocker.Cancel();
+        }
+
+        public void ExpandChart(int lineChartIndex)
+        {
+            backgroundBlocker.CreateChart(lineChartIndex, this);
         }
     }
 }

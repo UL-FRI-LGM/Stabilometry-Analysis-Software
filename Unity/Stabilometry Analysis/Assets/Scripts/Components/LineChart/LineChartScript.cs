@@ -1,17 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI.Extensions;
 using TMPro;
 using static StabilometryAnalysis.Parameter;
-using UnityEngine.UI;
 
 namespace StabilometryAnalysis
 {
+    using static ChartSupportScript;
+
     public class LineChartScript : MonoBehaviour
     {
         #region Variables
         private StabilometryAnalysisParameterMenuScript parentScript = null;
+        private BackgroundBlockerScript backgroundBlockerScript = null;
 
         private int index = -1;
 
@@ -30,7 +31,10 @@ namespace StabilometryAnalysis
         [SerializeField] private TextMeshProUGUI[] valueTexts = null;
 
         [SerializeField] private UILineRenderer[] lineRenderers = null;
-        [SerializeField] private GameObject dotsHolder = null;
+        [SerializeField] private GameObject
+            dotsHolder = null,
+            expandButton = null,
+            shrinkButton = null;
 
         private RectTransform chartRect = null;
         private List<ChartData> chartData = null;
@@ -41,6 +45,11 @@ namespace StabilometryAnalysis
         private List<GameObject> spawnedObjects = null;
 
         private Parameter chosenParameter = Parameter.SWAY_PATH_TOTAL;
+
+        private bool smallChart = true;
+
+        private Vector2 smallLineChartSize = new Vector2(590, 300);
+        private Vector2 largeLineChartSize = new Vector2(590, 300);
 
         #endregion
 
@@ -91,6 +100,16 @@ namespace StabilometryAnalysis
 
             SetYAxis(modifiedMaxValue, drawingSpace);
             DrawData(relevantData, valueSpaceSize, this.chartRect, modifiedMaxValue);
+        }
+
+        public void ExpandChart()
+        {
+            
+        }
+
+        public void ShrinkChart()
+        {
+
         }
 
         private static List<ChartData> GetRelevantData(List<ChartData> allData, List<Task> selectedTasks)
@@ -228,6 +247,21 @@ namespace StabilometryAnalysis
 
                 rectTransform.anchoredPosition += new Vector2(lineMove, 0);
             }
+        }
+
+        public void SetSize(int index, Vector2 chartHolderSize, bool smallChart)
+        {
+            this.smallChart = smallChart;
+
+            RectTransform instanceTransfrom = (RectTransform)transform;
+            instanceTransfrom.sizeDelta = (smallChart)? smallLineChartSize: largeLineChartSize;
+
+            Vector2 firstPosition = instanceTransfrom.sizeDelta / 2f - chartHolderSize / 2f;
+
+
+
+            instanceTransfrom.localPosition = GetNewPosition(index, firstPosition, instanceTransfrom.sizeDelta);
+
         }
 
         public void ButtonClicked(int index)
