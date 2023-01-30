@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace StabilometryAnalysis
 {
+    using static ChartSupportScript;
+
     public class StabilometryImagesMenuScript : MonoBehaviour
     {
         #region Variables
@@ -13,6 +15,13 @@ namespace StabilometryAnalysis
         [SerializeField] private AccordionRadioHandler poseRadioHandler = null;
         [SerializeField] private GameObject imageElementObjectHolder = null;
         [SerializeField] private GameObject measurementMenu = null;
+
+        [SerializeField]
+        private AccordionDropdownSelector
+           minimumDuration = null,
+           maximumDuration = null,
+           firstDate = null,
+           lastDate = null;
 
         private RectTransform imageElementObjectRect = null;
         private float prefabElementWidth = 0;
@@ -27,6 +36,10 @@ namespace StabilometryAnalysis
         private float initialElementObjectXPosition = 0;
 
         private bool scrollbarSet = false;
+
+        private bool hasData = false;
+        private bool chartsSpawned = false;
+
         #endregion
 
         //public void 
@@ -40,6 +53,9 @@ namespace StabilometryAnalysis
 
         private void OnEnable()
         {
+            hasData = false;
+            chartsSpawned = false;
+
             GetPatientData();
             UpdateImages();
             poseRadioHandler.valueChanged = false;
@@ -49,9 +65,17 @@ namespace StabilometryAnalysis
         {
             if (poseRadioHandler.valueChanged)
             {
-                relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
+                relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
+                    minimumDuration.durationValue, maximumDuration.durationValue);
                 poseRadioHandler.valueChanged = false;
 
+                UpdateImages();
+            }
+
+            if (DataLimiterChanged())
+            {
+                relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
+                    minimumDuration.durationValue, maximumDuration.durationValue);
                 UpdateImages();
             }
 
@@ -59,9 +83,21 @@ namespace StabilometryAnalysis
                 UpdatePosition(scrollbarScript.valuePositon, relevantData.Count);
         }
 
+        private bool DataLimiterChanged()
+        {
+            bool result = minimumDuration.valueChanged || maximumDuration.valueChanged || firstDate.valueChanged || lastDate.valueChanged;
+
+            minimumDuration.valueChanged = false;
+            maximumDuration.valueChanged = false;
+            firstDate.valueChanged = false;
+            lastDate.valueChanged = false;
+
+            return result;
+        }
+
         private void GetPatientData()
         {
-            patientData = mainScript.database.GetAllMeasurements(mainScript.currentPatient);
+            patientData = SortMeasurements(mainScript.database.GetAllMeasurements(mainScript.currentPatient));
             for (int i = 0; i < patientData.Count; i++)
                 patientData[i] = JSONHandler.GetJSONFile(patientData[i]);
 
@@ -71,9 +107,38 @@ namespace StabilometryAnalysis
                 return;
             }
 
-            relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose);
+            SetDataLimiters(patientData);
+
+            relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
+                    minimumDuration.durationValue, maximumDuration.durationValue);
         }
 
+        private void SetDataLimiters(List<StabilometryMeasurement> data)
+        {
+            //Debug.LogError("Move these things to a static class");
+            List<MyDateTime> dateList = new List<MyDateTime>();
+            List<int> durationList = new List<int>();
+
+            foreach (StabilometryMeasurement element in data)
+            {
+                if (!ListHasDate(dateList, element.dateTime))
+                    dateList.Add(element.dateTime);
+
+                durationList.AddRange(GetDurations(durationList, element));
+            }
+
+            bool isLover = true;
+
+            // Date List should be already sorted.
+            firstDate.SetDates(dateList, isLover);
+            lastDate.SetDates(dateList, !isLover);
+
+            durationList = OrderList(durationList);
+
+            minimumDuration.SetDurations(durationList, isLover);
+            maximumDuration.SetDurations(durationList, !isLover);
+
+        }
 
         private void UpdateImages()
         {
@@ -89,16 +154,16 @@ namespace StabilometryAnalysis
             SpawnElements(relevantData);
         }
 
-        private List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose)
-        {
-            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+        //private List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose)
+        //{
+        //    List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
 
-            foreach (StabilometryMeasurement data in allData)
-                if (data.pose == currentPose)
-                    result.Add(data);
+        //    foreach (StabilometryMeasurement data in allData)
+        //        if (data.pose == currentPose)
+        //            result.Add(data);
 
-            return result;
-        }
+        //    return result;
+        //}
 
         private void UpdatePosition(float newValue, float totalElementNumber)
         {

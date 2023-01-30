@@ -22,6 +22,17 @@ namespace StabilometryAnalysis
             return new Vector2(x, y);
         }
 
+        public static bool ListHasDate(List<MyDateTime> list, MyDateTime date)
+        {
+            foreach (MyDateTime element in list)
+            {
+                if (date.IsTheSame(element))
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Checks to see which tasks have been chosen.
         /// </summary>

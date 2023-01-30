@@ -98,6 +98,9 @@ namespace StabilometryAnalysis
                 minimumDuration.durationValue, maximumDuration.durationValue);
             hasData = true;
             UpdateCharts();
+
+            if (backgroundBlocker.hasData)
+                backgroundBlocker.ReEnable();
         }
 
         private void Update()
@@ -149,17 +152,6 @@ namespace StabilometryAnalysis
             minimumDuration.SetDurations(durationList, isLover);
             maximumDuration.SetDurations(durationList, !isLover);
 
-        }
-
-        private bool ListHasDate(List<MyDateTime> list, MyDateTime date)
-        {
-            foreach (MyDateTime element in list)
-            {
-                if (date.IsTheSame(element))
-                    return true;
-            }
-
-            return false;
         }
 
         private bool DataLimiterChanged()
@@ -268,7 +260,7 @@ namespace StabilometryAnalysis
                 chartScript.SetSize(i, chartHolder.GetComponent<RectTransform>().rect.size, smallChart);
                 chartScript.SetChartData(GetCurrentChartData(allParameters[i]), allParameters[i], selectedTasks);
 
-                chartScript.SetParent(i, this);
+                chartScript.SetParent(i, this, backgroundBlocker);
                 instantiatedCharts.Add(instance);
             }
         }
@@ -305,6 +297,7 @@ namespace StabilometryAnalysis
 
         public void OpenAnalysisMenu(StabilometryMeasurement measurement)
         {
+            backgroundBlocker.Disable();
             foreach (StabilometryMeasurement element in patientData)
             {
                 if (element.ID == measurement.ID)
@@ -330,16 +323,6 @@ namespace StabilometryAnalysis
         public void BackButtonClick()
         {
             mainScript.menuSwitching.OpenPreviousMenu();
-        }
-
-        public void ClosePopupLineChart()
-        {
-            backgroundBlocker.Cancel();
-        }
-
-        public void ExpandChart(int lineChartIndex)
-        {
-            backgroundBlocker.CreateChart(lineChartIndex, this);
         }
     }
 }

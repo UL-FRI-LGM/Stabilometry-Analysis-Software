@@ -49,11 +49,22 @@ namespace StabilometryAnalysis
         private bool smallChart = true;
 
         private Vector2 smallLineChartSize = new Vector2(590, 300);
-        private Vector2 largeLineChartSize = new Vector2(590, 300);
+        private Vector2 largeLineChartSize = new Vector2(1475, 750);
+
+        private const int smallNumDataToShow = 8;
+        private const int largeNumDataToShow = 24;
+
+
+        private int numOfDataToShow = -1;
 
         #endregion
 
         private void Awake()
+        {
+            InitiateObject();
+        }
+
+        private void InitiateObject()
         {
             spawnedObjects = new List<GameObject>();
 
@@ -63,15 +74,6 @@ namespace StabilometryAnalysis
 
             for (int i = 0; i < this.dotObjects.Length; i++)
                 this.dotRects[i] = this.dotObjects[i].GetComponent<RectTransform>();
-        }
-
-        private void RespawnChart()
-        {
-            foreach (GameObject spawnedObject in spawnedObjects)
-                Destroy(spawnedObject);
-
-            SetChartData(this.chartData, this.chosenParameter, this.selectedTasks);
-
         }
 
         public void SetChartData(List<ChartData> chartData, Parameter chosenParameter, List<Task> allTasks)
@@ -84,11 +86,60 @@ namespace StabilometryAnalysis
             UpdateChart();
         }
 
+        public void ExpandChart()
+        {
+            backgroundBlockerScript.CreateChart(this.chartData, this.chosenParameter, this.selectedTasks,
+                this.index, this.parentScript);
+        }
+
+        public void ShrinkChart()
+        {
+            backgroundBlockerScript.Cancel();
+        }
+
+        public void SetSize(int index, Vector2 chartHolderSize, bool smallChart)
+        {
+            this.smallChart = smallChart;
+
+            if (!smallChart)
+            {
+                expandButton.SetActive(false);
+                shrinkButton.SetActive(true);
+            }
+
+            RectTransform instanceTransfrom = (RectTransform)transform;
+            instanceTransfrom.sizeDelta = (smallChart) ? smallLineChartSize : largeLineChartSize;
+            this.numOfDataToShow = (smallChart) ? smallNumDataToShow : largeNumDataToShow;
+
+            Vector2 firstPosition;
+            if (smallChart)
+                firstPosition = instanceTransfrom.sizeDelta / 2f - chartHolderSize / 2f;
+            else
+                firstPosition = new Vector2();
+
+            instanceTransfrom.localPosition = GetNewPosition(index, firstPosition, instanceTransfrom.sizeDelta);
+        }
+
+        public void ButtonClicked(int index)
+        {
+            parentScript.OpenAnalysisMenu(parentScript.GetMeasurement(index));
+        }
+
+        public void SetParent(int lineChartIndex, StabilometryAnalysisParameterMenuScript parentScript, BackgroundBlockerScript backgroundBlockerScript)
+        {
+            this.parentScript = parentScript;
+            this.index = lineChartIndex;
+            this.backgroundBlockerScript = backgroundBlockerScript;
+        }
+
         /// <summary>
         /// Draws the chart based on the current data and rect transform size.
         /// </summary>
-        public void UpdateChart()
+        private void UpdateChart()
         {
+            if (this.chartData == null)
+                InitiateObject();
+
             List<ChartData> relevantData = GetRelevantData(this.chartData, this.selectedTasks);
 
             RectTransform drawingSpace = lineRenderers[0].GetComponent<RectTransform>();
@@ -99,17 +150,8 @@ namespace StabilometryAnalysis
             float modifiedMaxValue = ModifyMaxValue(maxValue);
 
             SetYAxis(modifiedMaxValue, drawingSpace);
+
             DrawData(relevantData, valueSpaceSize, this.chartRect, modifiedMaxValue);
-        }
-
-        public void ExpandChart()
-        {
-            
-        }
-
-        public void ShrinkChart()
-        {
-
         }
 
         private static List<ChartData> GetRelevantData(List<ChartData> allData, List<Task> selectedTasks)
@@ -183,29 +225,30 @@ namespace StabilometryAnalysis
                 if (oddNumber)
                     xPosition += xSpaceSize * 0.5f;
 
-                SpawnSliceObject(data[i], drawingSpace, startingPosition, valueConverter, xSpaceSize, i, xPosition, ToShow(data.Count, i));
+                SpawnSliceObject(data[i], drawingSpace, startingPosition, valueConverter, xSpaceSize, i, xPosition, ToShow(data.Count, i, numOfDataToShow));
             }
         }
 
-        private static bool ToShow(int dataCount, int index)
+        private static bool ToShow(int dataCount, int index, int numOfDataToShow)
         {
-            if (dataCount <= 8)
+            if (dataCount <= numOfDataToShow)
                 return true;
 
-            if (index % GetMod(dataCount) == 0)
+            if (index % GetMod(dataCount, numOfDataToShow) == 0)
                 return true;
 
             return false;
         }
 
-        private static int GetMod(int dataCount)
+        private static int GetMod(int dataCount, int numOfDataToShow)
         {
-            return (dataCount / 8) + 1;
+            return (dataCount / numOfDataToShow) + 1;
         }
 
         private void SpawnSliceObject(ChartData data, RectTransform drawingSpace, Vector2 startingPosition, float valueConverter,
             float xSpaceSize, int i, float xPosition, bool show)
         {
+
             GameObject slice = Instantiate(LineObject, drawingSpace.transform);
             RectTransform sliceRect = slice.GetComponent<RectTransform>();
 
@@ -247,32 +290,6 @@ namespace StabilometryAnalysis
 
                 rectTransform.anchoredPosition += new Vector2(lineMove, 0);
             }
-        }
-
-        public void SetSize(int index, Vector2 chartHolderSize, bool smallChart)
-        {
-            this.smallChart = smallChart;
-
-            RectTransform instanceTransfrom = (RectTransform)transform;
-            instanceTransfrom.sizeDelta = (smallChart)? smallLineChartSize: largeLineChartSize;
-
-            Vector2 firstPosition = instanceTransfrom.sizeDelta / 2f - chartHolderSize / 2f;
-
-
-
-            instanceTransfrom.localPosition = GetNewPosition(index, firstPosition, instanceTransfrom.sizeDelta);
-
-        }
-
-        public void ButtonClicked(int index)
-        {
-            parentScript.OpenAnalysisMenu(parentScript.GetMeasurement(index));
-        }
-
-        public void SetParent(int lineChartIndex, StabilometryAnalysisParameterMenuScript parentScript)
-        {
-            this.parentScript = parentScript;
-            this.index = lineChartIndex;
         }
 
         /// <summary>

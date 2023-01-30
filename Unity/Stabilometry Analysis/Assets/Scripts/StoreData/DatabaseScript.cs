@@ -504,7 +504,7 @@ namespace StabilometryAnalysis
 
             string querry = $"SELECT * FROM  {MeasurementTableName} WHERE {patientIDText} == {patient.ID} ORDER BY {dateTimeText} ASC, {entryIDText} ASC;";
 
-            Debug.Log(querry);
+            //Debug.Log(querry);
 
             IDataReader reader = ExecuteQuery(querry);
 
