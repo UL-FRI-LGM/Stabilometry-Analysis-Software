@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace StabilometryAnalysis
 {
@@ -36,6 +37,9 @@ namespace StabilometryAnalysis
             lastDate = null;
 
         [SerializeField] private BackgroundBlockerScript backgroundBlocker = null;
+        [SerializeField] private TextMeshProUGUI
+            firstDataNameText = null,
+            secondDataNameText = null;
 
         private RectTransform chartHolderRect = null;
 
@@ -58,7 +62,7 @@ namespace StabilometryAnalysis
 
         private void Awake()
         {
-            Debug.LogError("Implement averageing the first parameter and fix the chart positions.");
+            Debug.LogError("Implement averageing the first parameter and fix the changing of tasks.");
 
             chartHolderRect = chartHolder.GetComponent<RectTransform>();
 
@@ -82,8 +86,12 @@ namespace StabilometryAnalysis
             firstPoseData = GetRelevantData(patientData, firstPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
                 minimumDuration.durationValue, maximumDuration.durationValue);
 
-            secondPoseData = GetRelevantData(patientData, secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
-                minimumDuration.durationValue, maximumDuration.durationValue);
+            if (secondPoseRadioHandler.selectedPose == Pose.AVERAGE_FIRST_POSE)
+                secondPoseData = GetAverageData(secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
+                    minimumDuration.durationValue, maximumDuration.durationValue);
+            else
+                secondPoseData = GetRelevantData(patientData, secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
+                    minimumDuration.durationValue, maximumDuration.durationValue);
 
             currentTask = taskRadioHandler.selectedTask;
 
@@ -91,6 +99,13 @@ namespace StabilometryAnalysis
 
             if (backgroundBlocker.hasData)
                 backgroundBlocker.ReEnable();
+        }
+
+        private List<StabilometryMeasurement> GetAverageData(Pose currentPose, MyDateTime firstDate, MyDateTime lastDate, float minimumDuration, float maximumDuration)
+        {
+            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+
+            return result;
         }
 
         private void Update()
@@ -113,8 +128,12 @@ namespace StabilometryAnalysis
 
             if (secondPoseRadioHandler.valueChanged)
             {
-                secondPoseData = GetRelevantData(patientData, secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
-                    minimumDuration.durationValue, maximumDuration.durationValue);
+                if (secondPoseRadioHandler.selectedPose == Pose.AVERAGE_FIRST_POSE)
+                    secondPoseData = GetAverageData(secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
+                        minimumDuration.durationValue, maximumDuration.durationValue);
+                else
+                    secondPoseData = GetRelevantData(patientData, secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
+                        minimumDuration.durationValue, maximumDuration.durationValue);
 
                 secondPoseRadioHandler.valueChanged = false;
                 updateCharts = true;
@@ -134,13 +153,16 @@ namespace StabilometryAnalysis
                 updateCharts = true;
 
             if (updateCharts)
+            {
+                UpdateChartNameTexts();
                 UpdateCharts();
+            }
 
             // Handle scrollbar
             if (scrollbarSet && scrollbarScript.valuePositon != previousScrollbarValue)
                 UpdatePosition(scrollbarScript.valuePositon);
         }
-        
+
         private void SetDataLimiters(List<StabilometryMeasurement> data)
         {
             //Debug.LogError("Move these things to a static class");
@@ -221,6 +243,54 @@ namespace StabilometryAnalysis
             return result;
         }
 
+        private void UpdateChartNameTexts()
+        {
+            firstDataNameText.text = $"{GetPoseName(firstPoseRadioHandler.selectedPose)}, {GetTaskName(currentTask)}";
+            secondDataNameText.text = $"{GetPoseName(secondPoseRadioHandler.selectedPose)}, {GetTaskName(currentTask)}";
+        }
+
+        private static string GetPoseName(Pose pose)
+        {
+            switch (pose)
+            {
+                case (Pose.BOTH_LEGS_JOINED_PARALLEL):
+                    return "Both Legs Joined Parallel";
+                case (Pose.BOTH_LEGS_30_ANGLE):
+                    return "Both Legs 30° Angle";
+                case (Pose.BOTH_LEGS_PARALLEL_APART):
+                    return "Both Legs Parallel Apart";
+                case (Pose.TANDEM_LEFT_FRONT):
+                    return "Tandem Left Front";
+                case (Pose.TANDEM_RIGHT_FRONT):
+                    return "Tandem Right Front";
+                case (Pose.LEFT_LEG):
+                    return "Left Leg";
+                case (Pose.RIGHT_LEG):
+                    return "Right Leg";
+                case (Pose.AVERAGE_FIRST_POSE):
+                    return "First Pose Average";
+            }
+
+            return "ERROR";
+        }
+
+        private static string GetTaskName(Task task)
+        {
+            switch (task)
+            {
+                case (Task.EYES_OPEN_SOLID_SURFACE):
+                    return "Solid Surface & Eyes Open";
+                case (Task.EYES_CLOSED_SOLID_SURFACE):
+                    return "Solid Surface & Eyes Closed";
+                case (Task.EYES_OPEN_SOFT_SURFACE):
+                    return "Soft Surface & Eyes Open";
+                case (Task.EYES_CLOSED_SOFT_SURFACE):
+                    return "Soft Surface & Eyes Closed";
+            }
+
+            return "ERROR";
+        }
+
         /// <summary>
         /// Spawns charts and updates scrollbar.
         /// </summary>
@@ -277,7 +347,7 @@ namespace StabilometryAnalysis
 
             int higherCount = (firstPoseData.Count >= secondPoseData.Count) ? firstPoseData.Count : secondPoseData.Count;
 
-            for(int i = 0; i < higherCount; i++)
+            for (int i = 0; i < higherCount; i++)
             {
                 string unit = "";
 
@@ -304,10 +374,10 @@ namespace StabilometryAnalysis
                     secondTime = secondData.time;
                     unit = secondData.unit;
                 }
-                
+
                 result.Add(new ComparisonChartData(firstValue, secondValue, firstTime, secondTime, unit));
             }
-            
+
             return result;
         }
 

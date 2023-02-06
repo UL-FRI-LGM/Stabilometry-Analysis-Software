@@ -35,8 +35,6 @@ namespace StabilometryAnalysis
 
         private void SetTexts(TextMeshProUGUI date, TextMeshProUGUI time, MyDateTime dateTime, TextMeshProUGUI valueText, float value, string unit)
         {
-            Debug.Log(dateTime);
-            Debug.Log(value);
             if (value < 0)
             {
                 date.text = "N/A";
