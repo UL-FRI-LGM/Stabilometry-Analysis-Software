@@ -9,9 +9,6 @@ namespace StabilometryAnalysis
     {
         #region Variables
         [SerializeField]
-        private GameObject TestDot = null;
-
-        [SerializeField]
         private UILineRenderer pathLine = null,
             ellipseLine = null;
 

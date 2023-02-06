@@ -8,6 +8,7 @@
         TANDEM_LEFT_FRONT = 3,
         TANDEM_RIGHT_FRONT = 4,
         LEFT_LEG = 5,
-        RIGHT_LEG = 6
+        RIGHT_LEG = 6,
+        AVERAGE_FIRST_POSE = 7
     }
 }

@@ -11,7 +11,7 @@ namespace StabilometryAnalysis
     // This one chart should be stretched trhough the entire space.
     // When clicking on a chart toggler change sizes.
     // When clicking on any chart it opens the menu with data.
-    public class StabilometryAnalysisParameterMenuScript : MonoBehaviour
+    public class StabilometryAnalysisParameterMenuScript : LineChartParentScript
     {
         #region Variables
         public MainScript mainScript { get; set; } = null;
@@ -43,15 +43,10 @@ namespace StabilometryAnalysis
         private RectTransform chartHolderRect = null;
 
         private List<GameObject> instantiatedCharts = null;
-        
-        private Vector2 firstPosition = new Vector2();
 
         private List<StabilometryMeasurement> patientData = null;
         // Smaller data size based on pose.
         private List<StabilometryMeasurement> relevantData = null;
-
-        private bool hasData = false;
-        private bool chartsSpawned = false;
 
         private float initialChartYposition = 0;
         private float previousChartAreaSize = 0;
@@ -65,25 +60,12 @@ namespace StabilometryAnalysis
             chartHolderRect = chartHolder.GetComponent<RectTransform>();
 
             initialChartYposition = chartHolderRect.localPosition.y;
-            SetToggleDependencies();
 
             instantiatedCharts = new List<GameObject>();
         }
 
-        private void SetToggleDependencies()
-        {
-            foreach (AccordionToggler toggler in parameterTogglers)
-                toggler.AnalysisMenuScript = this;
-
-            foreach (AccordionToggler toggler in taskTogglers)
-                toggler.AnalysisMenuScript = this;
-        }
-
         private void OnEnable()
         {
-            hasData = false;
-            chartsSpawned = false;
-
             patientData = SortMeasurements(mainScript.database.GetAllMeasurements(mainScript.currentPatient));
 
             if(patientData.Count <= 0)
@@ -96,7 +78,6 @@ namespace StabilometryAnalysis
 
             relevantData = GetRelevantData(patientData, poseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
                 minimumDuration.durationValue, maximumDuration.durationValue);
-            hasData = true;
             UpdateCharts();
 
             if (backgroundBlocker.hasData)
@@ -217,6 +198,22 @@ namespace StabilometryAnalysis
         }
 
         /// <summary>
+        /// Checks to see which tasks have been chosen.
+        /// </summary>
+        /// <param name="taskTogglers"></param>
+        /// <returns></returns>
+        private static List<Task> GetChosenTasks(AccordionToggler[] taskTogglers)
+        {
+            List<Task> result = new List<Task>();
+
+            for (int i = 0; i < taskTogglers.Length; i++)
+                if (taskTogglers[i].GetToggle().isOn)
+                    result.Add((Task)i);
+
+            return result;
+        }
+
+        /// <summary>
         /// Spawns charts and updates scrollbar.
         /// </summary>
         private void UpdateCharts()
@@ -253,11 +250,12 @@ namespace StabilometryAnalysis
             for (int i = 0; i < allParameters.Count; i++)
             {
                 GameObject instance = Instantiate(lineChartPrefab, chartHolder.transform);
-                LineChartScript chartScript = instance.GetComponent<LineChartScript>();
+                StandardLineChartScript chartScript = instance.GetComponent<StandardLineChartScript>();
 
                 bool smallChart = true;
 
-                chartScript.SetSize(i, chartHolder.GetComponent<RectTransform>().rect.size, smallChart);
+                chartScript.SetSize(smallChart);
+                chartScript.SetPosition(i, chartHolder.GetComponent<RectTransform>().rect.size);
                 chartScript.SetChartData(GetCurrentChartData(allParameters[i]), allParameters[i], selectedTasks);
 
                 chartScript.SetParent(i, this, backgroundBlocker);
@@ -273,30 +271,13 @@ namespace StabilometryAnalysis
                 result.Add(measurement.GetData(currentParameter));
 
             return result;
-        }
+        }   
 
-        /// <summary>
-        /// Get the size of the area for currently spawned charts.
-        /// </summary>
-        /// <param name="allInstances"></param>
-        /// <param name="maskSize"></param>
-        /// <returns></returns>
-        private float GetCurrentChartAreaSize(List<GameObject> allInstances, float maskSize)
+        public override void OpenAnalysisMenu(int index)
         {
-            if (allInstances.Count < 2)
-                return maskSize;
 
-            // else
-            RectTransform firstRect = (RectTransform)allInstances[0].transform;
-            RectTransform lastRect = (RectTransform)allInstances[allInstances.Count - 1].transform;
+            StabilometryMeasurement measurement = GetMeasurement(index);
 
-            float result = Mathf.Abs((firstRect.localPosition.y + firstRect.rect.height / 2f) - (lastRect.localPosition.y - lastRect.rect.height / 2f));
-
-            return result;
-        }        
-
-        public void OpenAnalysisMenu(StabilometryMeasurement measurement)
-        {
             backgroundBlocker.Disable();
             foreach (StabilometryMeasurement element in patientData)
             {
@@ -314,7 +295,7 @@ namespace StabilometryAnalysis
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public StabilometryMeasurement GetMeasurement(int index)
+        private StabilometryMeasurement GetMeasurement(int index)
         {
             StabilometryMeasurement result = JSONHandler.GetJSONFile(relevantData[index]);
             return result;

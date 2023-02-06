@@ -34,22 +34,6 @@ namespace StabilometryAnalysis
         }
 
         /// <summary>
-        /// Checks to see which tasks have been chosen.
-        /// </summary>
-        /// <param name="taskTogglers"></param>
-        /// <returns></returns>
-        public static List<Task> GetChosenTasks(AccordionToggler[] taskTogglers)
-        {
-            List<Task> result = new List<Task>();
-
-            for (int i = 0; i < taskTogglers.Length; i++)
-                if (taskTogglers[i].GetToggle().isOn)
-                    result.Add((Task)i);
-
-            return result;
-        }
-
-        /// <summary>
         /// Checks parameters to see which charts to spawn.
         /// </summary>
         /// <param name="parameterTogglers"></param>

@@ -37,9 +37,6 @@ namespace StabilometryAnalysis
 
         private bool scrollbarSet = false;
 
-        private bool hasData = false;
-        private bool chartsSpawned = false;
-
         #endregion
 
         //public void 
@@ -53,9 +50,6 @@ namespace StabilometryAnalysis
 
         private void OnEnable()
         {
-            hasData = false;
-            chartsSpawned = false;
-
             GetPatientData();
             UpdateImages();
             poseRadioHandler.valueChanged = false;

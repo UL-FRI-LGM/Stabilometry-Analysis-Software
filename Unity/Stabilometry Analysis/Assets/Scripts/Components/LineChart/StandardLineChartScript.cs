@@ -8,10 +8,10 @@ namespace StabilometryAnalysis
 {
     using static ChartSupportScript;
 
-    public class LineChartScript : MonoBehaviour
+    public class StandardLineChartScript : MonoBehaviour
     {
         #region Variables
-        private StabilometryAnalysisParameterMenuScript parentScript = null;
+        private LineChartParentScript parentScript = null;
         private BackgroundBlockerScript backgroundBlockerScript = null;
 
         private int index = -1;
@@ -97,7 +97,7 @@ namespace StabilometryAnalysis
             backgroundBlockerScript.Cancel();
         }
 
-        public void SetSize(int index, Vector2 chartHolderSize, bool smallChart)
+        public void SetSize(bool smallChart)
         {
             this.smallChart = smallChart;
 
@@ -110,6 +110,12 @@ namespace StabilometryAnalysis
             RectTransform instanceTransfrom = (RectTransform)transform;
             instanceTransfrom.sizeDelta = (smallChart) ? smallLineChartSize : largeLineChartSize;
             this.numOfDataToShow = (smallChart) ? smallNumDataToShow : largeNumDataToShow;
+   
+        }
+
+        public void SetPosition(int index, Vector2 chartHolderSize)
+        {
+            RectTransform instanceTransfrom = (RectTransform)transform;
 
             Vector2 firstPosition;
             if (smallChart)
@@ -122,10 +128,10 @@ namespace StabilometryAnalysis
 
         public void ButtonClicked(int index)
         {
-            parentScript.OpenAnalysisMenu(parentScript.GetMeasurement(index));
+            parentScript.OpenAnalysisMenu(index);
         }
 
-        public void SetParent(int lineChartIndex, StabilometryAnalysisParameterMenuScript parentScript, BackgroundBlockerScript backgroundBlockerScript)
+        public void SetParent(int lineChartIndex, LineChartParentScript parentScript, BackgroundBlockerScript backgroundBlockerScript)
         {
             this.parentScript = parentScript;
             this.index = lineChartIndex;

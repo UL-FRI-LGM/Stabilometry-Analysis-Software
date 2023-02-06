@@ -11,11 +11,13 @@ namespace StabilometryAnalysis
         [SerializeField]
         private GameObject warningWidnowPrefab = null,
             lineChartPrefab = null,
+            comparisonLineChartPrefab = null,
             screenBlocker = null;
 
         private GameObject 
             warningWidnowInstance = null,
-            lineChartInstance = null;
+            lineChartInstance = null,
+            comparisonLineChartInstance = null;
 
         public bool hasData { get; set; } = false;
 
@@ -57,19 +59,32 @@ namespace StabilometryAnalysis
         }
 
         public void CreateChart(List<ChartData> chartData, Parameter chosenParameter, List<Task> allTasks, 
-            int lineChartIndex, StabilometryAnalysisParameterMenuScript parentScript)
+            int lineChartIndex, LineChartParentScript parentScript)
         {
             screenBlocker.SetActive(true);
 
             lineChartInstance = Instantiate(lineChartPrefab, screenBlocker.transform);
-            LineChartScript chartScript = lineChartInstance.GetComponent<LineChartScript>();
+            StandardLineChartScript chartScript = lineChartInstance.GetComponent<StandardLineChartScript>();
             bool largeChart = false;
-            chartScript.SetSize(lineChartIndex, lineChartInstance.GetComponent<RectTransform>().rect.size, largeChart);
+            chartScript.SetSize(largeChart);
             chartScript.SetChartData(chartData, chosenParameter, allTasks);
             chartScript.SetParent(lineChartIndex, parentScript, this);
 
             hasData = true;
+        }
 
+        public void CreateComparisonChart(List<ComparisonChartData> chartData, Parameter chosenParameter, int lineChartIndex, LineChartParentScript parentScript)
+        {
+            screenBlocker.SetActive(true);
+
+            comparisonLineChartInstance = Instantiate(comparisonLineChartPrefab, screenBlocker.transform);
+            ComparisonLineChartScript chartScript = comparisonLineChartInstance.GetComponent<ComparisonLineChartScript>();
+            bool largeChart = false;
+            chartScript.SetSize(largeChart);
+            chartScript.SetChartData(chartData, chosenParameter);
+            chartScript.SetParent(lineChartIndex, parentScript, this);
+
+            hasData = true;
         }
 
         public void Disable()
@@ -88,6 +103,9 @@ namespace StabilometryAnalysis
                 Destroy(warningWidnowInstance);
 
             if (lineChartInstance != null)
+                Destroy(lineChartInstance);
+
+            if (comparisonLineChartInstance != null)
                 Destroy(lineChartInstance);
 
             hasData = false;

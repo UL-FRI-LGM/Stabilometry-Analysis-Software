@@ -15,14 +15,15 @@ namespace StabilometryAnalysis
         public StabilometryAnalysisParameterMenuScript stabilometryAnalysisParameterMenuScript = null;
         public StabilometryAnalysisMenuScript stabilometryAnalysisMenuScript = null;
         public StabilometryMeasurementScript stabilometryMeasurementScript = null;
+        public StabilometryParameterComparisonMenuScript stabilometryParameterComparisonMenuScript = null;
 
         // Cached references
         public Patient currentPatient { get; private set; } = null;
         public DatabaseScript database { get; private set; } = null;
         public MenuSwitching menuSwitching { get; private set; } = null;
 
-        [SerializeField] private GameObject DataDisplayerObject = null;
-        public DataDisplayerScript dataDisplayerScript { get; set; } = null;
+        public DataDisplayerScript DataDisplayerScript = null;
+        public ComparisonDataDisplayerScript ComparisonDataDisplayerScript = null;
 
         #endregion
 
@@ -32,7 +33,6 @@ namespace StabilometryAnalysis
 
             database = GetComponent<DatabaseScript>();
             menuSwitching = GetComponent<MenuSwitching>();
-            dataDisplayerScript = DataDisplayerObject.GetComponent<DataDisplayerScript>();
             SetAllReferences();
         }
 
@@ -45,6 +45,7 @@ namespace StabilometryAnalysis
             stabilometryAnalysisParameterMenuScript.mainScript = this;
             stabilometryMeasurementScript.mainScript = this;
             stabilometryImagesMenuScript.mainScript = this;
+            stabilometryParameterComparisonMenuScript.mainScript = this;
         }
 
         public void DeleteCurrentPatient()

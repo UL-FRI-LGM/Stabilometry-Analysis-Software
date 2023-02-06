@@ -7,18 +7,18 @@ namespace StabilometryAnalysis
     public class LineObjectScript : MonoBehaviour
     {
         private DataDisplayerScript dataDisplayer = null;
-        private LineChartScript parentScript = null;
+        private StandardLineChartScript parentScript = null;
 
         private ChartData chartData = null; 
         private int index = -1;
 
         private bool hovering = false;
 
-        public void SetParentScript(int index, ChartData chartData, LineChartScript parentScript)
+        public void SetParentScript(int index, ChartData chartData, StandardLineChartScript parentScript)
         {
             this.index = index;
             this.chartData = chartData;
-            this.dataDisplayer = LocationPointer.mainScript.dataDisplayerScript;
+            this.dataDisplayer = LocationPointer.mainScript.DataDisplayerScript;
             this.parentScript = parentScript;
         }
 

@@ -11,9 +11,6 @@ namespace StabilometryAnalysis
         #region Variables
         public RectTransform ElementTransform { get; set; } = null;
 
-        private float maxSize = -170;
-        private float minSize = 0;
-
         public bool open { set; get; } = false;
 
         [SerializeField]
