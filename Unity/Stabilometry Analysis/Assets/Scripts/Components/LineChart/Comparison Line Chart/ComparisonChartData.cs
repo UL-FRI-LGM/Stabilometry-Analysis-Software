@@ -29,6 +29,11 @@ namespace StabilometryAnalysis
             return (firstValue >= secondValue)? firstValue : secondValue;
         }
 
+        /// <summary>
+        /// Returns first or second value.
+        /// </summary>
+        /// <param name="index">0 for firstValue or 1 for second value</param>
+        /// <returns></returns>
         public float GetValue(int index)
         {
             if (index == 0)

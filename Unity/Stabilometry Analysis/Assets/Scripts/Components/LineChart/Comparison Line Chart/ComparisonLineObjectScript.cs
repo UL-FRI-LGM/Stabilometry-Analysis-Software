@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace StabilometryAnalysis
 {
@@ -40,6 +41,5 @@ namespace StabilometryAnalysis
             hovering = false;
             comparisonDataDisplayer.EnableObject(false);
         }
-
     }
 }

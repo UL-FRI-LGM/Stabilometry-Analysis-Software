@@ -6,8 +6,8 @@ namespace StabilometryAnalysis
 {
     public abstract class AccordionRadioHandler : MonoBehaviour
     {
-        public Pose selectedPose { get; set; } = Pose.BOTH_LEGS_JOINED_PARALLEL;
-        public Task selectedTask { get; set; } = Task.EYES_OPEN_SOLID_SURFACE;
+        public Pose selectedPose = Pose.BOTH_LEGS_JOINED_PARALLEL;
+        public Task selectedTask = Task.EYES_OPEN_SOLID_SURFACE;
 
         public bool valueChanged { get; set; } = true;
 

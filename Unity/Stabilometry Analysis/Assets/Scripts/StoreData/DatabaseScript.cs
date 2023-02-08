@@ -537,6 +537,48 @@ namespace StabilometryAnalysis
             return result;
         }
 
+        public List<StabilometryMeasurement> GetAllMeasurements(Pose pose)
+        {
+            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+
+            string entryIDText = MeasurementTableColumnNames[0];
+            string patientIDText = MeasurementTableColumnNames[1];
+            string dateTimeText = MeasurementTableColumnNames[2];
+            string poseText = MeasurementTableColumnNames[3];
+
+            string querry = $"SELECT * FROM  {MeasurementTableName} WHERE {poseText} == '{PoseConverter.PoseToString(pose)}' ORDER BY {dateTimeText} ASC, {entryIDText} ASC;";
+
+            IDataReader reader = ExecuteQuery(querry);
+
+            if (reader == null)
+            {
+                Debug.LogError("Reader was null.");
+                return null;
+            }
+
+            // else
+            while (reader.Read())
+            {
+                StabilometryMeasurement entry = new StabilometryMeasurement();
+
+                entry.ID = (int)reader.GetInt64(0);
+                entry.patientID = (int)reader.GetInt64(1);
+                entry.dateTime = new MyDateTime(reader.GetString(2));
+                entry.pose = PoseConverter.StringToPose((string)reader.GetValue(3));
+
+                entry.eyesOpenSolidSurface = GetTask((int)reader.GetInt64(4));
+                entry.eyesClosedSolidSurface = GetTask((int)reader.GetInt64(5));
+                entry.eyesOpenSoftSurface = GetTask((int)reader.GetInt64(6));
+                entry.eyesClosedSoftSurface = GetTask((int)reader.GetInt64(7));
+
+                result.Add(entry);
+            }
+
+            reader.Close();
+
+            return result;
+        }
+
         private StabilometryTask GetTask(int taskID)
         {
             if (taskID < 0)

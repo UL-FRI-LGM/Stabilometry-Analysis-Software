@@ -37,7 +37,8 @@ namespace StabilometryAnalysis
             lastDate = null;
 
         [SerializeField] private BackgroundBlockerScript backgroundBlocker = null;
-        [SerializeField] private TextMeshProUGUI
+        [SerializeField]
+        private TextMeshProUGUI
             firstDataNameText = null,
             secondDataNameText = null;
 
@@ -57,12 +58,13 @@ namespace StabilometryAnalysis
         private float previousScrollbarValue = 0;
         private bool scrollbarSet = false;
 
-        private Task currentTask = Task.EYES_CLOSED_SOFT_SURFACE;
+        private Task currentTask = Task.EYES_OPEN_SOLID_SURFACE;
+
         #endregion
 
         private void Awake()
         {
-            Debug.LogError("Implement averageing the first parameter and fix the changing of tasks.");
+            //Debug.LogError("Implement averageing the first parameter and fix the changing of tasks.");
 
             chartHolderRect = chartHolder.GetComponent<RectTransform>();
 
@@ -82,30 +84,17 @@ namespace StabilometryAnalysis
             }
 
             SetDataLimiters(patientData);
-
-            firstPoseData = GetRelevantData(patientData, firstPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
-                minimumDuration.durationValue, maximumDuration.durationValue);
-
-            if (secondPoseRadioHandler.selectedPose == Pose.AVERAGE_FIRST_POSE)
-                secondPoseData = GetAverageData(secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
-                    minimumDuration.durationValue, maximumDuration.durationValue);
-            else
-                secondPoseData = GetRelevantData(patientData, secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
-                    minimumDuration.durationValue, maximumDuration.durationValue);
-
             currentTask = taskRadioHandler.selectedTask;
+
+            UpdateFirstPose();
+            UpdateSecondPose();
+
+            UpdateChartNameTexts();
 
             UpdateCharts();
 
             if (backgroundBlocker.hasData)
                 backgroundBlocker.ReEnable();
-        }
-
-        private List<StabilometryMeasurement> GetAverageData(Pose currentPose, MyDateTime firstDate, MyDateTime lastDate, float minimumDuration, float maximumDuration)
-        {
-            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
-
-            return result;
         }
 
         private void Update()
@@ -117,39 +106,26 @@ namespace StabilometryAnalysis
         {
             bool updateCharts = false;
 
-            if (firstPoseRadioHandler.valueChanged)
-            {
-                firstPoseData = GetRelevantData(patientData, firstPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
-                    minimumDuration.durationValue, maximumDuration.durationValue);
-
-                firstPoseRadioHandler.valueChanged = false;
-                updateCharts = true;
-            }
-
-            if (secondPoseRadioHandler.valueChanged)
-            {
-                if (secondPoseRadioHandler.selectedPose == Pose.AVERAGE_FIRST_POSE)
-                    secondPoseData = GetAverageData(secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
-                        minimumDuration.durationValue, maximumDuration.durationValue);
-                else
-                    secondPoseData = GetRelevantData(patientData, secondPoseRadioHandler.selectedPose, firstDate.dateValue, lastDate.dateValue,
-                        minimumDuration.durationValue, maximumDuration.durationValue);
-
-                secondPoseRadioHandler.valueChanged = false;
-                updateCharts = true;
-            }
-
-            if (taskRadioHandler.valueChanged)
+            if (firstPoseRadioHandler.valueChanged || secondPoseRadioHandler.valueChanged || taskRadioHandler.valueChanged)
             {
                 currentTask = taskRadioHandler.selectedTask;
+
+                UpdateFirstPose();
+                UpdateSecondPose();
+
                 taskRadioHandler.valueChanged = false;
                 updateCharts = true;
             }
 
-            if (HasAnyToggleChanged())
-                updateCharts = true;
-
             if (DataLimiterChanged())
+            {
+                UpdateFirstPose();
+                UpdateSecondPose();
+
+                updateCharts = true;
+            }
+
+            if (HasAnyToggleChanged())
                 updateCharts = true;
 
             if (updateCharts)
@@ -161,6 +137,29 @@ namespace StabilometryAnalysis
             // Handle scrollbar
             if (scrollbarSet && scrollbarScript.valuePositon != previousScrollbarValue)
                 UpdatePosition(scrollbarScript.valuePositon);
+        }
+
+        private void UpdateFirstPose()
+        {
+            firstPoseData = GetRelevantData(patientData, firstPoseRadioHandler.selectedPose, currentTask, firstDate.dateValue, lastDate.dateValue,
+                    minimumDuration.durationValue, maximumDuration.durationValue);
+
+            firstPoseRadioHandler.valueChanged = false;
+        }
+
+        private void UpdateSecondPose()
+        {
+            if (secondPoseRadioHandler.selectedPose == Pose.AVERAGE_FIRST_POSE)
+            {
+                List<StabilometryMeasurement> allRelevantData = mainScript.database.GetAllMeasurements(firstPoseRadioHandler.selectedPose);
+
+                secondPoseData = GetRelevantData(allRelevantData, firstPoseRadioHandler.selectedPose, currentTask, minimumDuration.durationValue, maximumDuration.durationValue);
+            }
+            else
+                secondPoseData = GetRelevantData(patientData, secondPoseRadioHandler.selectedPose, currentTask, firstDate.dateValue, lastDate.dateValue,
+                    minimumDuration.durationValue, maximumDuration.durationValue);
+
+            secondPoseRadioHandler.valueChanged = false;
         }
 
         private void SetDataLimiters(List<StabilometryMeasurement> data)
@@ -249,48 +248,6 @@ namespace StabilometryAnalysis
             secondDataNameText.text = $"{GetPoseName(secondPoseRadioHandler.selectedPose)}, {GetTaskName(currentTask)}";
         }
 
-        private static string GetPoseName(Pose pose)
-        {
-            switch (pose)
-            {
-                case (Pose.BOTH_LEGS_JOINED_PARALLEL):
-                    return "Both Legs Joined Parallel";
-                case (Pose.BOTH_LEGS_30_ANGLE):
-                    return "Both Legs 30° Angle";
-                case (Pose.BOTH_LEGS_PARALLEL_APART):
-                    return "Both Legs Parallel Apart";
-                case (Pose.TANDEM_LEFT_FRONT):
-                    return "Tandem Left Front";
-                case (Pose.TANDEM_RIGHT_FRONT):
-                    return "Tandem Right Front";
-                case (Pose.LEFT_LEG):
-                    return "Left Leg";
-                case (Pose.RIGHT_LEG):
-                    return "Right Leg";
-                case (Pose.AVERAGE_FIRST_POSE):
-                    return "First Pose Average";
-            }
-
-            return "ERROR";
-        }
-
-        private static string GetTaskName(Task task)
-        {
-            switch (task)
-            {
-                case (Task.EYES_OPEN_SOLID_SURFACE):
-                    return "Solid Surface & Eyes Open";
-                case (Task.EYES_CLOSED_SOLID_SURFACE):
-                    return "Solid Surface & Eyes Closed";
-                case (Task.EYES_OPEN_SOFT_SURFACE):
-                    return "Soft Surface & Eyes Open";
-                case (Task.EYES_CLOSED_SOFT_SURFACE):
-                    return "Soft Surface & Eyes Closed";
-            }
-
-            return "ERROR";
-        }
-
         /// <summary>
         /// Spawns charts and updates scrollbar.
         /// </summary>
@@ -334,7 +291,15 @@ namespace StabilometryAnalysis
 
                 chartScript.SetSize(smallChart);
                 chartScript.SetPosition(i, chartHolder.GetComponent<RectTransform>().rect.size);
-                chartScript.SetChartData(GetCurrentChartData(allParameters[i]), allParameters[i]);
+
+                List<ComparisonChartData> chartData;
+
+                if (secondPoseRadioHandler.selectedPose != Pose.AVERAGE_FIRST_POSE)
+                    chartData = GetCurrentChartData(allParameters[i]);
+                else
+                    chartData = GetCurrentChartDataWithAverage(allParameters[i], currentTask);
+
+                chartScript.SetChartData(chartData, allParameters[i]);
 
                 chartScript.SetParent(i, this, backgroundBlocker);
                 instantiatedCharts.Add(instance);
@@ -379,6 +344,40 @@ namespace StabilometryAnalysis
             }
 
             return result;
+        }
+
+        private List<ComparisonChartData> GetCurrentChartDataWithAverage(Parameter currentParameter, Task task)
+        {
+            List<ComparisonChartData> result = new List<ComparisonChartData>();
+
+            float averageValue = GetAverageData(secondPoseData, currentParameter, task);
+
+            for (int i = 0; i < firstPoseData.Count; i++)
+            {
+                ChartData firstData = firstPoseData[i].GetData(currentParameter);
+
+                string unit = firstData.unit;
+                float firstValue = firstData.GetTaskValue(currentTask);
+
+                MyDateTime firstTime = firstData.time;
+
+                float secondValue = averageValue;
+                MyDateTime secondTime = null;
+
+                result.Add(new ComparisonChartData(firstValue, secondValue, firstTime, secondTime, unit));
+            }
+
+            return result;
+        }
+
+        private static float GetAverageData(List<StabilometryMeasurement> allRelevantData, Parameter parameter, Task task)
+        {
+            float result = 0;
+
+            foreach (StabilometryMeasurement data in allRelevantData)
+                result += data.GetData(parameter).GetTaskValue(task);
+
+            return result / (float)allRelevantData.Count;
         }
 
         public void BackButtonClick()

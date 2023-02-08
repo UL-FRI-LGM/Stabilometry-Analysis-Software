@@ -35,18 +35,9 @@ namespace StabilometryAnalysis
 
         private void SetTexts(TextMeshProUGUI date, TextMeshProUGUI time, MyDateTime dateTime, TextMeshProUGUI valueText, float value, string unit)
         {
-            if (value < 0)
-            {
-                date.text = "N/A";
-                time.text = "N/A";
-                valueText.text = "N/A";
-            }
-            else
-            {
-                date.text = dateTime.GetDateString();
-                time.text = dateTime.GetTimeString();
-                valueText.text = GetDsiplayValue(value, unit);
-            }
+            valueText.text = (value < 0)? "N/A" : GetDsiplayValue(value, unit);
+            date.text = (dateTime == null)? "N/A" : dateTime.GetDateString();
+            time.text = (dateTime == null) ? "N/A" : dateTime.GetTimeString();
         }
 
         private string GetDsiplayValue(float value, string unit)

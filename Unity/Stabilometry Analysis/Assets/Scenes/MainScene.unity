@@ -10261,6 +10261,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c80bf637e2ef954888189792bdc8faf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedPose: 0
+  selectedTask: 0
   radioButtons:
   - {fileID: 24542162}
   - {fileID: 1077262795}
@@ -32774,6 +32776,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411b4739eb734f54f84885521a480b8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedPose: 0
+  selectedTask: 0
   radioButtons:
   - {fileID: 1902415110}
   - {fileID: 684204647}
@@ -40379,6 +40383,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411b4739eb734f54f84885521a480b8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedPose: 0
+  selectedTask: 0
   radioButtons:
   - {fileID: 825332036}
   - {fileID: 408671436}
@@ -48300,6 +48306,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411b4739eb734f54f84885521a480b8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedPose: 7
+  selectedTask: 0
   radioButtons:
   - {fileID: 1334557609}
   - {fileID: 570786744}
@@ -58358,6 +58366,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 411b4739eb734f54f84885521a480b8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedPose: 0
+  selectedTask: 0
   radioButtons:
   - {fileID: 594951681}
   - {fileID: 1395370413}

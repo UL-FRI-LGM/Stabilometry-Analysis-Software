@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static StabilometryAnalysis.Pose;
 using static StabilometryAnalysis.Parameter;
+using static StabilometryAnalysis.Task;
 
 namespace StabilometryAnalysis
 {
@@ -122,6 +123,24 @@ namespace StabilometryAnalysis
             //else
             Debug.LogError($"Parameter {parameter} was not defined.");
             return -1;
+        }
+
+        public bool HasTaskData(Task task)
+        {
+            switch (task)
+            {
+                case EYES_OPEN_SOLID_SURFACE:
+                    return (eyesOpenSolidSurface != null);
+                case EYES_CLOSED_SOLID_SURFACE:
+                    return (eyesClosedSolidSurface != null);
+                case EYES_OPEN_SOFT_SURFACE:
+                    return (eyesOpenSoftSurface != null);
+                case EYES_CLOSED_SOFT_SURFACE:
+                    return (eyesClosedSoftSurface != null);
+            }
+
+            Debug.LogError($"Task {task} is not defined.");
+            return false;
         }
     }
 }

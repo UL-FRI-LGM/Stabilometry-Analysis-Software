@@ -82,6 +82,38 @@ namespace StabilometryAnalysis
             return TrimData(temp, firstDate, lastDate, minimumDuration, maximumDuration);
         }
 
+        /// <summary>
+        /// Used for comparison chart.
+        /// </summary>
+        /// <param name="allData"></param>
+        /// <param name="currentPose"></param>
+        /// <param name="currentTask"></param>
+        /// <param name="firstDate"></param>
+        /// <param name="lastDate"></param>
+        /// <param name="minimumDuration"></param>
+        /// <param name="maximumDuration"></param>
+        /// <returns></returns>
+        public static List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose, Task currentTask,
+            MyDateTime firstDate, MyDateTime lastDate, float minimumDuration, float maximumDuration)
+        {
+            List<StabilometryMeasurement> temp = new List<StabilometryMeasurement>();
+
+            foreach (StabilometryMeasurement data in allData)
+                if (data.pose == currentPose && data.HasTaskData(currentTask))
+                    temp.Add(data);
+
+            return TrimData(temp, firstDate, lastDate, minimumDuration, maximumDuration);
+        }
+        
+        /// <summary>
+        /// Trims data based on date and duration limiter.
+        /// </summary>
+        /// <param name="inputData"></param>
+        /// <param name="firstDate"></param>
+        /// <param name="lastDate"></param>
+        /// <param name="minimumDuration"></param>
+        /// <param name="maximumDuration"></param>
+        /// <returns></returns>
         private static List<StabilometryMeasurement> TrimData(List<StabilometryMeasurement> inputData, 
             MyDateTime firstDate, MyDateTime lastDate, float minimumDuration, float maximumDuration)
         {
@@ -98,7 +130,28 @@ namespace StabilometryAnalysis
             return result;
         }
 
-        private static StabilometryMeasurement ModifyData(StabilometryMeasurement element, 
+        /// <summary>
+        /// Used for comparison chart average.
+        /// </summary>
+        /// <param name="allData"></param>
+        /// <param name="currentPose"></param>
+        /// <param name="currentTask"></param>
+        /// <param name="minimumDuration"></param>
+        /// <param name="maximumDuration"></param>
+        /// <returns></returns>
+        public static List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose, Task currentTask,
+            float minimumDuration, float maximumDuration)
+        {
+            List<StabilometryMeasurement> temp = new List<StabilometryMeasurement>();
+
+            foreach (StabilometryMeasurement data in allData)
+                if (data.pose == currentPose && data.HasTaskData(currentTask))
+                    temp.Add(data);
+
+            return TrimData(temp, minimumDuration, maximumDuration);
+        }
+
+        private static StabilometryMeasurement ModifyData(StabilometryMeasurement element,
             MyDateTime firstDate, MyDateTime lastDate, float minimumDuration, float maximumDuration)
         {
 
@@ -110,6 +163,50 @@ namespace StabilometryAnalysis
                 return null;
             // else
 
+            StabilometryMeasurement result = element.Duplicate();
+            result.eyesOpenSolidSurface = CheckDuration(result.eyesOpenSolidSurface, minimumDuration, maximumDuration);
+            result.eyesClosedSolidSurface = CheckDuration(result.eyesClosedSolidSurface, minimumDuration, maximumDuration);
+            result.eyesOpenSoftSurface = CheckDuration(result.eyesOpenSoftSurface, minimumDuration, maximumDuration);
+            result.eyesClosedSoftSurface = CheckDuration(result.eyesClosedSoftSurface, minimumDuration, maximumDuration);
+
+            if (result.eyesOpenSolidSurface == null && result.eyesClosedSolidSurface == null
+                && result.eyesOpenSoftSurface == null && result.eyesClosedSoftSurface == null)
+                return null;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Trims data based on date and duration limiter. Used for comparison chart average.
+        /// </summary>
+        /// <param name="inputData"></param>
+        /// <param name="minimumDuration"></param>
+        /// <param name="maximumDuration"></param>
+        /// <returns></returns>
+        private static List<StabilometryMeasurement> TrimData(List<StabilometryMeasurement> inputData, float minimumDuration, float maximumDuration)
+        {
+            List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+
+            foreach (StabilometryMeasurement element in inputData)
+            {
+                StabilometryMeasurement modifiedValue = ModifyData(element, minimumDuration, maximumDuration);
+
+                if (modifiedValue != null)
+                    result.Add(modifiedValue);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Used for comparison chart average.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="minimumDuration"></param>
+        /// <param name="maximumDuration"></param>
+        /// <returns></returns>
+        private static StabilometryMeasurement ModifyData(StabilometryMeasurement element, float minimumDuration, float maximumDuration)
+        {
             StabilometryMeasurement result = element.Duplicate();
             result.eyesOpenSolidSurface = CheckDuration(result.eyesOpenSolidSurface, minimumDuration, maximumDuration);
             result.eyesClosedSolidSurface = CheckDuration(result.eyesClosedSolidSurface, minimumDuration, maximumDuration);
@@ -197,5 +294,49 @@ namespace StabilometryAnalysis
 
             return list;
         }
+
+
+        public static string GetPoseName(Pose pose)
+        {
+            switch (pose)
+            {
+                case (Pose.BOTH_LEGS_JOINED_PARALLEL):
+                    return "Both Legs Joined Parallel";
+                case (Pose.BOTH_LEGS_30_ANGLE):
+                    return "Both Legs 30° Angle";
+                case (Pose.BOTH_LEGS_PARALLEL_APART):
+                    return "Both Legs Parallel Apart";
+                case (Pose.TANDEM_LEFT_FRONT):
+                    return "Tandem Left Front";
+                case (Pose.TANDEM_RIGHT_FRONT):
+                    return "Tandem Right Front";
+                case (Pose.LEFT_LEG):
+                    return "Left Leg";
+                case (Pose.RIGHT_LEG):
+                    return "Right Leg";
+                case (Pose.AVERAGE_FIRST_POSE):
+                    return "First Pose Average";
+            }
+
+            return "ERROR";
+        }
+
+        public static string GetTaskName(Task task)
+        {
+            switch (task)
+            {
+                case (Task.EYES_OPEN_SOLID_SURFACE):
+                    return "Solid Surface & Eyes Open";
+                case (Task.EYES_CLOSED_SOLID_SURFACE):
+                    return "Solid Surface & Eyes Closed";
+                case (Task.EYES_OPEN_SOFT_SURFACE):
+                    return "Soft Surface & Eyes Open";
+                case (Task.EYES_CLOSED_SOFT_SURFACE):
+                    return "Soft Surface & Eyes Closed";
+            }
+
+            return "ERROR";
+        }
+
     }
 }

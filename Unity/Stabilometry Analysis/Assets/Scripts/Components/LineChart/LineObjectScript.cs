@@ -48,6 +48,6 @@ namespace StabilometryAnalysis
             hovering = false;
             dataDisplayer.EnableObject(false);
         }
-
+        
     }
 }
