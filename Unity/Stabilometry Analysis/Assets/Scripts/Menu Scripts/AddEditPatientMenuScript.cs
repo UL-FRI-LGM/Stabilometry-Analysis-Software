@@ -62,6 +62,7 @@ namespace StabilometryAnalysis
 
         private void FillPatientData(Patient patient)
         {
+            notesComponent.MakeTextEditable(true);
             if (patient == null)
                 Debug.LogError("Patient was null");
 

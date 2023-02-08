@@ -66,6 +66,8 @@ namespace StabilometryAnalysis
 
         private void OnEnable()
         {
+            notesComponent.MakeTextEditable(false);
+
             mainScript.menuHeaderScript.EnableDropdown(true);
             SetButtonsInteractable(mainScript.currentPatient);
         }

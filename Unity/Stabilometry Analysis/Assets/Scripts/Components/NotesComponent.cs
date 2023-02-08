@@ -22,5 +22,10 @@ namespace StabilometryAnalysis
         {
             NoteText.text = text;
         }
+
+        public void MakeTextEditable(bool textEditable)
+        {
+            NoteText.interactable = textEditable;
+        }
     }
 }
