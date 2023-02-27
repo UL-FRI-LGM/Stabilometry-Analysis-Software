@@ -27,6 +27,9 @@ namespace StabilometryAnalysis
 
         private void HandleImage(StabilometryTask task)
         {
+            if (instance != null)
+                Destroy(instance);
+
             instance = Instantiate(stabilometryImagePrefab, this.transform);
 
             RectTransform rect = instance.GetComponent<RectTransform>();

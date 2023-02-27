@@ -14,7 +14,7 @@ namespace StabilometryAnalysis
             comparisonLineChartPrefab = null,
             screenBlocker = null;
 
-        private GameObject 
+        private GameObject
             warningWidnowInstance = null,
             lineChartInstance = null,
             comparisonLineChartInstance = null;
@@ -45,8 +45,17 @@ namespace StabilometryAnalysis
             CreateWarningWindow(message, menuScript.DeleteCurrentMeasurement);
         }
 
+        public void StartExitingApplication()
+        {
+            screenBlocker.SetActive(true);
+            string message = $"Exit Application?";
+            CreateWarningWindow(message, LocationPointer.mainScript.ExitApplication);
+        }
+
         private void CreateWarningWindow(string message, UnityAction function)
         {
+            DestroyAll();
+
             warningWidnowInstance = Instantiate(warningWidnowPrefab, screenBlocker.transform);
             WarningWindowScript result = warningWidnowInstance.GetComponent<WarningWindowScript>();
 
@@ -61,6 +70,8 @@ namespace StabilometryAnalysis
         public void CreateChart(List<ChartData> chartData, Parameter chosenParameter, List<Task> allTasks, 
             int lineChartIndex, LineChartParentScript parentScript)
         {
+            DestroyAll();
+
             screenBlocker.SetActive(true);
 
             lineChartInstance = Instantiate(lineChartPrefab, screenBlocker.transform);
@@ -75,6 +86,8 @@ namespace StabilometryAnalysis
 
         public void CreateComparisonChart(List<ComparisonChartData> chartData, Parameter chosenParameter, int lineChartIndex, LineChartParentScript parentScript)
         {
+            DestroyAll();
+
             screenBlocker.SetActive(true);
 
             comparisonLineChartInstance = Instantiate(comparisonLineChartPrefab, screenBlocker.transform);
@@ -97,7 +110,7 @@ namespace StabilometryAnalysis
             screenBlocker.SetActive(true);
         }
 
-        public void Cancel()
+        private void DestroyAll()
         {
             if (warningWidnowInstance != null)
                 Destroy(warningWidnowInstance);
@@ -106,12 +119,14 @@ namespace StabilometryAnalysis
                 Destroy(lineChartInstance);
 
             if (comparisonLineChartInstance != null)
-                Destroy(lineChartInstance);
+                Destroy(comparisonLineChartInstance);
+        }
 
+        public void Cancel()
+        {
             hasData = false;
 
             screenBlocker.SetActive(false);
-
         }
     }
 }

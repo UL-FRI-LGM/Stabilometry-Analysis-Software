@@ -64,7 +64,6 @@ namespace StabilometryAnalysis
                 this.eyesClosedSoftSurface);
         }
 
-
         public DrawingTaskValues[] GetDrawingData()
         {
             DrawingTaskValues[] result = new DrawingTaskValues[4];

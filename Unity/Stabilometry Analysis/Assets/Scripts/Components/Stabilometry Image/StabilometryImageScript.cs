@@ -52,6 +52,7 @@ namespace StabilometryAnalysis
 
         private List<Vector2> PrepareDataForDrawing(List<Vector2> stabilometryData, float multiplicator, bool highPrecision)
         {
+
             List<Vector2> result = new List<Vector2>();
             result.Add(stabilometryData[0] * multiplicator);
 

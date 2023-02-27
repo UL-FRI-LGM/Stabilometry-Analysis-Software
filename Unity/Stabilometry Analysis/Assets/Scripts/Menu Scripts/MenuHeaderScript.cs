@@ -12,11 +12,12 @@ namespace StabilometryAnalysis
         public MainScript mainScript = null;
 
         [SerializeField] private InputDropdownComponent inputDropDownScript = null;
+        [SerializeField] private BackgroundBlockerScript backgroundBlocker = null;
         #endregion
 
         public void EnableDropdown(bool enable)
         {
-            inputDropDownScript.dropdown.interactable = enable;
+            inputDropDownScript.EnableInputDropdown(enable);
         }
 
         /// <summary>
@@ -38,7 +39,7 @@ namespace StabilometryAnalysis
 
         public void ExitSoftwareButton()
         {
-            Application.Quit();
+            backgroundBlocker.StartExitingApplication();
         }
     }
 }

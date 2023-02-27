@@ -17,6 +17,8 @@ namespace StabilometryAnalysis
         public StabilometryMeasurementScript stabilometryMeasurementScript = null;
         public StabilometryParameterComparisonMenuScript stabilometryParameterComparisonMenuScript = null;
 
+        public GameObject backgroundBlocker = null;
+
         // Cached references
         public Patient currentPatient { get; private set; } = null;
         public DatabaseScript database { get; private set; } = null;
@@ -24,7 +26,6 @@ namespace StabilometryAnalysis
 
         public DataDisplayerScript DataDisplayerScript = null;
         public ComparisonDataDisplayerScript ComparisonDataDisplayerScript = null;
-
         #endregion
 
         private void Awake()

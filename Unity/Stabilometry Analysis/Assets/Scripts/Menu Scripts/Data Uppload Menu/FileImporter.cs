@@ -17,6 +17,10 @@ namespace StabilometryAnalysis
         public bool pathFound { get; private set; } = false;
 
         private string path = "None";
+        private const string xColumnName = "COPx[cm]";
+        private const string yColumnName = "COPy[cm]";
+        private const string TimeColumnName = "Time[s]";
+
 
         #endregion
 
@@ -77,18 +81,31 @@ namespace StabilometryAnalysis
 
             string line;
             bool firstLine = true;
+            int xIndex = -1;
+            int yIndex = -1;
+            int timeIndex = -1;
 
             while ((line = reader.ReadLine()) != null)
             {
                 if (firstLine)
                 {
+                    string[] columns = line.Split(new[] { dataSeparator }, StringSplitOptions.RemoveEmptyEntries);
+
+                    xIndex = GetIndex(columns, xColumnName);
+                    yIndex = GetIndex(columns, yColumnName);
+                    timeIndex = GetIndex(columns, TimeColumnName);
+
+                    // If the program doesn't find all titles.
+                    if (xIndex == -1 || yIndex == -1 || timeIndex == -1)
+                        return null;
+
                     firstLine = false;
                     continue;
                 }
 
                 // else
                 string[] row = line.Split(new[] { dataSeparator }, StringSplitOptions.RemoveEmptyEntries);
-                result.Add(new DataPoint(row[0], row[1], row[2], multiplicator));
+                result.Add(new DataPoint(row[timeIndex], row[xIndex], row[yIndex], multiplicator));
             }
 
             reader.Close();
@@ -121,6 +138,16 @@ namespace StabilometryAnalysis
             path = "None";
             pathFound = false;
             displayText.text = path;
+        }
+
+        private static int GetIndex(string[] columns, string columnTitle)
+        {
+            for (int i = 0; i < columns.Length; i++)
+                if (columns[i] == columnTitle)
+                    return i;
+
+            Debug.Log($"{columnTitle} was not found in columns.");
+            return -1;
         }
     }
 }

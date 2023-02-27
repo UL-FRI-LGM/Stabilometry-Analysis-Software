@@ -276,29 +276,16 @@ namespace StabilometryAnalysis
         public override void OpenAnalysisMenu(int index)
         {
 
-            StabilometryMeasurement measurement = GetMeasurement(index);
-
             backgroundBlocker.Disable();
-            foreach (StabilometryMeasurement element in patientData)
+            for (int i = 0; i < patientData.Count; i++)
             {
-                if (element.ID == measurement.ID)
+                if (patientData[i].ID == relevantData[index].ID)
                 {
                     mainScript.menuSwitching.OpenMenu(measurementMenu);
-                    mainScript.stabilometryMeasurementScript.SetData(measurement);
+                    mainScript.stabilometryMeasurementScript.SetData(patientData, i);
                     break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Gets the measurement and adds the values stored in the jason.
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private StabilometryMeasurement GetMeasurement(int index)
-        {
-            StabilometryMeasurement result = JSONHandler.GetJSONFile(relevantData[index]);
-            return result;
         }
 
         public void BackButtonClick()

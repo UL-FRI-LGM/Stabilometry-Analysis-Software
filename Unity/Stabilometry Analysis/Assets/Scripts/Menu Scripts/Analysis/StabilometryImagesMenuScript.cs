@@ -223,10 +223,21 @@ namespace StabilometryAnalysis
             }
         }
 
-        public void OpenAnalysisMenu(StabilometryMeasurement measurement)
+        public void OpenAnalysisMenu(StabilometryMeasurement currentMeasurement)
         {
+            int currentIndex = -1;
+
+            for (int i = 0; i < relevantData.Count; i++)
+            {
+                if (currentMeasurement.ID == relevantData[i].ID)
+                {
+                    currentIndex = i;
+                    break;
+                }
+            }
+
             mainScript.menuSwitching.OpenMenu(measurementMenu);
-            mainScript.stabilometryMeasurementScript.SetData(measurement);
+            mainScript.stabilometryMeasurementScript.SetData(relevantData, currentIndex);
         }
 
         public void BackButtonClick()

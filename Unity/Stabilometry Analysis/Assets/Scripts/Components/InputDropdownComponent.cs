@@ -24,7 +24,12 @@ namespace StabilometryAnalysis
             });
 
             SetPatientDropdown();
+        }
 
+        public void EnableInputDropdown(bool enable)
+        {
+            inputField.interactable = enable;
+            dropdown.interactable = enable;
         }
 
         /// <summary>
@@ -33,14 +38,27 @@ namespace StabilometryAnalysis
         public void SetPatientDropdown()
         {
             allPatients = menuHeader.mainScript.database.GetAllPatients();
-            UpdateDropdown(allPatients, "");
+            UpdateDropdownWithoutShow(allPatients, "");
+        }
+
+        private void UpdateDropdownWithoutShow(List<Patient> allPatients, string text)
+        {
+            relevantPatients = GetRelevantPatients(allPatients, text);
+
+            dropdown.ClearOptions();
+
+            List<string> options = new List<string>();
+            options.Add("No patient selected");
+
+            for (int i = 0; i < relevantPatients.Count; i++)
+                options.Add(PatientToString(relevantPatients[i]));
+
+            dropdown.AddOptions(options);
         }
 
         private void UpdateDropdown(List<Patient> allPatients, string text)
         {
             relevantPatients = GetRelevantPatients(allPatients, text);
-
-            Debug.Log(text);
 
             dropdown.ClearOptions();
 
