@@ -14,63 +14,49 @@ namespace StabilometryAnalysis
 
         private List<Patient> allPatients = null;
         private List<Patient> relevantPatients = null;
+        private List<Patient> dropdownPatients = null;
+
         #endregion
 
         void Start()
         {
-            dropdown.onValueChanged.AddListener(delegate
-            {
-                SetPatient(dropdown.value);
-            });
-
+            dropdown.onValueChanged.AddListener(delegate { SetPatient(dropdown.value); });
             SetPatientDropdown();
         }
 
-        public void EnableInputDropdown(bool enable)
-        {
-            inputField.interactable = enable;
-            dropdown.interactable = enable;
-        }
-
         /// <summary>
-        /// Gets all patients from the database 
+        /// Updates dropdown without refreshing the values.
         /// </summary>
-        public void SetPatientDropdown()
-        {
-            allPatients = menuHeader.mainScript.database.GetAllPatients();
-            UpdateDropdownWithoutShow(allPatients, "");
-        }
-
-        private void UpdateDropdownWithoutShow(List<Patient> allPatients, string text)
-        {
-            relevantPatients = GetRelevantPatients(allPatients, text);
-
-            dropdown.ClearOptions();
-
-            List<string> options = new List<string>();
-            options.Add("No patient selected");
-
-            for (int i = 0; i < relevantPatients.Count; i++)
-                options.Add(PatientToString(relevantPatients[i]));
-
-            dropdown.AddOptions(options);
-        }
-
+        /// <param name="allPatients"></param>
+        /// <param name="text"></param>
         private void UpdateDropdown(List<Patient> allPatients, string text)
         {
             relevantPatients = GetRelevantPatients(allPatients, text);
+            dropdownPatients = new List<Patient>();
 
-            dropdown.ClearOptions();
+            if (menuHeader.mainScript.currentPatient == null)
+            {
+                Patient emptyPatient = new Patient(0, "No patient selected", "", "");
+                dropdownPatients.Add(emptyPatient);
+
+                for (int i = 0; i < relevantPatients.Count; i++)
+                    dropdownPatients.Add(relevantPatients[i]);
+            }
+            else
+            {
+                dropdownPatients.Add(menuHeader.mainScript.currentPatient);
+
+                for (int i = 0; i < relevantPatients.Count; i++)
+                    if (relevantPatients[i].ID != menuHeader.mainScript.currentPatient.ID)
+                        dropdownPatients.Add(relevantPatients[i]);
+            }
 
             List<string> options = new List<string>();
-            options.Add("No patient selected");
+            for (int i = 0; i < dropdownPatients.Count; i++)
+                options.Add(PatientToString(dropdownPatients[i]));
 
-            for (int i = 0; i < relevantPatients.Count; i++)
-                options.Add(PatientToString(relevantPatients[i]));
-
+            dropdown.ClearOptions();
             dropdown.AddOptions(options);
-            StartCoroutine(RefreshDropdown());
-
         }
 
         private IEnumerator RefreshDropdown()
@@ -112,16 +98,50 @@ namespace StabilometryAnalysis
         {
             Patient selectedPatient = null;
 
-            if (index < 0 || index > allPatients.Count)
+            if (index < 0 || index > dropdownPatients.Count)
                 Debug.LogError($"index {index} was outside the bounds of 0 and {allPatients.Count}.");
-            else if (index > 0)
-                selectedPatient = allPatients[index - 1];
+            else if (index >= 0)
+                selectedPatient = dropdownPatients[index];
 
             menuHeader.mainScript.SelectPatient(selectedPatient);
+            SetPatientDropdown();
+        }
+
+        /// <summary>
+        /// Returns strign ready for dropdown.
+        /// </summary>
+        /// <param name="patient"></param>
+        /// <returns></returns>
+        private string PatientToString(Patient patient)
+        {
+            if (patient.Surname == "")
+                return $"{patient.Name}, id: {patient.ID}";
+            else
+                return $"{patient.Name} {patient.Surname}, id: {patient.ID}";
+        }
+
+        private bool MatchedPatientsChanged()
+        {
+            string newText = inputField.text;
+            List<Patient> newPatients = GetRelevantPatients(allPatients, newText);
+
+            if (newPatients.Count != relevantPatients.Count)
+                return true;
+
+            //else
+            for (int i = 0; i < newPatients.Count; i++)
+                if (newPatients[i] != relevantPatients[i])
+                    return true;
+
+            //else
+            return false;
         }
 
         public void OnSelect()
         {
+
+            TextValueChange();
+
             dropdown.Show();
             dropdown.RefreshShownValue();
         }
@@ -129,6 +149,32 @@ namespace StabilometryAnalysis
         public void SelectDropdownElement()
         {
             inputField.SetTextWithoutNotify("");
+
+        }
+
+        public void EnableInputDropdown(bool enable)
+        {
+            inputField.interactable = enable;
+            dropdown.interactable = enable;
+        }
+
+        /// <summary>
+        /// Gets all patients from the database 
+        /// </summary>
+        public void SetPatientDropdown()
+        {
+            allPatients = menuHeader.mainScript.database.GetAllPatients();
+            UpdateDropdown(allPatients, "");
+        }
+
+
+        public void TextValueChange()
+        {
+            if (MatchedPatientsChanged())
+            {
+                UpdateDropdown(allPatients, inputField.text);
+                StartCoroutine(RefreshDropdown());
+            }
         }
 
         /// <summary>
@@ -147,33 +193,18 @@ namespace StabilometryAnalysis
 
             //else
 
-            for (int i = 0; i < relevantPatients.Count; i++)
+            for (int i = 0; i < dropdownPatients.Count; i++)
             {
-                if (patient.ID == relevantPatients[i].ID)
+                if (patient.ID == dropdownPatients[i].ID)
                 {
-                    dropdown.value = i + 1;
+                    dropdown.value = i;
                     dropdown.RefreshShownValue();
                     return;
                 }
             }
-        }
 
-        /// <summary>
-        /// Returns strign ready for dropdown.
-        /// </summary>
-        /// <param name="patient"></param>
-        /// <returns></returns>
-        private string PatientToString(Patient patient)
-        {
-            if (patient.Surname == "")
-                return $"{patient.Name}, id: {patient.ID}";
-            else
-                return $"{patient.Name} {patient.Surname}, id: {patient.ID}";
-        }
-
-        public void TextValueChange()
-        {
-            UpdateDropdown(allPatients, inputField.text);
+            //else
+            SetPatientDropdown();
         }
     }
 }
