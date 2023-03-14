@@ -17,9 +17,9 @@ namespace StabilometryAnalysis
         public bool pathFound { get; private set; } = false;
 
         private string path = "None";
-        private const string xColumnName = "COPx[cm]";
-        private const string yColumnName = "COPy[cm]";
-        private const string TimeColumnName = "Time[s]";
+        private const string xColumnName = "copX";
+        private const string yColumnName = "copX";
+        private const string TimeColumnName = "f_time";
 
 
         #endregion
