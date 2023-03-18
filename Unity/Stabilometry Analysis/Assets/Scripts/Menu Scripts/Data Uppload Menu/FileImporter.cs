@@ -18,7 +18,7 @@ namespace StabilometryAnalysis
 
         private string path = "None";
         private const string xColumnName = "copX";
-        private const string yColumnName = "copX";
+        private const string yColumnName = "copY";
         private const string TimeColumnName = "f_time";
 
 
