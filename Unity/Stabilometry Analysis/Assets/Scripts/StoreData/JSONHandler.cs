@@ -112,7 +112,6 @@ namespace StabilometryAnalysis
         {
             string fileName = $"{dataFolder}{measurement.ID}.json";
             string jsonDirectory = $@"{Application.persistentDataPath}/{JSONFolder}/{dataFolder}";
-            Debug.Log($@"{jsonDirectory}/{fileName}");
             File.Delete($@"{jsonDirectory}/{fileName}");
 
             string rawFileName = $"{rawFolder}{measurement.ID}.json";

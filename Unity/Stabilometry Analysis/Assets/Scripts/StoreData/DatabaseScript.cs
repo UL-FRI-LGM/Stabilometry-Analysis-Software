@@ -89,8 +89,6 @@ namespace StabilometryAnalysis
                     + $", FOREIGN KEY({MeasurementTableColumnNames[6]}) REFERENCES {TaskTableName} ({TaskTableColumnNames[0]})"
                     + $", FOREIGN KEY({MeasurementTableColumnNames[7]}) REFERENCES {TaskTableName} ({TaskTableColumnNames[0]})";
 
-                Debug.Log(foreignKeys);
-
                 CreateTable(MeasurementTableName, MeasurementTableColumnNames, MeasurementTableColumnValues, foreignKeys);
             }
         }
@@ -459,8 +457,6 @@ namespace StabilometryAnalysis
             string poseText = MeasurementTableColumnNames[3];
 
             string querry = $"SELECT * FROM  {MeasurementTableName} WHERE {patientIDText} == {patient.ID} AND {poseText} == '{PoseConverter.PoseToString(pose)}' ORDER BY {dateTimeText} ASC, {entryIDText} ASC;";
-
-            Debug.Log(querry);
 
             IDataReader reader = ExecuteQuery(querry);
 
