@@ -24,7 +24,7 @@ namespace StabilometryAnalysis
         {
         "EntryID", "Duration", "SampleTime", "SwayPath", "SwayPathAP",
         "SwayPathML", "MeanDistance", "MeanSwayVelocity", "MeanSwayVelocityAP", "MeanSwayVelocityML",
-        "SwayAverageAmplitudeAP", "swayAverageAmplitudeML", "SwayMaximalAmplitudeAP", "SwayMaximalAmplitudeML", "ConfidenceEllipseArea"
+        "SwayAverageAmplitudeAP", "SwayAverageAmplitudeML", "SwayMaximalAmplitudeAP", "SwayMaximalAmplitudeML", "ConfidenceEllipseArea"
     };
         private static readonly string[] TaskTableColumnValues =
         {
