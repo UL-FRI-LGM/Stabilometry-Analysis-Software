@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System.Diagnostics;
+using System;
 
 namespace StabilometryAnalysis
 {
@@ -17,7 +19,7 @@ namespace StabilometryAnalysis
 
         [SerializeField]
         private NotesComponent notesComponent = null;
-        
+
         [SerializeField]
         private MainScript mainScript = null;
 
@@ -61,7 +63,7 @@ namespace StabilometryAnalysis
 
         public void OnInputFieldChange()
         {
-            Debug.LogWarning("Function not implemented.");
+            UnityEngine.Debug.LogWarning("Function not implemented.");
         }
 
         private void OnEnable()
@@ -125,32 +127,56 @@ namespace StabilometryAnalysis
 
         public void ClickConfirmDatabaseDeletion()
         {
-            StartCoroutine(DeleteAllData());
-        }
-
-        IEnumerator DeleteAllData()
-        {
-            yield return new WaitForSecondsRealtime(1);
-            // Delete database file
-            mainScript.database.DeleteDatabase();
-
-            // Delete all items in data folder
-            JSONHandler.DeleteAllData();
-
-            // Clear registry
-            PlayerPrefs.DeleteAll();
-
-            while (!AppDataEmptry())
-                 yield return new WaitForEndOfFrame();
+            DeleteAllData();
 
             mainScript.ExitApplication();
         }
 
-        private bool AppDataEmptry()
+        private void DeleteAllData()
         {
-            int fileNumber = Directory.GetFiles(Application.dataPath).Length;
-            int directoriesNumber = Directory.GetDirectories(Application.dataPath).Length;
-            return fileNumber == 0 && directoriesNumber == 0;
+            // Clear registry
+            PlayerPrefs.DeleteAll();
+            mainScript.database.CloseDatabase();
+
+            #if UNITY_STANDALONE_WIN
+                StartDeletionProcess();
+            #endif
+        }
+
+        private void StartDeletionProcess()
+        {
+
+            try
+            {
+                string appPath = Application.streamingAssetsPath + "/DatabaseCleaner.exe";
+
+                string localLowFolder = Application.persistentDataPath;
+
+                string unityProcessName = Process.GetCurrentProcess().ProcessName;
+
+                Process deleteFilesProcess = new Process()
+                {
+                    EnableRaisingEvents = false,
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = appPath,
+                        Arguments = $"{localLowFolder},{unityProcessName}",
+                        UseShellExecute = false,
+                        RedirectStandardOutput = false,
+                        RedirectStandardInput = true,
+                        RedirectStandardError = false,
+                        CreateNoWindow = false
+                    }
+                };
+
+                deleteFilesProcess.Start();
+
+                UnityEngine.Debug.Log("Successfully launched app");
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError("Unable to launch app: " + e.Message);
+            }
         }
         #endregion
     }

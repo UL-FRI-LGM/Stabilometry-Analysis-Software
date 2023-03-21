@@ -103,6 +103,7 @@ namespace StabilometryAnalysis
             {
                 //connection.Dispose();
                 connection.Close();
+                connection.Dispose();
                 connection = null;
 
                 Debug.Log("Connection closed.");
@@ -111,13 +112,6 @@ namespace StabilometryAnalysis
 
         public void DeleteDatabase()
         {
-            if (connection != null)
-            {
-                connection.Dispose();
-                connection = null;
-
-                Debug.Log("Connection closed.");
-            }
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -142,9 +136,9 @@ namespace StabilometryAnalysis
                     System.IO.File.Delete(filePath);
                     isFileLocked = false;
                 }
-                catch
+                catch(Exception e)
                 {
-                    Debug.Log("Nope");
+                    Debug.Log(e);
                 }
                 yield return new WaitForEndOfFrame();
             }

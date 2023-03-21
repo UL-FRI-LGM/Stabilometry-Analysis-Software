@@ -1,0 +1,7 @@
+C:\Users\aljaz\source\repos\DatabaseCleaner\DatabaseCleaner\bin\Release\DatabaseCleaner.exe.config
+C:\Users\aljaz\source\repos\DatabaseCleaner\DatabaseCleaner\bin\Release\DatabaseCleaner.exe
+C:\Users\aljaz\source\repos\DatabaseCleaner\DatabaseCleaner\bin\Release\DatabaseCleaner.pdb
+C:\Users\aljaz\source\repos\DatabaseCleaner\DatabaseCleaner\obj\Release\DatabaseCleaner.csproj.AssemblyReference.cache
+C:\Users\aljaz\source\repos\DatabaseCleaner\DatabaseCleaner\obj\Release\DatabaseCleaner.csproj.CoreCompileInputs.cache
+C:\Users\aljaz\source\repos\DatabaseCleaner\DatabaseCleaner\obj\Release\DatabaseCleaner.exe
+C:\Users\aljaz\source\repos\DatabaseCleaner\DatabaseCleaner\obj\Release\DatabaseCleaner.pdb

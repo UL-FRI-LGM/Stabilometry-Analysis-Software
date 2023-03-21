@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using static StabilometryAnalysis.Axes;
+using System.Globalization;
 
 namespace StabilometryAnalysis
 {
@@ -22,9 +23,19 @@ namespace StabilometryAnalysis
 
         public DataPoint(string time, string x, string y, float multiplicator)
         {
-            this.time = float.Parse(time);
-            this.x = float.Parse(x) * multiplicator;
-            this.y = float.Parse(y) * multiplicator;
+            this.time = GetFloat(time);
+            this.x = GetFloat(x) * multiplicator;
+            this.y = GetFloat(y) * multiplicator;
+        }
+
+        private static float GetFloat(string value)
+        {
+            string decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            string falseSeparator = (decimalSeparator == ".") ? "," : ".";
+
+            string correctForm = value.Replace(falseSeparator, decimalSeparator);
+
+            return float.Parse(correctForm);
         }
 
         public Vector2 GetVecotor2(Axes axes)
