@@ -97,7 +97,7 @@ namespace StabilometryAnalysis
 
             saveButton.interactable = false;
 
-            positionDropdown.value = 0;
+            //positionDropdown.value = 0;
             positionDropdown.RefreshShownValue();
         }
 

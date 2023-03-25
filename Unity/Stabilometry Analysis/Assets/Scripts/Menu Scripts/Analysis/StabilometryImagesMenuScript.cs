@@ -136,28 +136,32 @@ namespace StabilometryAnalysis
 
         private void UpdateImages()
         {
+            float xPosition = GetRightmostPosition(relevantData.Count, startDisplayNumber, prefabElementWidth, initialElementObjectXPosition);
+
             // Reset position
             imageElementObjectRect.localPosition = new Vector3(
-                initialElementObjectXPosition,
+                xPosition,
                 imageElementObjectRect.localPosition.y,
                 imageElementObjectRect.localPosition.z);
 
             SetScrollbar(relevantData.Count);
+            scrollbarScript.valuePositon = 1;
+
             scrollbarSet = true;
 
             SpawnElements(relevantData);
         }
 
-        //private List<StabilometryMeasurement> GetRelevantData(List<StabilometryMeasurement> allData, Pose currentPose)
-        //{
-        //    List<StabilometryMeasurement> result = new List<StabilometryMeasurement>();
+        private static float GetRightmostPosition(int imageCount, int maxShownElements, float elementWidth, float initialXPosition)
+        {
 
-        //    foreach (StabilometryMeasurement data in allData)
-        //        if (data.pose == currentPose)
-        //            result.Add(data);
+            if (imageCount <= maxShownElements)
+                return initialXPosition;
 
-        //    return result;
-        //}
+            int difference = maxShownElements - imageCount;
+
+            return initialXPosition + difference * elementWidth;
+        }
 
         private void UpdatePosition(float newValue, float totalElementNumber)
         {
@@ -205,10 +209,15 @@ namespace StabilometryAnalysis
                 rect.anchoredPosition += new Vector2(i * rect.rect.width, 0);
 
                 element.SetData(dataToSpawn[i], this);
-                element.SetVisible(i <= 4);
+                element.SetVisible(SetElementVisible(i, dataToSpawn.Count, 5));
 
                 imageElementScripts.Add(element);
             }
+        }
+
+        private bool SetElementVisible(int currentValue, int totalCount, int displayNumber)
+        {
+            return (totalCount - displayNumber <= currentValue);
         }
 
         private void SetElementVisibilities(float newXPosition)

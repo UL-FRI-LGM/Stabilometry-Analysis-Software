@@ -34,7 +34,7 @@ namespace StabilometryAnalysis
         public void StartDatabaseDeletion(InitialMenuScript menuScript)
         {
             screenBlocker.SetActive(true);
-            string message = $"{DELETE} entire database?";
+            string message = $"{DELETE} entire database and exit application?";
             CreateWarningWindow(message, menuScript.ClickConfirmDatabaseDeletion);
         }
 
