@@ -4,6 +4,7 @@ using UnityEngine;
 using Mono.Data.Sqlite;
 using System;
 using System.Data;
+using System.Globalization;
 
 namespace StabilometryAnalysis
 {
@@ -28,9 +29,9 @@ namespace StabilometryAnalysis
     };
         private static readonly string[] TaskTableColumnValues =
         {
-        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "REAL", "REAL", "REAL", "REAL",
-        "REAL", "REAL", "REAL", "REAL", "REAL",
-        "REAL", "REAL", "REAL", "REAL", "REAL"
+        "INTEGER PRIMARY KEY UNIQUE NOT NULL", "TEXT", "TEXT", "TEXT", "TEXT",
+        "TEXT", "TEXT", "TEXT", "TEXT", "TEXT",
+        "TEXT", "TEXT", "TEXT", "TEXT", "TEXT"
     };
 
         // Parameters are foreign IDs of Calculated parameters in Parameter table
@@ -136,7 +137,7 @@ namespace StabilometryAnalysis
                     System.IO.File.Delete(filePath);
                     isFileLocked = false;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.Log(e);
                 }
@@ -592,22 +593,22 @@ namespace StabilometryAnalysis
             {
                 StabilometryTask result = new StabilometryTask();
                 result.ID = (int)reader.GetInt64(0);
-                result.duration = reader.GetFloat(1);
-                result.sampleTime = reader.GetFloat(2);
-                result.swayPath = reader.GetFloat(3);
+                result.duration = floatParse(reader.GetString(1));
+                result.sampleTime = floatParse(reader.GetString(2));
+                result.swayPath = floatParse(reader.GetString(3));
 
-                result.swayPathAP = reader.GetFloat(4);
-                result.swayPathML = reader.GetFloat(5);
-                result.meanDistance = reader.GetFloat(6);
-                result.meanSwayVelocity = reader.GetFloat(7);
-                result.meanSwayVelocityAP = reader.GetFloat(8);
-                result.meanSwayVelocityML = reader.GetFloat(9);
-                result.swayAverageAmplitudeAP = reader.GetFloat(10);
-                result.swayAverageAmplitudeML = reader.GetFloat(11);
-                result.swayMaximalAmplitudeAP = reader.GetFloat(12);
-                result.swayMaximalAmplitudeML = reader.GetFloat(13);
+                result.swayPathAP = floatParse(reader.GetString(4));
+                result.swayPathML = floatParse(reader.GetString(5));
+                result.meanDistance = floatParse(reader.GetString(6));
+                result.meanSwayVelocity = floatParse(reader.GetString(7));
+                result.meanSwayVelocityAP = floatParse(reader.GetString(8));
+                result.meanSwayVelocityML = floatParse(reader.GetString(9));
+                result.swayAverageAmplitudeAP = floatParse(reader.GetString(10));
+                result.swayAverageAmplitudeML = floatParse(reader.GetString(11));
+                result.swayMaximalAmplitudeAP = floatParse(reader.GetString(12));
+                result.swayMaximalAmplitudeML = floatParse(reader.GetString(13));
 
-                EllipseValues ellipseValues = new EllipseValues(reader.GetFloat(14));
+                EllipseValues ellipseValues = new EllipseValues(floatParse(reader.GetString(14)));
                 result.confidence95Ellipse = ellipseValues;
 
                 reader.Close();
@@ -616,6 +617,20 @@ namespace StabilometryAnalysis
             }
 
             return null;
+        }
+
+        private static float floatParse(string value)
+        {
+            string decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            string correctString;
+
+            if (decimalSeparator == ",")
+                correctString = value.Replace('.', ',');
+            else
+                correctString = value.Replace(',', '.');
+
+            return float.Parse(correctString);
         }
 
         #endregion

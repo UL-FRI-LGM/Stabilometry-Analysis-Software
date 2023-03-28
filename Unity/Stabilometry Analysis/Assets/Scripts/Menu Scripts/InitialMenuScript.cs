@@ -165,7 +165,7 @@ namespace StabilometryAnalysis
                         RedirectStandardOutput = false,
                         RedirectStandardInput = true,
                         RedirectStandardError = false,
-                        CreateNoWindow = false
+                        CreateNoWindow = true
                     }
                 };
 
