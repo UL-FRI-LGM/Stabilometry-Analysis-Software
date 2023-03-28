@@ -145,7 +145,9 @@ namespace StabilometryAnalysis
                 imageElementObjectRect.localPosition.z);
 
             SetScrollbar(relevantData.Count);
-            scrollbarScript.valuePositon = 1;
+
+            if (relevantData.Count > startDisplayNumber)
+                scrollbarScript.valuePositon = 1;
 
             scrollbarSet = true;
 
