@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace StabilometryAnalysis
 {
@@ -13,11 +10,14 @@ namespace StabilometryAnalysis
 
         [SerializeField] private InputDropdownComponent inputDropDownScript = null;
         [SerializeField] private BackgroundBlockerScript backgroundBlocker = null;
+        [SerializeField] private GameObject dropdownBlocker = null;
         #endregion
 
         public void EnableDropdown(bool enable)
         {
             inputDropDownScript.EnableInputDropdown(enable);
+            dropdownBlocker.SetActive(!enable);
+            
         }
 
         /// <summary>
